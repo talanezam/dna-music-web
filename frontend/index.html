@@ -1,0 +1,103 @@
+ <!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>DNA Music Generator</title>
+</head>
+<body>
+
+    <h1>DNA Music Generator</h1>
+
+    <input type="text" id="dnaInput" placeholder="Enter DNA Sequence" />
+    <button id="sendBtn" type="button">Send</button>
+    <button id="loadBtn">Load DNA</button>
+    <button id="playBtn">Play Music</button>
+
+
+    <pre id="result"></pre>
+    <script>
+
+console.log("Script loaded");
+
+let audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+async function sendDNA() {
+    const dnaValue = document.getElementById("dnaInput").value;
+
+    localStorage.setItem("savedDNA", dnaValue);
+
+    const response = await fetch("http://127.0.0.1:8000/api/echo-dna", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ dna: dnaValue })
+    });
+
+    const data = await response.json();
+
+    window.lastNotes = data.notes;
+
+    console.log("Notes received:", window.lastNotes);
+}
+
+function playNote(freq, duration = 0.3) {
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+
+    osc.type = "sine";
+    osc.frequency.value = freq;
+
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+
+    gain.gain.setValueAtTime(0.001, audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.3, audioCtx.currentTime + 0.01);
+    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+
+    osc.start();
+    osc.stop(audioCtx.currentTime + duration);
+}
+
+async function playNotes() {
+
+    await audioCtx.resume();
+
+    const notes = window.lastNotes || [];
+
+    if (!notes.length) {
+        alert("اعملي Send أول شي");
+        return;
+    }
+
+    const freqMap = {
+        "C4": 261.63,
+        "D4": 293.66,
+        "E4": 329.63,
+        "F4": 349.23
+    };
+
+    let t = 0;
+
+    notes.forEach(note => {
+        setTimeout(() => {
+            playNote(freqMap[note]);
+        }, t);
+        t += 300;
+    });
+}
+
+document.getElementById("sendBtn").addEventListener("click", sendDNA);
+document.getElementById("playBtn").addEventListener("click", playNotes);
+
+document.getElementById("loadBtn").addEventListener("click", () => {
+    const savedDNA = localStorage.getItem("savedDNA");
+    if (savedDNA) {
+        document.getElementById("dnaInput").value = savedDNA;
+        console.log("Loaded DNA:", savedDNA);
+    }
+});
+
+</script>
+
+
+</body>
+</html>
