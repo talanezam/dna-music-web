@@ -35,26 +35,62 @@ async function sendDNA() {
     const data = await response.json();
 
     window.lastNotes = data.notes;
+    console.log("DNA:", dnaValue);
+    console.log("NOTES:", data.notes);
 
     console.log("Notes received:", window.lastNotes);
 }
 
-function playNote(freq, duration = 0.3) {
+function playNote(freq, duration = 0.3, volume = 0.85) {
     const osc = audioCtx.createOscillator();
-    const gain = audioCtx.createGain();
-
-    osc.type = "sine";
+const osc2 = audioCtx.createOscillator();
+const gain = audioCtx.createGain();
+//const bass = audioCtx.createOscillator();
+   osc.type = "triangle";
+osc2.type = "triangle"; // إذا عندك osc2
     osc.frequency.value = freq;
+    osc2.frequency.value = freq / 2;   // أوكتاف تحت = تخانة
+osc2.detune.value = 2;             // خفيف كتير (اختياري بس لطيف)
+  //  bass.type = "sine";
+//bass.frequency.value = freq / 1.8;   // أوكتاف تحت (Bass)
+   // const lfo = audioCtx.createOscillator();
+//const lfoGain = audioCtx.createGain();
 
-    osc.connect(gain);
-    gain.connect(audioCtx.destination);
+//lfo.frequency.value = 5;      // سرعة الاهتزاز (خفيفة)
+//lfoGain.gain.value = 4;       // قوة الاهتزاز (صغيرة جداً)
 
-    gain.gain.setValueAtTime(0.001, audioCtx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.3, audioCtx.currentTime + 0.01);
-    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+//lfo.connect(lfoGain);
+//lfoGain.connect(osc.frequency);
 
+//lfo.start();
+//lfo.stop(audioCtx.currentTime + duration);
+    osc2.type = "triangle";
+osc2.frequency.value = freq;
+osc2.detune.value = 6;
+osc2.detune.value = 4;
+
+   const gain2 = audioCtx.createGain();
+
+// Connect
+osc.connect(gain);
+osc2.connect(gain2);
+//bass.connect(gain);
+
+gain.connect(audioCtx.destination);
+gain2.connect(audioCtx.destination);
+
+// Levels
+gain2.gain.value = volume * 0.55; // طبقة أعلى أخف
+
+gain.gain.setValueAtTime(0.001, audioCtx.currentTime);
+gain.gain.exponentialRampToValueAtTime(volume, audioCtx.currentTime + 0.01);
+gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
     osc.start();
+    osc2.start();
+  //  bass.start();
     osc.stop(audioCtx.currentTime + duration);
+    osc2.stop(audioCtx.currentTime + duration);
+    //bass.stop(audioCtx.currentTime + duration);
 }
 
 async function playNotes() {
@@ -62,27 +98,71 @@ async function playNotes() {
     await audioCtx.resume();
 
     const notes = window.lastNotes || [];
+    const repeats = 3;              // جرّبي 2 أو 3 أو 4
+const loopedNotes = Array(repeats).fill(notes).flat();
 
     if (!notes.length) {
         alert("اعملي Send أول شي");
         return;
     }
 
-    const freqMap = {
-        "C4": 261.63,
-        "D4": 293.66,
-        "E4": 329.63,
-        "F4": 349.23
-    };
 
+const freqMap = {
+  "C4": 261.63,
+  "Eb4": 311.13,
+  "F4": 349.23,
+  "Gb4": 369.99,
+  "G4": 392.00,
+  "Bb4": 466.16,
+  "C5": 523.25,
+  "Eb5": 622.25
+};
     let t = 0;
 
-    notes.forEach(note => {
-        setTimeout(() => {
-            playNote(freqMap[note]);
-        }, t);
-        t += 300;
-    });
+   loopedNotes.forEach((note, index) => {
+    
+// 1) طبّعي النوتات اللي جاية من السيرفر لتناسب سلم الـ Blues
+const normalizeNote = {
+  "D4": "Eb4",
+  "E4": "F4",
+  "A4": "Bb4",
+  "B4": "C5"
+};
+
+note = normalizeNote[note] || note;
+// 2) هاد بيمنع الـ undefined (احتياط)
+let finalFreq = freqMap[note] ?? freqMap["C4"];
+// تنويع بسيط بكل دورة (يرفع الأوكتاف شوي)
+if (index > notes.length) {
+  finalFreq = finalFreq * 1.12;  // رفع خفيف
+}
+if (index % 4 === 0 && finalFreq < 500) {
+  finalFreq = finalFreq * 2;
+}
+if ((index + 1) % 8 === 0) {
+  finalFreq = freqMap["C4"];
+}
+let dynamic = 0.85;
+
+if (index % 3 === 0) {
+  dynamic = 0.6;   // كل ثالث نغمة أهدأ شوي
+}
+let duration;
+
+if (index % 4 === 0) {
+  duration = 0.5;
+} else if (index % 2 === 0) {
+  duration = 0.25;
+} else {
+  duration = 0.35;
+}
+    setTimeout(() => {
+        playNote(finalFreq, duration, dynamic);
+    }, t);
+
+    t += duration * 1000;
+    if ((index + 1) % 8 === 0) t += 180;
+});
 }
 
 document.getElementById("sendBtn").addEventListener("click", sendDNA);

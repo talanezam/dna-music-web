@@ -7,10 +7,7 @@ app = FastAPI()
 # السماح للفرونت (live server على 5500) إنه يحكي مع الباك (8000)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://127.0.0.1:5500",
-        "http://localhost:5500",
-    ],
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
