@@ -12,7 +12,15 @@
     <button id="sendBtn" type="button">Send</button>
     <button id="loadBtn">Load DNA</button>
     <button id="playBtn">Play Music</button>
-
+    <label for="instrumentSelect">الآلة:</label>
+<select id="instrumentSelect">
+  <option value="CINE" selected>Cinematic (افتراضي)</option>
+  <option value="VIOLIN">Violin (كمان)</option>
+  <option value="FLUTE">Flute (ناي/مزمار)</option>
+  <option value="TRUMPET">Trumpet (بوق)</option>
+  <option value="GUITAR">Guitar (كيتار)</option>
+  <option value="PIANO">Piano (بيانو)</option>
+</select>
 
     <pre id="result"></pre>
     <script>
@@ -31,7 +39,6 @@ async function sendDNA() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ dna: dnaValue })
     });
-
     const data = await response.json();
 
     window.lastNotes = data.notes;
@@ -40,57 +47,128 @@ async function sendDNA() {
 
     console.log("Notes received:", window.lastNotes);
 }
+// اخترّي آلة واحدة من: "FLUTE", "VIOLIN", "PIANO", "CINE"
+let INSTRUMENT = "CINE";
 
-function playNote(freq, duration = 0.3, volume = 0.85) {
-    const osc = audioCtx.createOscillator();
-const osc2 = audioCtx.createOscillator();
-const gain = audioCtx.createGain();
-//const bass = audioCtx.createOscillator();
-   osc.type = "triangle";
-osc2.type = "triangle"; // إذا عندك osc2
-    osc.frequency.value = freq;
-    osc2.frequency.value = freq / 2;   // أوكتاف تحت = تخانة
-osc2.detune.value = 2;             // خفيف كتير (اختياري بس لطيف)
-  //  bass.type = "sine";
-//bass.frequency.value = freq / 1.8;   // أوكتاف تحت (Bass)
-   // const lfo = audioCtx.createOscillator();
-//const lfoGain = audioCtx.createGain();
+const INSTRUMENT_PRESETS = {
+ FLUTE: {
+  wave1: "sine",
+  wave2: "sine",
+  detune: 1,
+  cutoffMul: 4.0,
+  attack: 0.05,
+  release: 0.18,
+  vibHz: 6.5,
+  vibAmt: 4.0,
+  useSub: false
+},
+  VIOLIN: {
+  wave1: "sawtooth",
+  wave2: "triangle",
+  detune: 6,
+  cutoffMul: 3.2,
+  attack: 0.08,
+  release: 0.25,
+  vibHz: 7.0,
+  vibAmt: 5.0,
+  useSub: false
+},
+PIANO: {
+  wave1: "triangle",
+  wave2: "sine",
+  detune: 0,
+  cutoffMul: 4.0,
+  attack: 0.005,
+  release: 0.15,
+  vibHz: 0.0,
+  vibAmt: 0.0,
+  useSub: false
+},
+GUITAR: {
+  wave1: "triangle",
+  wave2: "triangle",
+  detune: 0,
+  cutoffMul: 2.8,
+  attack: 0.003,
+  release: 0.12,
+  vibHz: 0.0,
+  vibAmt: 0.0,
+  useSub: false
+},
+  CINE:   { wave1: "square",   wave2: "triangle", detune: 10, cutoffMul: 1.8, attack: 0.02, release: 0.10, vibHz: 4.2, vibAmt: 1.4,useSub: true },
+  TRUMPET: {
+  wave1: "square",
+  wave2: "square",
+  detune: 2,
+  cutoffMul: 2.0,
+  attack: 0.01,
+  release: 0.06,
+  vibHz: 5.0,
+  vibAmt: 1.5,
+  useSub: false
+},}
 
-//lfo.frequency.value = 5;      // سرعة الاهتزاز (خفيفة)
-//lfoGain.gain.value = 4;       // قوة الاهتزاز (صغيرة جداً)
+function playNote(freq, duration = 0.28, volume = 0.85) {
+  if (!Number.isFinite(freq)) return; // حماية من undefined / NaN
 
-//lfo.connect(lfoGain);
-//lfoGain.connect(osc.frequency);
+  const now = audioCtx.currentTime;
+const preset = INSTRUMENT_PRESETS[INSTRUMENT] || INSTRUMENT_PRESETS["CINE"];
+console.log("Current instrument:", INSTRUMENT);
+console.log("Preset loaded:", preset);
+const useSub = preset.useSub ?? true;
+  // MAIN + DETUNE (يعطي سماكة بدون حدة مزعجة)
+  const osc = audioCtx.createOscillator();
+  const osc2 = audioCtx.createOscillator();
 
-//lfo.start();
-//lfo.stop(audioCtx.currentTime + duration);
-    osc2.type = "triangle";
-osc2.frequency.value = freq;
-osc2.detune.value = 6;
-osc2.detune.value = 4;
+  osc.type = preset.wave1;
+osc2.type = preset.wave2;
 
-   const gain2 = audioCtx.createGain();
+  osc.frequency.setValueAtTime(freq, now);
+  osc2.frequency.setValueAtTime(freq, now);
+  osc2.detune.setValueAtTime(preset.detune, now);
+  // SUB (Bass) خفيف لتخانة “سينمائية”
+  const sub = audioCtx.createOscillator();
+  sub.type = "sine";
+  sub.frequency.setValueAtTime(freq / 2, now);
 
-// Connect
-osc.connect(gain);
-osc2.connect(gain2);
-//bass.connect(gain);
+  // فلتر Low-pass لكسر الزمور/الحدة
+  const filter = audioCtx.createBiquadFilter();
+  filter.type = "lowpass";
+  // cutoff ذكي: كل ما النغمة أعلى، الفلتر أعلى
+const cutoff = Math.min(2200, Math.max(900, freq * preset.cutoffMul));
+  filter.frequency.setValueAtTime(cutoff, now);
 
-gain.connect(audioCtx.destination);
-gain2.connect(audioCtx.destination);
+  // Gain stages
+  const mix = audioCtx.createGain();   // قبل الفلتر
+  const amp = audioCtx.createGain();   // بعد الفلتر (Envelope)
 
-// Levels
-gain2.gain.value = volume * 0.55; // طبقة أعلى أخف
+  // خلط الطبقات (وازنّاهم)
+  const subGain = audioCtx.createGain();
+  subGain.gain.setValueAtTime(0.07, now); // تخانة بدون بَحّة (غيري 0.12 - 0.25)
 
-gain.gain.setValueAtTime(0.001, audioCtx.currentTime);
-gain.gain.exponentialRampToValueAtTime(volume, audioCtx.currentTime + 0.01);
-gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
-    osc.start();
-    osc2.start();
-  //  bass.start();
-    osc.stop(audioCtx.currentTime + duration);
-    osc2.stop(audioCtx.currentTime + duration);
-    //bass.stop(audioCtx.currentTime + duration);
+  osc.connect(mix);
+  osc2.connect(mix);
+  sub.connect(subGain);
+  subGain.connect(mix);
+
+  mix.connect(filter);
+  filter.connect(amp);
+  amp.connect(audioCtx.destination);
+
+  // Envelope ناعم (سينمائي) + بدون قطع مفاجئ
+ amp.gain.setValueAtTime(0.0001, now);
+ amp.gain.setValueAtTime(0.0001, now);
+amp.gain.exponentialRampToValueAtTime(volume, now + preset.attack);
+amp.gain.exponentialRampToValueAtTime(0.0001, now + duration + preset.release);
+  osc.start(now);
+  osc2.start(now);
+
+  osc.stop(now + duration);
+  osc2.stop(now + duration);
+ if (useSub) {
+  sub.start(now);
+  sub.stop(now + duration);
+}
 }
 
 async function playNotes() {
@@ -117,56 +195,49 @@ const freqMap = {
   "C5": 523.25,
   "Eb5": 622.25
 };
-    let t = 0;
-
-   loopedNotes.forEach((note, index) => {
     
-// 1) طبّعي النوتات اللي جاية من السيرفر لتناسب سلم الـ Blues
-const normalizeNote = {
-  "D4": "Eb4",
-  "E4": "F4",
-  "A4": "Bb4",
-  "B4": "C5"
-};
 
-note = normalizeNote[note] || note;
-// 2) هاد بيمنع الـ undefined (احتياط)
-let finalFreq = freqMap[note] ?? freqMap["C4"];
-// تنويع بسيط بكل دورة (يرفع الأوكتاف شوي)
-if (index > notes.length) {
-  finalFreq = finalFreq * 1.12;  // رفع خفيف
-}
-if (index % 4 === 0 && finalFreq < 500) {
-  finalFreq = finalFreq * 2;
-}
-if ((index + 1) % 8 === 0) {
-  finalFreq = freqMap["C4"];
-}
-let dynamic = 0.85;
+let t = 0;
 
-if (index % 3 === 0) {
-  dynamic = 0.6;   // كل ثالث نغمة أهدأ شوي
-}
-let duration;
+loopedNotes.forEach((note, index) => {
 
-if (index % 4 === 0) {
-  duration = 0.5;
-} else if (index % 2 === 0) {
-  duration = 0.25;
-} else {
-  duration = 0.35;
-}
-    setTimeout(() => {
-        playNote(finalFreq, duration, dynamic);
-    }, t);
+  // تطبيع النوتة ليتناسب مع السلم
+  const normalizeNote = {
+    "D4": "Eb4",
+    "E4": "F4",
+    "A4": "Bb4",
+    "B4": "C5",
+  };
 
-    t += duration * 1000;
-    if ((index + 1) % 8 === 0) t += 180;
+  note = normalizeNote[note] || note;
+
+  // جيب التردد مع حماية من undefined
+  let finalFreq = freqMap[note] ?? freqMap["C4"];
+
+  // ===== إيقاع سينمائي متغيّر =====
+ const base  = 0.22;  
+
+  const beat =
+    (index % 8 === 0) ? 0.12 :
+    (index % 4 === 0) ? 0.07 :
+    0.3;
+
+  const duration = base + beat;
+  // ترابط بسيط بين النغمات
+  const overlap = 0.01;
+
+  setTimeout(() => {
+    playNote(finalFreq, duration, 0.85);
+  }, t);
+
+  t += Math.max(18, (duration - overlap) * 1000);
 });
 }
-
 document.getElementById("sendBtn").addEventListener("click", sendDNA);
-document.getElementById("playBtn").addEventListener("click", playNotes);
+document.getElementById("playBtn").addEventListener("click", () => {
+  INSTRUMENT = document.getElementById("instrumentSelect").value; // يقرأ اختيار الآلة
+  playNotes();
+});
 
 document.getElementById("loadBtn").addEventListener("click", () => {
     const savedDNA = localStorage.getItem("savedDNA");
