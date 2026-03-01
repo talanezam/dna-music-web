@@ -12,6 +12,7 @@
     <button id="sendBtn" type="button">Send</button>
     <button id="loadBtn">Load DNA</button>
     <button id="playBtn">Play Music</button>
+    <button id="stopBtn">Stop</button>
     <label for="instrumentSelect">الآلة:</label>
 <select id="instrumentSelect">
   <option value="CINE" selected>Cinematic (افتراضي)</option>
@@ -28,6 +29,32 @@
 console.log("Script loaded");
 
 let audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+let isPlaying = false;
+// ===== Simple Cinematic Reverb =====
+const reverb = audioCtx.createConvolver();
+const reverbGain = audioCtx.createGain();
+reverbGain.gain.value = 0.35;
+
+function createImpulseResponse(duration = 2.5, decay = 2.0) {
+  const sampleRate = audioCtx.sampleRate;
+  const length = sampleRate * duration;
+  const impulse = audioCtx.createBuffer(2, length, sampleRate);
+
+  for (let channel = 0; channel < 2; channel++) {
+    const data = impulse.getChannelData(channel);
+    for (let i = 0; i < length; i++) {
+      data[i] =
+        (Math.random() * 2 - 1) *
+        Math.pow(1 - i / length, decay);
+    }
+  }
+
+  return impulse;
+}
+
+reverb.buffer = createImpulseResponse();
+reverb.connect(reverbGain);
+reverbGain.connect(audioCtx.destination);
 
 async function sendDNA() {
     const dnaValue = document.getElementById("dnaInput").value;
@@ -109,6 +136,7 @@ GUITAR: {
 },}
 
 function playNote(freq, duration = 0.28, volume = 0.85) {
+    isPlaying = true;
   if (!Number.isFinite(freq)) return; // حماية من undefined / NaN
 
   const now = audioCtx.currentTime;
@@ -153,7 +181,8 @@ const cutoff = Math.min(2200, Math.max(900, freq * preset.cutoffMul));
 
   mix.connect(filter);
   filter.connect(amp);
-  amp.connect(audioCtx.destination);
+ amp.connect(audioCtx.destination); // الصوت المباشر
+amp.connect(reverb); // إرسال جزء للريڤيرب
 
   // Envelope ناعم (سينمائي) + بدون قطع مفاجئ
  amp.gain.setValueAtTime(0.0001, now);
@@ -172,7 +201,7 @@ amp.gain.exponentialRampToValueAtTime(0.0001, now + duration + preset.release);
 }
 
 async function playNotes() {
-
+isPlaying=true;
     await audioCtx.resume();
 
     const notes = window.lastNotes || [];
@@ -225,10 +254,12 @@ loopedNotes.forEach((note, index) => {
   const duration = base + beat;
   // ترابط بسيط بين النغمات
   const overlap = 0.01;
-
+const progression = index / loopedNotes.length;
+const dynamicVolume = 0.65 + progression * 0.6;
   setTimeout(() => {
-    playNote(finalFreq, duration, 0.85);
-  }, t);
+  if (!isPlaying) return;
+  playNote(finalFreq, duration, dynamicVolume);
+}, t);
 
   t += Math.max(18, (duration - overlap) * 1000);
 });
@@ -245,6 +276,14 @@ document.getElementById("loadBtn").addEventListener("click", () => {
         document.getElementById("dnaInput").value = savedDNA;
         console.log("Loaded DNA:", savedDNA);
     }
+});
+document.getElementById("stopBtn").addEventListener("click", () => {
+  isPlaying = false;
+
+  // إيقاف فوري لكل الأصوات
+  audioCtx.close().then(() => {
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  });
 });
 
 </script>
