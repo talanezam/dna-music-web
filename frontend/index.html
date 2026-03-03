@@ -1,27 +1,52 @@
  <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="UTF-8">
-    <title>DNA Music Generator</title>
+  <meta charset="UTF-8">
+  <title>DNA Music Generator</title>
+  <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
     <h1>DNA Music Generator</h1>
 
+    <div class="controls">
+
+  <!-- السطر الأول -->
+  <div class="row">
     <input type="text" id="dnaInput" placeholder="Enter DNA Sequence" />
-    <button id="sendBtn" type="button">Send</button>
-    <button id="loadBtn">Load DNA</button>
+  </div>
+
+  <!-- السطر الثاني -->
+  <div class="row">
+    <button id="sendBtn" type="button">Generate</button>
     <button id="playBtn">Play Music</button>
+
+    <label for="instrumentSelect">Instrument:</label>
+    <select id="instrumentSelect">
+      <option value="CINE" selected>Cinematic</option>
+      <option value="VIOLIN">Violin</option>
+      <option value="FLUTE">Flute</option>
+      <option value="TRUMPET">Trumpet</option>
+      <option value="GUITAR">Guitar</option>
+      <option value="PIANO">Piano</option>
+    </select>
+  </div>
+
+  <!-- السطر الثالث -->
+  <div class="row">
     <button id="stopBtn">Stop</button>
-    <label for="instrumentSelect">الآلة:</label>
-<select id="instrumentSelect">
-  <option value="CINE" selected>Cinematic (افتراضي)</option>
-  <option value="VIOLIN">Violin (كمان)</option>
-  <option value="FLUTE">Flute (ناي/مزمار)</option>
-  <option value="TRUMPET">Trumpet (بوق)</option>
-  <option value="GUITAR">Guitar (كيتار)</option>
-  <option value="PIANO">Piano (بيانو)</option>
-</select>
+    <button id="clearBtn" type="button">Clear</button>
+  </div>
+
+  <!-- السطر الرابع -->
+  <div class="row">
+    <button id="randomBtn" type="button">Random DNA</button>
+    <button id="loadBtn">Load DNA</button>
+  </div>
+
+</div>
+
+<pre id="result"></pre>
 
     <pre id="result"></pre>
     <script>
@@ -30,6 +55,8 @@ console.log("Script loaded");
 
 let audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 let isPlaying = false;
+let timeouts = [];
+
 // ===== Simple Cinematic Reverb =====
 const reverb = audioCtx.createConvolver();
 const reverbGain = audioCtx.createGain();
@@ -203,6 +230,8 @@ amp.gain.exponentialRampToValueAtTime(0.0001, now + duration + preset.release);
 async function playNotes() {
 isPlaying=true;
     await audioCtx.resume();
+    timeouts.forEach(clearTimeout);
+timeouts = [];
 
     const notes = window.lastNotes || [];
     const repeats = 3;              // جرّبي 2 أو 3 أو 4
@@ -256,10 +285,13 @@ loopedNotes.forEach((note, index) => {
   const overlap = 0.01;
 const progression = index / loopedNotes.length;
 const dynamicVolume = 0.65 + progression * 0.6;
-  setTimeout(() => {
+ 
+const id = setTimeout(() => {
   if (!isPlaying) return;
   playNote(finalFreq, duration, dynamicVolume);
 }, t);
+
+timeouts.push(id);
 
   t += Math.max(18, (duration - overlap) * 1000);
 });
@@ -277,16 +309,48 @@ document.getElementById("loadBtn").addEventListener("click", () => {
         console.log("Loaded DNA:", savedDNA);
     }
 });
-document.getElementById("stopBtn").addEventListener("click", () => {
+document.getElementById("stopBtn").addEventListener("click", async () => {
   isPlaying = false;
 
-  // إيقاف فوري لكل الأصوات
+  // إلغاء كل الـ timeouts (حتى ما يكمل اللحن القديم)
+  timeouts.forEach(clearTimeout);
+  timeouts = [];
+
+  // إيقاف الصوت فوراً بدون تغيير الـ AudioContext
+  if (audioCtx.state === "running") {
+    await audioCtx.suspend();
+  }
+});
+document.getElementById("randomBtn").addEventListener("click", () => {
+  const len = 60; // طول تسلسل عشوائي
+  const chars = ["A", "C", "G", "T"];
+  let s = "";
+
+  for (let i = 0; i < len; i++) {
+    s += chars[Math.floor(Math.random() * 4)];
+  }
+
+  document.getElementById("dnaInput").value = s;
+});
+document.getElementById("clearBtn").addEventListener("click", () => {
+  // مسح الإدخال
+  document.getElementById("dnaInput").value = "";
+
+  // مسح النوتات المخزنة
+  window.lastNotes = [];
+
+  // مسح نتيجة العرض
+  document.getElementById("result").textContent = "";
+
+  // إيقاف التشغيل
+  isPlaying = false;
+
+  // إغلاق AudioContext لإيقاف كل الأصوات فوراً ثم إعادة إنشاؤه
   audioCtx.close().then(() => {
     audioCtx = new (window.AudioContext || window.webkitAudioContext)();
   });
 });
-
-</script>
+</script> 
 
 
 </body>

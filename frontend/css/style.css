@@ -1,0 +1,15 @@
+.row {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 22px;   /* زودناها شوي */
+}
+
+.controls {
+  margin-top: 25px;
+}
+
+#dnaInput {
+  width: 350px;
+  padding: 6px;
+}
