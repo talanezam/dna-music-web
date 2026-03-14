@@ -1,0 +1,366 @@
+ <!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Genomic Identity System – Artistic Identity</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <h1>DNA Music Generator</h1>
+
+    <div class="controls">
+
+<div class="row">
+  <div class="player-info">
+    <h2>Genetic Music Player</h2>
+    <p>Your saved DNA sequence will be used to generate the melody.</p>
+  </div>
+</div>
+  <!-- السطر الثاني -->
+  <div class="row music-controls">
+
+<button id="playBtn" class="icon-btn">▶</button>
+<button id="stopBtn" class="icon-btn">⏹</button>
+
+<label for="instrumentSelect">Instrument:</label>
+<select id="instrumentSelect">
+    <option value="CINE" selected>Cinematic</option>
+    <option value="VIOLIN">Violin</option>
+    <option value="FLUTE">Flute</option>
+    <option value="TRUMPET">Trumpet</option>
+    <option value="GUITAR">Guitar</option>
+    <option value="PIANO">Piano</option>
+  </select>
+</div>
+<!--شريط التحكم بالصوت-->
+<div class="row">
+  <label for="volumeSlider">Volume:</label>
+  <input type="range" id="volumeSlider" min="0" max="1" step="0.01" value="0.7">
+</div>
+
+ <!-- قسم البطاقات من  هون بلش -------- اختيار البطاقات------>
+<section id="visualSection">
+
+<h2>Choose Your Genetic Visual Identity</h2>
+
+<div class="visual-grid">
+
+<div class="visual-card" data-pattern="signature">
+<h3>Genetic Signature</h3>
+<p>Flowing lines representing DNA</p>
+</div>
+
+<div class="visual-card" data-pattern="flower">
+<h3>Genetic Flower</h3>
+<p>Radial organic pattern</p>
+</div>
+
+<div class="visual-card" data-pattern="tree">
+<h3>Genetic Tree</h3>
+<p>Branching structure from DNA</p>
+</div>
+
+<div class="visual-card" data-pattern="pulse">
+<h3>Genetic Pulse</h3>
+<p>Dynamic heartbeat waveform</p>
+</div>
+
+<div class="visual-card" data-pattern="crystal">
+<h3>Genetic Crystal</h3>
+<p>Geometric crystal structure</p>
+</div>
+
+<div class="visual-card" data-pattern="mosaic">
+<h3>Genetic Mosaic</h3>
+<p>Colorful DNA tessellation</p>
+</div>
+
+<div class="visual-card" data-pattern="galaxy">
+<h3>Genetic Galaxy</h3>
+<p>Stars forming a cosmic DNA map</p>
+</div>
+
+</div>
+
+
+</section>
+
+    <pre id="result"></pre>
+    <script>
+
+console.log("Script loaded");
+
+
+let audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+let isPlaying = false;
+let timeouts = [];
+
+// ===== Simple Cinematic Reverb =====
+const reverb = audioCtx.createConvolver();
+const reverbGain = audioCtx.createGain();
+reverbGain.gain.value = 0.35;
+
+function createImpulseResponse(duration = 2.5, decay = 2.0) {
+  const sampleRate = audioCtx.sampleRate;
+  const length = sampleRate * duration;
+  const impulse = audioCtx.createBuffer(2, length, sampleRate);
+
+  for (let channel = 0; channel < 2; channel++) {
+    const data = impulse.getChannelData(channel);
+    for (let i = 0; i < length; i++) {
+      data[i] =
+        (Math.random() * 2 - 1) *
+        Math.pow(1 - i / length, decay);
+    }
+  }
+
+  return impulse;
+}
+
+reverb.buffer = createImpulseResponse();
+reverb.connect(reverbGain);
+reverbGain.connect(audioCtx.destination);
+
+async function sendDNA() {
+    const dnaValue = localStorage.getItem("savedDNA") || "";
+    localStorage.setItem("savedDNA", dnaValue);
+    if (dnaValue) {
+    sendDNA();
+}
+
+    const response = await fetch("http://127.0.0.1:8000/api/echo-dna", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ dna: dnaValue })
+    });
+    const data = await response.json();
+
+    window.lastNotes = data.notes;
+    console.log("DNA:", dnaValue);
+    console.log("NOTES:", data.notes);
+
+    console.log("Notes received:", window.lastNotes);
+}
+// اخترّي آلة واحدة من: "FLUTE", "VIOLIN", "PIANO", "CINE"
+let INSTRUMENT = "CINE";
+
+const INSTRUMENT_PRESETS = {
+ FLUTE: {
+  wave1: "sine",
+  wave2: "sine",
+  detune: 1,
+  cutoffMul: 4.0,
+  attack: 0.05,
+  release: 0.18,
+  vibHz: 6.5,
+  vibAmt: 4.0,
+  useSub: false
+},
+  VIOLIN: {
+  wave1: "sawtooth",
+  wave2: "triangle",
+  detune: 6,
+  cutoffMul: 3.2,
+  attack: 0.08,
+  release: 0.25,
+  vibHz: 7.0,
+  vibAmt: 5.0,
+  useSub: false
+},
+PIANO: {
+  wave1: "triangle",
+  wave2: "sine",
+  detune: 0,
+  cutoffMul: 4.0,
+  attack: 0.005,
+  release: 0.15,
+  vibHz: 0.0,
+  vibAmt: 0.0,
+  useSub: false
+},
+GUITAR: {
+  wave1: "triangle",
+  wave2: "triangle",
+  detune: 0,
+  cutoffMul: 2.8,
+  attack: 0.003,
+  release: 0.12,
+  vibHz: 0.0,
+  vibAmt: 0.0,
+  useSub: false
+},
+  CINE:   { wave1: "square",   wave2: "triangle", detune: 10, cutoffMul: 1.8, attack: 0.02, release: 0.10, vibHz: 4.2, vibAmt: 1.4,useSub: true },
+  TRUMPET: {
+  wave1: "square",
+  wave2: "square",
+  detune: 2,
+  cutoffMul: 2.0,
+  attack: 0.01,
+  release: 0.06,
+  vibHz: 5.0,
+  vibAmt: 1.5,
+  useSub: false
+},}
+
+function playNote(freq, duration = 0.28, volume = 0.85) {
+    isPlaying = true;
+  if (!Number.isFinite(freq)) return; // حماية من undefined / NaN
+
+  const now = audioCtx.currentTime;
+const preset = INSTRUMENT_PRESETS[INSTRUMENT] || INSTRUMENT_PRESETS["CINE"];
+console.log("Current instrument:", INSTRUMENT);
+console.log("Preset loaded:", preset);
+const useSub = preset.useSub ?? true;
+  // MAIN + DETUNE (يعطي سماكة بدون حدة مزعجة)
+  const osc = audioCtx.createOscillator();
+  const osc2 = audioCtx.createOscillator();
+
+  osc.type = preset.wave1;
+osc2.type = preset.wave2;
+
+  osc.frequency.setValueAtTime(freq, now);
+  osc2.frequency.setValueAtTime(freq, now);
+  osc2.detune.setValueAtTime(preset.detune, now);
+  // SUB (Bass) خفيف لتخانة “سينمائية”
+  const sub = audioCtx.createOscillator();
+  sub.type = "sine";
+  sub.frequency.setValueAtTime(freq / 2, now);
+
+  // فلتر Low-pass لكسر الزمور/الحدة
+  const filter = audioCtx.createBiquadFilter();
+  filter.type = "lowpass";
+  // cutoff ذكي: كل ما النغمة أعلى، الفلتر أعلى
+const cutoff = Math.min(2200, Math.max(900, freq * preset.cutoffMul));
+  filter.frequency.setValueAtTime(cutoff, now);
+
+  // Gain stages
+  const mix = audioCtx.createGain();   // قبل الفلتر
+  const amp = audioCtx.createGain();   // بعد الفلتر (Envelope)
+
+  // خلط الطبقات (وازنّاهم)
+  const subGain = audioCtx.createGain();
+  subGain.gain.setValueAtTime(0.07, now); // تخانة بدون بَحّة (غيري 0.12 - 0.25)
+
+  osc.connect(mix);
+  osc2.connect(mix);
+  sub.connect(subGain);
+  subGain.connect(mix);
+
+  mix.connect(filter);
+  filter.connect(amp);
+ amp.connect(audioCtx.destination); // الصوت المباشر
+amp.connect(reverb); // إرسال جزء للريڤيرب
+
+  // Envelope ناعم (سينمائي) + بدون قطع مفاجئ
+ amp.gain.setValueAtTime(0.0001, now);
+ amp.gain.setValueAtTime(0.0001, now);
+amp.gain.exponentialRampToValueAtTime(volume, now + preset.attack);
+amp.gain.exponentialRampToValueAtTime(0.0001, now + duration + preset.release);
+  osc.start(now);
+  osc2.start(now);
+
+  osc.stop(now + duration);
+  osc2.stop(now + duration);
+ if (useSub) {
+  sub.start(now);
+  sub.stop(now + duration);
+}
+}
+
+async function playNotes() {
+isPlaying=true;
+    await audioCtx.resume();
+    timeouts.forEach(clearTimeout);
+timeouts = [];
+
+    const notes = window.lastNotes || [];
+    const repeats = 3;              // جرّبي 2 أو 3 أو 4
+const loopedNotes = Array(repeats).fill(notes).flat();
+
+    if (!notes.length) {
+        alert("اعملي Send أول شي");
+        return;
+    }
+
+
+const freqMap = {
+  "C4": 261.63,
+  "Eb4": 311.13,
+  "F4": 349.23,
+  "Gb4": 369.99,
+  "G4": 392.00,
+  "Bb4": 466.16,
+  "C5": 523.25,
+  "Eb5": 622.25
+};
+    
+
+let t = 0;
+
+loopedNotes.forEach((note, index) => {
+
+  // تطبيع النوتة ليتناسب مع السلم
+  const normalizeNote = {
+    "D4": "Eb4",
+    "E4": "F4",
+    "A4": "Bb4",
+    "B4": "C5",
+  };
+
+  note = normalizeNote[note] || note;
+
+  // جيب التردد مع حماية من undefined
+  let finalFreq = freqMap[note] ?? freqMap["C4"];
+
+  // ===== إيقاع سينمائي متغيّر =====
+ const base  = 0.22;  
+
+  const beat =
+    (index % 8 === 0) ? 0.12 :
+    (index % 4 === 0) ? 0.07 :
+    0.3;
+
+  const duration = base + beat;
+  // ترابط بسيط بين النغمات
+  const overlap = 0.01;
+const progression = index / loopedNotes.length;
+const dynamicVolume = 0.65 + progression * 0.6;
+ 
+const id = setTimeout(() => {
+  if (!isPlaying) return;
+  playNote(finalFreq, duration, dynamicVolume);
+}, t);
+
+timeouts.push(id);
+
+  t += Math.max(18, (duration - overlap) * 1000);
+});
+}
+
+document.getElementById("instrumentSelect").addEventListener("change", (e) => {
+  INSTRUMENT = e.target.value;
+  console.log("Instrument changed to:", INSTRUMENT);
+});
+document.getElementById("playBtn").addEventListener("click", async () => {
+  INSTRUMENT = document.getElementById("instrumentSelect").value;
+
+  await sendDNA();
+  playNotes();
+});
+document.getElementById("stopBtn").addEventListener("click", async () => {
+  isPlaying = false;
+
+  // إلغاء كل الـ timeouts (حتى ما يكمل اللحن القديم)
+  timeouts.forEach(clearTimeout);
+  timeouts = [];
+
+  // إيقاف الصوت فوراً بدون تغيير الـ AudioContext
+  if (audioCtx.state === "running") {
+    await audioCtx.suspend();
+  }
+});
+  
+</script> 
+</body>
+</html>
