@@ -3,27 +3,34 @@
 <head>
   <meta charset="UTF-8">
   <title>Genomic Identity System – Artistic Identity</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
     <h1>DNA Music Generator</h1>
-
-    <div class="controls">
+<button onclick="window.location.href='index.html'">
+⬅ Back to Home
+</button>
+    <div class="music-card">
+  <div class="controls">
 
 <div class="row">
   <div class="player-info">
-    <h2>Genetic Music Player</h2>
-    <p>Your saved DNA sequence will be used to generate the melody.</p>
+    <h2>DNA Music Player</h2>
+    <p>Your DNA sequence is used to generate a unique musical melody.</p>
   </div>
 </div>
   <!-- السطر الثاني -->
   <div class="row music-controls">
 
-<button id="playBtn" class="icon-btn">▶</button>
-<button id="stopBtn" class="icon-btn">⏹</button>
+<button id="playBtn" type="button" class="icon-btn">▶️</button>
+<button id="stopBtn" type="button" class="icon-btn">⏹️</button>
+<button id="downloadBtn" class="icon-btn" title="Download Music">
+    <i class="fa-solid fa-file-arrow-down"></i>
+</button>
 
-<label for="instrumentSelect">Instrument:</label>
+<label for="instrumentSelect"> select Instrument:</label>
 <select id="instrumentSelect">
     <option value="CINE" selected>Cinematic</option>
     <option value="VIOLIN">Violin</option>
@@ -33,12 +40,17 @@
     <option value="PIANO">Piano</option>
   </select>
 </div>
+<button id="toggleNotesBtn">Show Music Notes 🎵</button>
+
+<p id="notesDisplay" style="display:none;"></p>
+<p id="statusText"></p>
 <!--شريط التحكم بالصوت-->
 <div class="row">
   <label for="volumeSlider">Volume:</label>
   <input type="range" id="volumeSlider" min="0" max="1" step="0.01" value="0.7">
 </div>
-
+</div>
+</div>
  <!-- قسم البطاقات من  هون بلش -------- اختيار البطاقات------>
 <section id="visualSection">
 
@@ -125,10 +137,7 @@ reverbGain.connect(audioCtx.destination);
 async function sendDNA() {
     const dnaValue = localStorage.getItem("savedDNA") || "";
     localStorage.setItem("savedDNA", dnaValue);
-    if (dnaValue) {
-    sendDNA();
-}
-
+   
     const response = await fetch("http://127.0.0.1:8000/api/echo-dna", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -202,6 +211,30 @@ GUITAR: {
   vibAmt: 1.5,
   useSub: false
 },}
+let mediaRecorder;
+let audioChunks = [];
+
+// تجهيز التسجيل من الـ Audio Context
+const dest = audioCtx.createMediaStreamDestination();
+reverbGain.connect(dest); // نربط الصوت النهائي (مع الريفيرب) بجهة التسجيل
+
+function setupRecorder() {
+  mediaRecorder = new MediaRecorder(dest.stream);
+  
+  mediaRecorder.ondataavailable = (event) => {
+    audioChunks.push(event.data);
+  };
+
+  mediaRecorder.onstop = () => {
+    const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+    const audioUrl = URL.createObjectURL(audioBlob);
+    const link = document.createElement('a');
+    link.href = audioUrl;
+    link.download = 'MyDNA_Music.wav';
+    link.click();
+    audioChunks = []; // تفريغ الذاكرة للتسجيل القادم
+  };
+}
 
 function playNote(freq, duration = 0.28, volume = 0.85) {
     isPlaying = true;
@@ -273,9 +306,9 @@ isPlaying=true;
     await audioCtx.resume();
     timeouts.forEach(clearTimeout);
 timeouts = [];
-
-    const notes = window.lastNotes || [];
-    const repeats = 3;              // جرّبي 2 أو 3 أو 4
+// أخذ النوتات وتكرارها 3 مرات (مثل ما بيسمعها المستخدم تماماً)
+const notes = window.lastNotes || [];
+const repeats = 3; 
 const loopedNotes = Array(repeats).fill(notes).flat();
 
     if (!notes.length) {
@@ -344,23 +377,120 @@ document.getElementById("instrumentSelect").addEventListener("change", (e) => {
 });
 document.getElementById("playBtn").addEventListener("click", async () => {
   INSTRUMENT = document.getElementById("instrumentSelect").value;
+  document.getElementById("statusText").textContent = "Generating music...";
 
-  await sendDNA();
+  if (!window.lastNotes || !window.lastNotes.length) {
+    await sendDNA();
+  }
+
+  document.getElementById("statusText").textContent = "Playing music...";
   playNotes();
 });
 document.getElementById("stopBtn").addEventListener("click", async () => {
   isPlaying = false;
-
-  // إلغاء كل الـ timeouts (حتى ما يكمل اللحن القديم)
   timeouts.forEach(clearTimeout);
   timeouts = [];
 
-  // إيقاف الصوت فوراً بدون تغيير الـ AudioContext
   if (audioCtx.state === "running") {
     await audioCtx.suspend();
   }
+  document.getElementById("statusText").textContent = "Music stopped & saved";
 });
+let notesVisible = false;
+
+document.getElementById("toggleNotesBtn").addEventListener("click", () => {
+  const notesElement = document.getElementById("notesDisplay");
+
+  if (!window.lastNotes || !window.lastNotes.length) {
+    notesElement.textContent = "No  Music generated yet.";
+    notesElement.style.display = "block";
+    return;
+  }
+
+  notesVisible = !notesVisible;
+
+  if (notesVisible) {
+    notesElement.textContent = window.lastNotes.join(" ");
+    notesElement.style.display = "block";
+    document.getElementById("toggleNotesBtn").textContent = "Hide Notes";
+  } else {
+    notesElement.style.display = "none";
+    document.getElementById("toggleNotesBtn").textContent = "Show Generated Notes 🎵";
+  }
+});
+  // دالة تحويل البيانات لصوت - نسخة مختصرة ومجربة
+function bufferToWave(abuffer, len) {
+    let numOfChan = abuffer.numberOfChannels,
+        length = len * numOfChan * 2 + 44,
+        buffer = new ArrayBuffer(length),
+        view = new DataView(buffer),
+        channels = [], i, sample, offset = 0, pos = 0;
+
+    function setUint16(data) { view.setUint16(pos, data, true); pos += 2; }
+    function setUint32(data) { view.setUint32(pos, data, true); pos += 4; }
+
+    setUint32(0x46464952); setUint32(length - 8); setUint32(0x45564157);
+    setUint32(0x20746d66); setUint32(16); setUint16(1); setUint16(numOfChan);
+    setUint32(abuffer.sampleRate); setUint32(abuffer.sampleRate * 2 * numOfChan);
+    setUint16(numOfChan * 2); setUint16(16); setUint32(0x61746164); setUint32(length - pos - 4);
+
+    for (i = 0; i < abuffer.numberOfChannels; i++) channels.push(abuffer.getChannelData(i));
+    while (pos < len) {
+        for (i = 0; i < numOfChan; i++) {
+            sample = Math.max(-1, Math.min(1, channels[i][pos]));
+            sample = (0.5 + sample < 0 ? sample * 32768 : sample * 32767) | 0;
+            view.setInt16(44 + offset, sample, true); offset += 2;
+        }
+        pos++;
+    }
+    return new Blob([buffer], { type: "audio/wav" });
+}
+
+// دالة التحميل
+async function downloadMusic() {
+    if (!window.lastNotes || !window.lastNotes.length) {
+        alert("Please generate DNA notes first!");
+        return;
+    }
+    document.getElementById("statusText").textContent = "Downloading...";
+    // 1. أخذ النوتات الأساسية
+  const baseNotes = window.lastNotes || [];
   
+  // 2. تكرارها 3 مرات (عشان يطلع طول الملف الصوتي مناسب)
+  const notes = Array(3).fill(baseNotes).flat();
+
+  // 3. إنشاء السياق الصوتي بناءً على الطول الجديد (نضرب بـ 0.5 للضمان)
+  const renderCtx = new OfflineAudioContext(2, 44100 * notes.length * 0.5, 44100);
+    let currentTime = 0;
+    const freqMap = { "C4": 261.63, "Eb4": 311.13, "F4": 349.23, "Gb4": 369.99, "G4": 392.00, "Bb4": 466.16, "C5": 523.25, "Eb5": 622.25 };
+
+    notes.forEach(note => {
+        const freq = freqMap[note] || 261.63;
+        const osc = renderCtx.createOscillator();
+        const amp = renderCtx.createGain();
+       osc.type = INSTRUMENT_PRESETS[INSTRUMENT].wave1;
+        osc.frequency.setValueAtTime(freq, currentTime);
+        amp.gain.setValueAtTime(0.5, currentTime);
+        amp.gain.exponentialRampToValueAtTime(0.0001, currentTime + 0.4);
+        osc.connect(amp);
+        amp.connect(renderCtx.destination);
+        osc.start(currentTime);
+        osc.stop(currentTime + 0.4);
+        currentTime += 0.45;
+    });
+
+    const renderedBuffer = await renderCtx.startRendering();
+    const blob = bufferToWave(renderedBuffer, renderedBuffer.length);
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "DNA_Music.wav";
+    a.click();
+    document.getElementById("statusText").textContent = "Done!";
+}
+
+// ربط الزر
+document.getElementById("downloadBtn").onclick = downloadMusic;
 </script> 
 </body>
 </html>

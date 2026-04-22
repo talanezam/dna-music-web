@@ -1,10 +1,70 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-<title>Genomic Identity System – Scientific Analysis</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Genomic Identity | Scientific Catalog</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-  <h1>Scientific Path</h1>
+
+    <div class="container">
+        <header>
+            <h1 class="main-title">Genomic Interpretive Catalog</h1>
+            <p class="subtitle">Personalized Human Manual based on DNA Mapping</p>
+        </header>
+
+        <div class="scientific-grid">
+            <div class="trait-card" onclick="toggleDetails('diet')">
+              class="fa-solid fa-utensils icon"></i>
+​
+                <h3>Nutrigenomics</h3>
+                <p class="tagline">Dietary responses and nutrient metabolism.</p>
+                <div id="diet" class="details">Processing...</div>
+            </div>
+
+            <div class="trait-card" onclick="toggleDetails('fitness')">
+                <div class="icon">🏃‍♂️</div>
+                <h3>Sports Physiology</h3>
+                <p class="tagline">Muscle performance and recovery efficiency.</p>
+                <div id="fitness" class="details">Processing...</div>
+            </div>
+
+            <div class="trait-card" onclick="toggleDetails('sleep')">
+                <div class="icon">🌙</div>
+                <h3>Circadian Rhythm</h3>
+                <p class="tagline">Sleep cycles and internal biological clock.</p>
+                <div id="sleep" class="details">Processing...</div>
+            </div>
+
+            <div class="trait-card" onclick="toggleDetails('skin')">
+                <div class="icon">✨</div>
+                <h3>Dermatology</h3>
+                <p class="tagline">Skin health, collagen, and UV protection.</p>
+                <div id="skin" class="details">Processing...</div>
+            </div>
+
+            <div class="trait-card" onclick="toggleDetails('cognitive')">
+                <div class="icon">🧠</div>
+                <h3>Cognitive Traits</h3>
+                <p class="tagline">Memory, focus, and analytical tendencies.</p>
+                <div id="cognitive" class="details">Processing...</div>
+            </div>
+
+            <div class="trait-card" onclick="toggleDetails('stress')">
+                <div class="icon">⚡</div>
+                <h3>Stress Response</h3>
+                <p class="tagline">Genetic resilience and hormonal recovery.</p>
+                <div id="stress" class="details">Processing...</div>
+            </div>
+        </div>
+
+        <footer>
+            <button class="download-btn">Download Full Manual (PDF)</button>
+        </footer>
+    </div>
+
+    <script src="js/app.js"></script>
 </body>
 </html>
