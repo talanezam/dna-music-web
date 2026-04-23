@@ -7,190 +7,166 @@
 </head>
 <body>
 
-  <h1>Genomic Identity System</h1>
+  <div class="container">
+    <h1 class="main-title">Genomic Identity System</h1>
+    <p class="subtitle">
+      Enter a DNA sequence manually or upload a DNA file, then choose the desired project path.
+    </p>
 
-<p class="subtitle">
-Enter a DNA sequence manually or upload a DNA file, then choose the desired project path.
-</p>
-<div class="dna-card">
-  <div class="controls">
+    <div class="dna-card">
+      <div class="controls">
+        <div class="row">
+          <input type="text" id="dnaInput" placeholder="Enter DNA Sequence" autocomplete="off" spellcheck="false">
+          <input type="file" id="dnaFile" accept=".txt" style="display:none">
+          <button id="uploadDNA" type="button">📁 Upload DNA File</button>
+        </div>
 
-    <div class="row">
-      <input type="text" id="dnaInput" placeholder="Enter DNA Sequence" autocomplete="off" spellcheck="false" autocorrect="off" autocapitalize="off" />
-  <input type="file" id="dnaFile" accept=".txt" style="display:none">
-  <button id="uploadDNA" type="button">📁 Upload DNA File</button>
-</div>
+        <div class="row">
+          <button id="sendBtn" type="button">Generate</button>
+          <button id="clearBtn" type="button" class="icon-btn">🗑</button>
+        </div>
 
-    <div class="row">
-  <button id="sendBtn" type="button">Generate</button>
-  <button id="randomBtn" type="button">🎲 Random DNA</button>
-  <button id="clearBtn" type="button" class="icon-btn">🗑</button>
-</div>
+        <div class="row">
+          <button id="loadBtn" type="button">📂 Load DNA</button>
+        </div>
+      </div>
 
-    <div class="row">
-  <button id="loadBtn" type="button">📂 Load DNA</button>
-</div>
-</div>
-    <hr>
+      <div id="statusMessage"></div> <hr>
 
-    <h2>Choose Project Path</h2>
-
-    <div class="row">
-      <button id="artisticPathBtn" type="button">Artistic Path</button>
-      <button id="scientificPathBtn" type="button">Scientific Path</button>
+      <h2>Choose Project Path</h2>
+      <div class="row">
+        <button id="artisticPathBtn" type="button">Artistic Path</button>
+        <button id="scientificPathBtn" type="button">Scientific Path</button>
+      </div>
     </div>
-
   </div>
 
-  <pre id="result"></pre>
+  <div class="random-section">
+      <p class="random-text">
+          If you don't have your DNA sequence yet and want to explore the results, click the button below and we will choose a random sequence for you.
+      </p>
+      <button id="randomBtn" class="special-random-btn" type="button">🎲 Try Random DNA</button>
+  </div>
+
+  <hr>
+
+  <footer>
+      <p>
+          <a href="about.html">About</a> |
+          <a href="contact.html">Contact</a> |
+          <a href="privacy.html">Privacy</a>
+      </p>
+  </footer>
 
   <script>
-  sessionStorage.removeItem("dnaReady"); 
-
-  window.addEventListener('pageshow', (event) => {
-    const dnaInput = document.getElementById("dnaInput");
-    
-    // التحقق إذا كان نوع الدخول للصفحة هو "إعادة تحميل" (Reload/Refresh)
-    const isRefresh = performance.getEntriesByType("navigation")[0].type === "reload";
-
-    if (isRefresh && dnaInput) {
-        dnaInput.value = ""; // يصفر فقط في حالة الريفريش
-        sessionStorage.removeItem("dnaReady"); // يقفل المسارات في حالة الريفريش
-    }
-});
-
-document.getElementById("artisticPathBtn").addEventListener("click", () => {
-  const ready = sessionStorage.getItem("dnaReady");
-
-  if (ready !== "true") {
-    alert("Please generate DNA first.");
-    return;
-  }
-
-  window.location.href = "artistic.html";
-});
-
-document.getElementById("scientificPathBtn").addEventListener("click", () => {
-  const ready = sessionStorage.getItem("dnaReady");
-
-  if (ready !== "true") {
-    alert("Please generate DNA first.");
-    return;
-  }
-
-  window.location.href = "scientific.html";
-});
-async function sendDNA() {
-  const btn = document.getElementById("sendBtn");
-  const dnaValue = document.getElementById("dnaInput").value.trim().toUpperCase();
-
-  try {
-    if (!dnaValue) {
-      alert("Please enter a DNA sequence first.");
-      return;
-    }
-
-   sessionStorage.setItem("savedDNA", dnaValue);
-
-    const response = await fetch("http://127.0.0.1:8000/api/echo-dna", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ dna: dnaValue })
-    });
-
-    const data = await response.json();
-
-    if (!response.ok) {
-      alert(data.detail || "Error occurred.");
-      return;
-    }
-document.getElementById("result").textContent =
-    "DNA processed successfully";
-    sessionStorage.setItem("dnaReady", "true");
-  } catch (error) {
-    alert("Cannot connect to backend.");
-    console.error(error);
-  } 
-}
-
-    document.getElementById("loadBtn").addEventListener("click", () => {
-     const savedDNA = sessionStorage.getItem("savedDNA");
-      if (savedDNA) {
-        document.getElementById("dnaInput").value = savedDNA;
-        document.getElementById("result").textContent = "DNA loaded successfully.";
+    window.addEventListener('load', () => {
+      const navEntries = performance.getEntriesByType("navigation");
+      if (navEntries.length > 0 && navEntries[0].type === "reload") {
+        localStorage.removeItem("userDNA");
+        localStorage.removeItem("dnaReady");
+        document.getElementById("dnaInput").value = "";
+        document.getElementById("statusMessage").textContent = "Page reset due to refresh.";
+      } else {
+        const savedDNA = localStorage.getItem("userDNA");
+        if (savedDNA) {
+          document.getElementById("dnaInput").value = savedDNA;
+        }
       }
     });
 
+    async function sendDNA() {
+      const dnaValue = document.getElementById("dnaInput").value.trim().toUpperCase();
+      if (!dnaValue) {
+        alert("Please enter a DNA sequence first.");
+        return;
+      }
+      localStorage.setItem("userDNA", dnaValue);
+      localStorage.setItem("dnaReady", "true");
+      try {
+        const response = await fetch("http://127.0.0.1:8000/api/echo-dna", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ dna: dnaValue })
+        });
+        if (response.ok) {
+          document.getElementById("statusMessage").textContent = "DNA processed successfully";
+        } else {
+          const data = await response.json();
+          alert(data.detail || "Error occurred.");
+        }
+      } catch (error) {
+        alert("Cannot connect to backend.");
+      }
+    }
+
+    document.getElementById("artisticPathBtn").addEventListener("click", () => {
+      if (localStorage.getItem("dnaReady") === "true") {
+        window.location.href = "artistic.html";
+      } else {
+        alert("Please generate DNA first.");
+      }
+    });
+
+    document.getElementById("scientificPathBtn").addEventListener("click", () => {
+      if (localStorage.getItem("dnaReady") === "true") {
+        window.location.href = "scientific.html";
+      } else {
+        alert("Please generate DNA first.");
+      }
+    });
+    // هلق رح يشتغل لأن الزر صار فوقه وموجود!
     document.getElementById("randomBtn").addEventListener("click", () => {
       const len = 60;
       const chars = ["A", "C", "G", "T"];
       let s = "";
-
       for (let i = 0; i < len; i++) {
         s += chars[Math.floor(Math.random() * 4)];
       }
-
-      document.getElementById("dnaInput").value = s;document.getElementById("result").textContent = "Random DNA sequence generated successfully.";
+      document.getElementById("dnaInput").value = s;
+      document.getElementById("statusMessage").textContent = "Random DNA generated successfully.";
     });
 
     document.getElementById("clearBtn").addEventListener("click", () => {
       document.getElementById("dnaInput").value = "";
-      document.getElementById("result").textContent = "";
+      document.getElementById("statusMessage").textContent = "";
+      localStorage.removeItem("userDNA");
       localStorage.removeItem("dnaReady");
     });
-document.getElementById("dnaFile").addEventListener("change", function(event){
 
-  const file = event.target.files[0];
-  if (!file) return;
+    document.getElementById("uploadDNA").addEventListener("click", () => {
+      document.getElementById("dnaFile").click();
+    });
 
-  const reader = new FileReader();
+    document.getElementById("dnaFile").addEventListener("change", function(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const dna = e.target.result.trim().toUpperCase();
+        if (/^[ACGT\s]+$/.test(dna)) {
+          document.getElementById("dnaInput").value = dna.replace(/\s+/g, "");
+          document.getElementById("statusMessage").textContent = "File loaded successfully.";
+        } else {
+          alert("Invalid DNA file content.");
+        }
+      };
+      reader.readAsText(file);
+    });
 
-  reader.onload = function(e){
-    const dna = e.target.result.trim().toUpperCase();
+    document.getElementById("loadBtn").addEventListener("click", () => {
+      const saved = localStorage.getItem("userDNA");
+      if (saved) {
+        document.getElementById("dnaInput").value = saved;
+        document.getElementById("statusMessage").textContent = "DNA loaded from memory.";
+      }
+    });
 
-    const validDNA = /^[ACGT\s]+$/;
+    document.getElementById("sendBtn").addEventListener("click", sendDNA);
 
-    if (!validDNA.test(dna)) {
-        alert("The selected file contains invalid DNA characters. Only A, C, G, and T are allowed.");
-        return;
-    }
-
-    document.getElementById("dnaInput").value = dna.replace(/\s+/g, "");
-};
-
-  reader.readAsText(file);
-
-});
-document.getElementById("uploadDNA").addEventListener("click", () => {
-  document.getElementById("dnaFile").click();
-});
-   document.getElementById("dnaInput").addEventListener("input", function(){
-
-  let value = this.value.toUpperCase();
-
-  value = value.replace(/[^ACGT]/g, "");
-
-  this.value = value;
-
-});
-
-document.getElementById("sendBtn").addEventListener("click", sendDNA);
-window.addEventListener("load", () => {
-  const savedDNA = sessionStorage.getItem("savedDNA");
-  if (savedDNA) {
-    document.getElementById("dnaInput").value = savedDNA;
-  }
-});
+    document.getElementById("dnaInput").addEventListener("input", function() {
+      this.value = this.value.toUpperCase().replace(/[^ACGT]/g, "");
+    });
   </script>
-<hr>
-<footer>
 
-<p>
-<a href="about.html">About</a> |
-<a href="contact.html">Contact</a> |
-<a href="privacy.html">Privacy</a>
-</p>
-
-</footer>
 </body>
 </html>
