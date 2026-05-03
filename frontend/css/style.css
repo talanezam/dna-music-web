@@ -29,9 +29,22 @@ body {
     color: white;
     font-family: 'Segoe UI', sans-serif;
     padding: 50px 10%;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
+}
+/* تنسيق خاص للصفحة الرئيسية - عشان يضل ترتيبها عمودي وما يخرب */
+.home-page {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important; /* أو flex-start حسب شو بتفضلي */
+}
+
+/* تنسيق صفحة المسار العلمي - بنخليها block عشان الكروت تصف جنب بعض */
+.scientific-page {
+    display: block !important;
+}
+
+/* تنسيق صفحة المسار الفني - مبدئياً خليها block */
+.artistic-page {
+    display: block !important;
 }
 
 /* شريط التمرير المخصص (Scrollbar) باللون النهدي */
@@ -102,7 +115,7 @@ body {
     filter: drop-shadow(0 0 15px rgba(163, 65, 255, 0.5));
 }
 .subtitle {
-    color: #ffffff !important;
+    color: rgba(255, 255,255, 0.8) !important;
     font-family: 'Segoe UI', sans-serif;
     font-size: 1.4rem;
     font-weight: 400;
@@ -112,6 +125,16 @@ body {
     display: block;
     opacity: 0.8; /* شفافية خفيفة ليعطي تباين مع العنوان الرئيسي */
     margin-top: 5px;
+}
+/* هاد العنوان اللي تحت Genova مباشرة */
+.main-subtitle {
+    font-size: 1.2rem !important; 
+    font-weight: 300;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    text-align: center;
+    margin-top: 10px;
+    display: block;
 }
 
 /* =========================================
@@ -254,39 +277,35 @@ button:hover {
     padding-left: 5px;         /* إزاحة خفيفة عشان يجي تحت نص كلمة Generate بالظبط */
 }
 
-/* =========================================
+/* ========================================================================================
    5. الكروت العلمية والبصرية (Cards & Grid)
 ========================================= */
-/* =========================================
+/* =========================================================================================
    تنسيق الكروت العلمية (Scientific Portals)
-========================================= */
-
+========================================= */;
 .scientific-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); /* كروت أعرض وأفخم */
-    gap: 35px; /* مسافات مدروسة */
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 35px !important;
     width: 100%;
     max-width: 1200px;
-    margin: 40px auto; /* توسيط الحاوية بالمنتصف */
+    margin: 40px auto;
     padding: 20px;
 }
-
+ /* تأثير الزجاج (Glassmorphism) */
+/* سطر 274: تنسيق الكرت الزجاجي */
 .trait-card {
-    /* تأثير الزجاج (Glassmorphism) */
-    background: rgba(255, 255, 255, 0.03); 
+    background: rgba(255, 255, 255, 0.03); /* تأثير Glassmorphism */
     backdrop-filter: blur(15px);
-    -webkit-backdrop-filter: blur(15px);
-    
-    /* حدود نهدية ناعمة وتوهج خفيف */
     border: 1px solid rgba(163, 65, 255, 0.25);
     border-radius: 25px;
-    padding: 35px 25px;
+    padding: 20px; /* قللنا البادينج شوي عشان المساحة */
     
-    display: flex;
-    flex-direction: column; /* الأيقونة فوق والنص تحتها */
+    display: flex !important; /* حولناه لـ Flex */
+    flex-direction: row !important; /* الأيقونة جنب النص */
     align-items: center;
-    justify-content: center;
-    text-align: center;
+    gap: 15px;
+    
     transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     cursor: pointer;
     position: relative;
@@ -317,29 +336,40 @@ button:hover {
 }
 
 /* تنسيق النصوص داخل الكارد */
-.card-info h3 {
-    font-size: 1.4rem;
+/* سطر 338: تنسيق المحتوى النصي على اليمين */
+.card-right-content {
+    flex: 1; /* هاد السطر السحري اللي بيخلي النص ياخد باقي العرض */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: left; /* لضمان بداية النص من اليسار جنب الأيقونة */
+}
+
+/* سطر 344: تنسيق العنوان العلمي */
+.card-title {
+    font-size: 1.2rem !important;
     color: #ffffff;
-    margin-bottom: 12px;
+    margin-bottom: 5px;
     font-weight: 700;
     letter-spacing: 1px;
 }
 
+/* سطر 347: الوصف (Tagline) */
 .tagline {
-    font-size: 0.95rem;
-    color: #94a3b8; /* رمادي مزرق أنيق */
-    line-height: 1.5;
-    margin-bottom: 15px;
+    font-size: 0.9rem !important;
+    color: #94a3b8 !important; /* اللون الرمادي المزرق الأنيق */
+    line-height: 1.4;
+    margin-bottom: 8px;
 }
 
-/* استبدال Processing بنص تفاعلي */
+/* سطر 354: نص المعالجة (Details) */
 .details {
-    font-size: 0.8rem;
-    color: #a341ff;
+    font-size: 0.75rem !important;
+    color: #a341ff !important;
     font-weight: 800;
     text-transform: uppercase;
     letter-spacing: 2px;
-    opacity: 0.7;
+    opacity: 0.8;
 }
 
 .trait-card:hover .details {
@@ -933,124 +963,99 @@ footer a:hover {
     box-shadow: 0 0 45px rgba(163, 65, 255, 0.7);
 }
 /* 1. تعديل الحاوية لتجبر الكروت على توزيع 3 في كل صف */
+/* =========================================
+   تنسيق الكتالوج العلمي - النسخة النهائية والنظيفة
+   ========================================= */
+
+/* 1. شبكة الكروت (3 في كل صف) */
 .scientific-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr); /* تجبر المتصفح على 3 أعمدة */
-    gap: 20px; /* مسافة معقولة بين الكروت */
-    width: 95%; /* لتعطي مساحة صغيرة عالأطراف */
-    max-width: 1200px;
-    margin: 30px auto; /* تتوسط الصفحة */
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 25px !important;
+    width: 95% !important;
+    margin: 30px auto !important;
 }
 
-/* 2. تصغير حجم الكرت ليناسب التوزيع الجديد */
+/* 2. جسم الكرت (تنسيق أفقي: أيقونة يسار نص يمين) */
 .trait-card {
-    background: rgba(255, 255, 255, 0.04); 
-    backdrop-filter: blur(15px);
-    border: 1px solid rgba(163, 65, 255, 0.2);
-    border-radius: 15px;
-    display: flex;
-    flex-direction: row; 
-    min-height: 110px; /* قللنا الارتفاع ليصير أنيق */
-    overflow: hidden;
-    cursor: pointer;
-    transition: 0.3s ease;
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    background: rgba(255, 255, 255, 0.04) !important;
+    border: 1px solid rgba(163, 65, 255, 0.2) !important;
+    border-radius: 15px !important;
+    padding: 15px !important;
+    min-height: 110px !important;
+    transition: 0.3s ease !important;
 }
-/* تلوين أيقونات الكروت بشكل منفصل */
 
-.nutrition-card .card-left-icon i { color: #00f2fe; filter: drop-shadow(0 0 8px #00f2fe); } /* أزرق */
-.sports-card .card-left-icon i { color: #ffffff; filter: drop-shadow(0 0 8px #ffffff); }    /* أبيض */
-.sleep-card .card-left-icon i { color: #fde047; filter: drop-shadow(0 0 8px #fde047); }     /* أصفر */
-.skin-card .card-left-icon i { color: #ff007f; filter: drop-shadow(0 0 8px #ff007f); }      /* زهري */
-.cognitive-card .card-left-icon i { color: #a78bfa; filter: drop-shadow(0 0 8px #a78bfa); } /* بنفسجي */
-.stress-card .card-left-icon i { color: #fb923c; filter: drop-shadow(0 0 8px #fb923c); }    /* برتقالي */
-
-/* 3. تصغير مساحة الأيقونة */
+/* 3. تنسيق منطقة الأيقونة (اليسار) */
 .card-left-icon {
-    flex: 0 0 30%; /* قللنا النسبة من 35% لـ 30% */
-    background: rgba(15, 23, 42, 0.5);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-right: 1px solid rgba(163, 65, 255, 0.1);
+    flex: 0 0 30% !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    gap: 8px !important; /* للمسافة بين التفاحة والـ DNA */
 }
 
 .card-left-icon i {
-    font-size: 1.8rem; /* تصغير حجم الأيقونة شوي */
-    color: #a341ff;
-    filter: drop-shadow(0 0 5px rgba(163, 65, 255, 0.4));
+    font-size: 1.8rem !important;
 }
 
-/* 4. تنسيق النصوص لتبدو مرتبة في الحجم الصغير */
+/* 4. تلوين الأيقونات (النيون) */
+/* التغذية (أزرق نيون + أبيض) */
+.nutrition-card .fa-apple-whole { color: #00f2fe !important; filter: drop-shadow(0 0 8px #00f2fe); }
+.nutrition-card .fa-dna { color: #ffffff !important; filter: drop-shadow(0 0 8px #a341ff); font-size: 1.2rem !important; }
+
+/* باقي الكروت */
+.sports-card i { color: #ffffff !important; filter: drop-shadow(0 0 8px #ffffff); }
+.sleep-card i { color: #fde047 !important; filter: drop-shadow(0 0 8px #fde047); }
+.skin-card i { color: #ff007f !important; filter: drop-shadow(0 0 8px #ff007f); }
+.cognitive-card i { color: #a78bfa !important; filter: drop-shadow(0 0 8px #a78bfa); }
+.stress-card i { color: #fb923c !important; filter: drop-shadow(0 0 8px #fb923c); }
+
+/* 5. تنسيق النصوص (اليمين) */
 .card-right-content {
-    flex: 1;
-    padding: 15px; /* قللنا الـ padding الداخلي */
-    text-align: left;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
+    flex: 1 !important;
+    padding-left: 10px !important;
+    text-align: left !important;
 }
 
-.card-title {
-    font-size: 1.05rem; /* تصغير العنوان */
-    color: #ffffff;
-    margin-bottom: 4px;
-    font-weight: 700;
+.card-title { font-size: 1.05rem !important; margin: 0; color: #fff; }
+.tagline { font-size: 0.8rem !important; color: #94a3b8 !important; margin: 4px 0; }
+.details { font-size: 0.7rem !important; color: #a341ff !important; font-weight: bold; }
+
+/* تجبير الصفحة لتكون شبكة 3 كروت */
+.scientific-grid {
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) !important; /* 3 أعمدة غصب عن الكل */
+    gap: 20px !important;
+    width: 95% !important;
+    max-width: 1200px !important;
+    margin: 40px auto !important;
 }
 
-.tagline {
-    font-size: 0.8rem; /* تصغير الوصف */
-    color: #94a3b8;
-    line-height: 1.2;
-}
-
-.details {
-    font-size: 0.7rem;
-    color: #a341ff;
-    margin-top: 5px;
-    font-weight: bold;
-}
-
-/* تخصيص لون أيقونة التغذية (أزرق) كما اتفقنا */
-.nutrition-card .card-left-icon i {
-    color: #00f2fe;
-    filter: drop-shadow(0 0 8px rgba(0, 242, 254, 0.5));
-}
-.nutrition-card .card-left-icon i {
-    color: #00f2fe; /* اللون الأزرق اللي اخترناه */
-    filter: drop-shadow(0 0 12px rgba(0, 242, 254, 0.8)); /* التوهج اللي بيخليها متل الصورة */
-    font-size: 2.2rem; /* كبريها شوي لتملأ الفراغ عاليسار */
-}
-/* الحاوية اللي بتجمعهم جنب بعض */
-.dna-nutrition-inline {
+/* تعديل الكرت ليكون أيقونة يسار وكلام يمين */
+.trait-card {
     display: flex !important;
-    flex-direction: row !important; /* جنباً إلى جنب */
-    gap: 12px; /* مسافة بين الأيقونتين */
-    align-items: center;
-    justify-content: center;
+    flex-direction: row !important; /* جنب بعض */
+    align-items: center !important;
+    width: 100% !important; /* ليشغل مساحة العمود فقط */
+    min-height: 120px !important;
+    padding: 20px !important;
 }
 
-/* تنسيق الأيقونات داخل كرت التغذية */
-.nutrition-card .card-left-icon i {
-    font-size: 1.6rem !important; /* حجم أصغر شوي عشان يوسعوا ثنيناتهم */
-    transition: 0.4s ease;
+/* تكبير الأيقونات وتلوينها */
+.card-left-icon {
+    flex: 0 0 60px !important; /* مساحة ثابتة للأيقونة */
+    font-size: 2rem !important;
+    display: flex !important;
+    justify-content: center !important;
 }
 
-/* تخصيص لون الشوكة والسكين (أزرق نيون) */
-.nutrition-card .fa-utensils {
-    color: #00f2fe !important;
-    filter: drop-shadow(0 0 8px rgba(0, 242, 254, 0.6));
+/* النص يأخذ باقي المساحة */
+.card-right-content {
+    flex: 1 !important;
+    text-align: left !important;
+    padding-left: 15px !important;
 }
-
-/* تخصيص لون الـ DNA (أبيض أو نهدي مضيء) */
-.nutrition-card .fa-dna {
-    color: #ffffff !important;
-    filter: drop-shadow(0 0 10px #a341ff);
-    transform: rotate(15deg); /* ميلان بسيط للـ DNA ليعطي شكل حيوي */
-}
-
-/* تأثير اللمس: خليهم يتقاربوا أو يضوا أكتر */
-.nutrition-card:hover .card-left-icon i {
-    transform: scale(1.1) rotate(0deg);
-    filter: brightness(1.2) drop-shadow(0 0 15px #00f2fe);
-}
-

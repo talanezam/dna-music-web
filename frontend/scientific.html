@@ -22,11 +22,11 @@
             <p class="subtitle">Personalized Human Manual based on DNA Mapping</p>
         </header>
 <div class="scientific-grid">
-    <div class="card-left-icon genomic-apple-wrapper">
-    <i class="fa-solid fa-apple-whole apple-base"></i> <i class="fa-solid fa-dna dna-helix"></i>          
-</div>
-
-
+    <div class="trait-card nutrition-card" onclick="toggleDetails('diet')">
+        <div class="card-left-icon genomic-apple-wrapper">
+            <i class="fa-solid fa-apple-whole apple-base"></i> 
+            <i class="fa-solid fa-dna dna-helix"></i>          
+        </div>
         <div class="card-right-content">
             <h3 class="card-title">Nutrigenomics</h3>
             <p class="tagline">Dietary responses and nutrient metabolism.</p>
@@ -58,7 +58,7 @@
 
     <div class="trait-card skin-card" onclick="toggleDetails('skin')">
         <div class="card-left-icon">
-            <i class="fa-solid fa-sparkles"></i>
+            <i class="fa-solid fa-wand-magic-sparkles"></i>
         </div>
         <div class="card-right-content">
             <h3 class="card-title">Dermatology</h3>
@@ -89,9 +89,8 @@
         </div>
     </div>
 
-</div>
-
-        </div> <footer>
+</div> 
+        <footer>
             <button class="download-btn" onclick="generateFullPDF()">Download Full Manual (PDF)</button>
 
         </footer>
