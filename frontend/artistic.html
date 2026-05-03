@@ -52,50 +52,34 @@
 </div>
 </div>
  <!-- قسم البطاقات من  هون بلش -------- اختيار البطاقات------>
-<section id="visualSection">
+<section id="visualSection" class="workshop-container">
+    <h2>Choose Your Genetic Visual Identity</h2>
+    
+    <div class="workshop-layout">
+        <div class="visual-sidebar">
+            <button class="visual-tab active" data-pattern="signature">
+                <i class="fas fa-feather-alt"></i>
+                <span>Genetic Signature</span>
+            </button>
+            <button class="visual-tab" data-pattern="flower">
+                <i class="fas fa-seedling"></i>
+                <span>Genetic Flower</span>
+            </button>
+            <button class="visual-tab" data-pattern="tree">
+                <i class="fas fa-tree"></i>
+                <span>Genetic Tree</span>
+            </button>
+            <button class="visual-tab" data-pattern="crystal">
+                <i class="fas fa-gem"></i>
+                <span>Genetic Crystal</span>
+            </button>
+        </div>
 
-<h2>Choose Your Genetic Visual Identity</h2>
-
-<div class="visual-grid">
-
-<div class="visual-card" data-pattern="signature">
-<h3>Genetic Signature</h3>
-<p>Flowing lines representing DNA</p>
-</div>
-
-<div class="visual-card" data-pattern="flower">
-<h3>Genetic Flower</h3>
-<p>Radial organic pattern</p>
-</div>
-
-<div class="visual-card" data-pattern="tree">
-<h3>Genetic Tree</h3>
-<p>Branching structure from DNA</p>
-</div>
-
-<div class="visual-card" data-pattern="pulse">
-<h3>Genetic Pulse</h3>
-<p>Dynamic heartbeat waveform</p>
-</div>
-
-<div class="visual-card" data-pattern="crystal">
-<h3>Genetic Crystal</h3>
-<p>Geometric crystal structure</p>
-</div>
-
-<div class="visual-card" data-pattern="mosaic">
-<h3>Genetic Mosaic</h3>
-<p>Colorful DNA tessellation</p>
-</div>
-
-<div class="visual-card" data-pattern="galaxy">
-<h3>Genetic Galaxy</h3>
-<p>Stars forming a cosmic DNA map</p>
-</div>
-
-</div>
-
-
+        <div class="visual-display">
+            <canvas id="dnaCanvas"></canvas>
+            <div id="visual-status">Select a pattern to generate your DNA identity</div>
+        </div>
+    </div>
 </section>
 
     <pre id="result"></pre>
@@ -135,8 +119,8 @@ reverb.connect(reverbGain);
 reverbGain.connect(audioCtx.destination);
 
 async function sendDNA() {
-    const dnaValue = localStorage.getItem("savedDNA") || "";
-    localStorage.setItem("savedDNA", dnaValue);
+    const dnaValue = localStorage.getItem("userDNA") || "";
+    //localStorage.setItem("savedDNA", dnaValue);
    
     const response = await fetch("http://127.0.0.1:8000/api/echo-dna", {
         method: "POST",
@@ -491,6 +475,119 @@ async function downloadMusic() {
 
 // ربط الزر
 document.getElementById("downloadBtn").onclick = downloadMusic;
+
+
+
+/**
+ * Genetic Flower: Soft Mandala Edition
+ * النسخة المعتمدة: بتلات مستديرة ناعمة مع تدرجات لونية عميقة
+ */
+
+function drawGeneticFlower() {
+    const canvas = document.getElementById('dnaCanvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+
+    // إعدادات الحجم
+    const displayDiv = document.querySelector('.visual-display');
+    canvas.width = displayDiv.clientWidth || 600;
+    canvas.height = displayDiv.clientHeight || 550;
+    const cx = canvas.width / 2;
+    const cy = canvas.height / 2;
+
+    // جلب بيانات الـ DNA
+    const dna = localStorage.getItem("userDNA") || "ATGCATGCATGCATGCATGC";
+    const countT = (dna.match(/T/g) || []).length;
+    const countG = (dna.match(/G/g) || []).length;
+
+    // المعايير الجينية
+    const basePetals = Math.max(countT, 10); 
+    const scaleFactor = 1 + (countG * 0.03);
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // مصفوفة الطبقات (الألوان المعتمدة بالترتيب من الخارج للداخل)
+    const layers = [
+        { color: '#fbbf24', dark: '#78350f', size: 200, count: basePetals },      // 1. ذهبي خارجي
+        { color: '#4c1d95', dark: '#1e1b4b', size: 170, count: basePetals + 2 },  // 2. نهدي غامق
+        { color: '#db2777', dark: '#500724', size: 140, count: basePetals },      // 3. زهري مطفي
+        { color: '#166534', dark: '#052e16', size: 110, count: basePetals + 4 },  // 4. أخضر غامق
+        { color: '#4ade80', dark: '#064e3b', size: 80,  count: 12 },              // 5. أخضر فاتح
+        { color: '#2dd4bf', dark: '#134e4a', size: 50,  count: 8 }                // 6. قلب الوردة
+    ];
+
+    layers.forEach((layer) => {
+        const numPetals = layer.count;
+        const petalLen = layer.size * scaleFactor;
+        const petalWidth = (petalLen * 0.45); // عرض البتلة ليعطي استدارة
+
+        for (let i = 0; i < numPetals; i++) {
+            const angle = (i / numPetals) * Math.PI * 2;
+            ctx.save();
+            ctx.translate(cx, cy);
+            ctx.rotate(angle);
+
+            // تدرج لوني يعطي مظهر "الطبقات"
+            const grad = ctx.createLinearGradient(0, 0, 0, -petalLen);
+            grad.addColorStop(0, layer.dark);
+            grad.addColorStop(0.7, layer.color);
+            grad.addColorStop(1, layer.color);
+
+            ctx.beginPath();
+            ctx.fillStyle = grad;
+            ctx.shadowBlur = 10;
+            ctx.shadowColor = 'rgba(0,0,0,0.3)';
+
+            ctx.moveTo(0, 0);
+            // رسم البتلة بمنحنيات ناعمة جداً (Bezier)
+            // 
+            ctx.bezierCurveTo(petalWidth, -petalLen/3, petalWidth, -petalLen, 0, -petalLen);
+            ctx.bezierCurveTo(-petalWidth, -petalLen, -petalWidth, -petalLen/3, 0, 0);
+            
+            ctx.fill();
+            ctx.restore();
+        }
+    });
+
+    // المركز المضيء (Core)
+    drawSoftCore(ctx, cx, cy);
+}
+
+function drawSoftCore(ctx, cx, cy) {
+    const coreGrad = ctx.createRadialGradient(cx, cy, 0, cx, cy, 30);
+    coreGrad.addColorStop(0, '#ffffff');
+    coreGrad.addColorStop(0.3, '#2dd4bf');
+    coreGrad.addColorStop(1, 'transparent');
+
+    ctx.beginPath();
+    ctx.arc(cx, cy, 30, 0, Math.PI * 2);
+    ctx.fillStyle = coreGrad;
+    ctx.fill();
+}
+// تفعيل الأزرار عند تحميل الصفحة
+document.addEventListener('DOMContentLoaded', () => {
+    const tabs = document.querySelectorAll('.visual-tab');
+
+    tabs.forEach(tab => {
+        tab.addEventListener('click', function() {
+            // 1. إزالة التفعيل من كل الأزرار وإضافته للمختار
+            tabs.forEach(t => t.classList.remove('active'));
+            this.classList.add('active');
+
+            // 2. معرفة أي نمط تم اختياره
+            const pattern = this.getAttribute('data-pattern');
+            console.log("النمط المختار حالياً:", pattern);
+
+            // 3. إذا كان المختار هو الوردة، نفذ الرسم
+            if (pattern === 'flower') {
+                drawGeneticFlower();
+            } else {
+                // هنا يمكن إضافة دوال الرسم الأخرى (Tree, Crystal... إلخ)
+                console.log("سيتم رسم نمط آخر قريباً...");
+            }
+        });
+    });
+});
 </script> 
 </body>
 </html>

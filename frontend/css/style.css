@@ -1,4 +1,6 @@
-/* 1. المتغيرات اللونية (النمط الصحي Bio-Vibe) */
+/* =========================================
+   1. المتغيرات والإعدادات العامة
+========================================= */
 :root {
     --bg-dark: #0f172a;       /* كحلي غامق جداً */
     --mint-green: #2dd4bf;    /* أخضر مينت - أساسي وصحي */
@@ -8,96 +10,176 @@
     --card-bg: rgba(255, 255, 255, 0.03);
 }
 
-/* 2. الإعدادات العامة لكل المشروع */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
-/* الإعدادات التي تجعل التصميم مثل الصور تماماً */
 body {
-    background-color: #0f172a !important; /* الخلفية الكحلية */
-    color: #f8fafc;
+    /* إعدادات الخلفية والصورة */
+    background-image: url('https://static.vecteezy.com/system/resources/previews/004/987/897/non_2x/blue-dna-structure-isolated-background-low-poly-dna-digital-technology-vector.jpg');
+    background-size: cover;
+    background-attachment: fixed;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-color: var(--bg-dark);
+    
+    /* إعدادات التنسيق العام */
+    color: white;
     font-family: 'Segoe UI', sans-serif;
-    margin: 0;
-    padding: 60px 50px; /* مسافة جانبية مريحة */
+    padding: 50px 10%;
     display: flex;
-    flex-direction: column; /* الأقسام الرئيسية فوق بعضها */
-    align-items: flex-start; /* المحاذاة لليسار مثل الصور */
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+/* شريط التمرير المخصص (Scrollbar) باللون النهدي */
+::-webkit-scrollbar { 
+    width: 8px; 
+}
+
+::-webkit-scrollbar-track { 
+    background: var(--bg-dark); 
+}
+
+::-webkit-scrollbar-thumb { 
+    background: #a341ff; /* اللون النهدي الملكي */
+    border-radius: 10px; 
+}
+
+::-webkit-scrollbar-thumb:hover { 
+    background: #bc77ff; /* درجة أفتح عند تحريك الماوس */
+}
+
+/* =========================================
+   2. الهيدر والعناوين (Genova)
+========================================= */
+/* =========================================
+   تعديل الهيدر ليتناسب مع فخامة الصفحة الأساسية
+========================================= */
+
+.header-section {
+    width: 100%;
+    text-align: center;
+    margin-bottom: 60px; /* مسافة إضافية تحت العنوان */
+}
+
+/* 1. إرجاع خط Genova الأصلي (للصفحة الرئيسية) */
+.main-title {
+    /* هاد هو السطر السحري اللي بيرجع الخط متل الصورة */
+    font-family: 'Great Vibes', cursive; 
+    
+    font-size: 8rem; /* كبريه ليعطي هيبة Genova */
+    font-weight: normal; /* خطوط الـ Script ما بدها Bold كتير */
+    text-transform: none; /* عشان تضل الأحرف مشبكة وما تصير Capital */
+    text-align: center;
+    display: block;
+    width: 100%;
+    
+    /* الألوان والتوهج */
+    background: linear-gradient(to bottom, #ffffff, #a341ff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 0 15px rgba(163, 65, 255, 0.6));
+    margin-bottom: 10px;
+}
+
+/* 2. التنسيق الاحترافي لعنوان الكتالوج العلمي (الصفحة الحالية) */
+.scientific-main-title {
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    font-size: 2.8rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 4px;
+    text-align: center;
+    width: 100%;
+    display: block;
+    margin: 20px 0;
+    background: linear-gradient(to bottom, #ffffff 20%, #a341ff 70%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 0 15px rgba(163, 65, 255, 0.5));
+}
+.subtitle {
+    color: #ffffff !important;
+    font-family: 'Segoe UI', sans-serif;
+    font-size: 1.4rem;
+    font-weight: 400;
+    letter-spacing: 1.5px;
+    text-align: center;
+    width: 100%;
+    display: block;
+    opacity: 0.8; /* شفافية خفيفة ليعطي تباين مع العنوان الرئيسي */
+    margin-top: 5px;
+}
+
+/* =========================================
+   3. منطقة الإدخال (DNA Input) والأزرار
+========================================= */
+.input-area {
+    width: 100%;
+    max-width: 1100px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-top: 20px;
+}
+
+/* النص التوضيحي فوق الحقل */
+.input-area .subtitle {
+    text-align: left;
+    width: 100%;
+    margin-bottom: 10px;
+    color: var(--slate-text);
+    padding-left: 0;
+    font-size: 1.1rem;
+    line-height: 1.6;
 }
 
 .row {
     display: flex;
-    flex-direction: row; /* الأزرار والمدخلات بجانب بعضها */
+    flex-direction: row;
     align-items: center;
-    gap: 15px; /* مسافة بين العناصر */
+    flex-wrap: wrap;
+    gap: 15px;
     margin-bottom: 25px;
     width: 100%;
-    flex-wrap: wrap; /* عشان لو الشاشة صغيرة ينزلوا تحت بعض */
+}
+
+/* الصف الخاص بالحقل وزر الرفع ليكونوا متناسقين لليمين */
+.input-area .row:first-of-type {
+    justify-content: flex-start;
+    gap: 20px;
 }
 
 #dnaInput {
-    width: 500px; /* عرض كبير مثل الصورة */
-    padding: 12px;
-    background: #f1f5f9; /* فاتح مثل الصورة */
-    border-radius: 8px;
-    color: #1e293b;
-}
-
-/* زر Generate الأزرق المميز في الصورة */
-#generateBtn {
-    background: #2d6cdf; 
-    color: white;
-    border: none;
-}
-
-.main-title {
-    font-size: 3rem;
-    color: #f1f5f9;
-    margin-bottom: 5px;
-}
-
-.subtitle {
-    color: var(--slate-text);
-    max-width: 600px;
-    line-height: 1.6;
-    font-size: 1.1rem;
-}
-
-
-
-#dnaInput {
-    width: 100%;
-    max-width: 500px;
-    padding: 14px;
+    width: 800px; /* العرض الطويل لليمين */
+    height: 50px;
+    flex: none;
+    padding: 0 20px;
+    border-radius: 10px;
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid #334155;
-    border-radius: 12px;
     color: white;
     font-size: 16px;
-    text-align: center;
     outline: none;
     transition: 0.3s;
 }
 
+/* تغيير لون حدود الحقل عند الضغط عليه للنهدي */
 #dnaInput:focus {
-    border-color: var(--mint-green);
-    box-shadow: 0 0 10px rgba(45, 212, 191, 0.2);
+    border-color: #a341ff !important; /* اللون النهدي الأساسي */
+    box-shadow: 0 0 12px rgba(163, 65, 255, 0.4) !important; /* توهج نهدي خفيف */
+    outline: none; /* عشان نشيل أي تحديد إضافي من المتصفح */
 }
 
-.button-group {
-    display: flex;
-    gap: 12px;
-    justify-content: center;
-    flex-wrap: wrap;
-}
-
+/* تنسيق الأزرار العامة */
 button {
     padding: 12px 24px;
     border-radius: 10px;
     border: 1px solid #334155;
-    background: #1e293b;
+    background: #6f0ecb;
     color: white;
     cursor: pointer;
     font-weight: 500;
@@ -105,88 +187,273 @@ button {
 }
 
 button:hover {
-    background: #334155;
+    background: #af72ff;
     transform: translateY(-2px);
 }
-
-/* أزرار الإرسال والتوليد بلون المينت */
-#generateBtn, #sendBtn {
-    background: var(--mint-green);
-    color: var(--bg-dark);
-    border: none;
-    font-weight: bold;
+/* زر رفع الملف */
+#uploadDNA {
+    width: 200px;
+    height: 50px;
+    flex: none;
+    white-space: nowrap;
+    
+    /* ستايل يشبه أزرار المسارات (Glass Effect) */
+    background: rgba(163, 65, 255, 0.15) !important; /* خلفية بنفسجية شفافة */
+    border: 1px solid #a855f7 !important;           /* إطار بنفسجي نحيف */
+    color: white !important;
+    font-weight: 500;
+    backdrop-filter: blur(5px);                      /* تأثير تغبيش خلف الزر */
+    transition: all 0.3s ease;
 }
 
-#generateBtn:hover, #sendBtn:hover {
-    background: #5eead4;
+#uploadDNA:hover {
+    background: rgba(163, 65, 255, 0.3) !important;  /* يغمق شوي عند اللمس */
+    border-color: #bc77ff !important;               /* الإطار يضوي أكتر */
+    transform: scale(1.02);                          /* تكبير بسيط جداً */
+    box-shadow: 0 0 15px rgba(163, 65, 255, 0.3);
 }
 
-/* رسالة الحالة - تمنع هزة التصميم */
+/* زر Generate المميز */
+#generateBtn {
+    background: #a341ff !important;
+    color: white !important;
+    border: none !important;
+    padding: 20px 80px !important; /* الحجم الضخم */
+    font-size: 1.5rem !important;  /* الخط الكبير */
+    min-width: 200px !important;
+    font-weight: 800 !important;
+    border-radius: 15px !important;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+#generateBtn:hover {
+    background: #bc77ff !important;
+    transform: translateY(-3px) scale(1.05) !important; /* رفعة خفيفة مع تكبير عند اللمس */
+    box-shadow: 0 8px 25px rgba(163, 65, 255, 0.5) !important;
+}
+/* --- مجموعة الأزرار --- */
+.button-group {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 20px;
+}
+
+/* --- رسالة الحالة --- */
 #statusMessage {
     height: 25px;
-    color: var(--mint-green);
+    color: #a3ffe5; /* النهدي الجميل تبعنا */
     font-weight: bold;
     font-size: 14px;
+    
+    /* التعديل المطلوب هنا */
+    text-align: left;          /* نقل النص لليسار */
+    width: 100%;
+    margin-top: 10px;          /* مسافة بسيطة تحت الزر */
+    padding-left: 5px;         /* إزاحة خفيفة عشان يجي تحت نص كلمة Generate بالظبط */
 }
 
-/* 4. تنسيق صفحة الكروت (scientific.html) */
+/* =========================================
+   5. الكروت العلمية والبصرية (Cards & Grid)
+========================================= */
+/* =========================================
+   تنسيق الكروت العلمية (Scientific Portals)
+========================================= */
+
 .scientific-grid {
-    display: grid !important;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 20px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); /* كروت أعرض وأفخم */
+    gap: 35px; /* مسافات مدروسة */
     width: 100%;
-    max-width: 1000px;
-    margin-top: 40px;
+    max-width: 1200px;
+    margin: 40px auto; /* توسيط الحاوية بالمنتصف */
+    padding: 20px;
 }
 
 .trait-card {
-    background: var(--card-bg);
-    border: 1px solid rgba(45, 212, 191, 0.15);
-    border-radius: 16px;
-    padding: 20px;
+    /* تأثير الزجاج (Glassmorphism) */
+    background: rgba(255, 255, 255, 0.03); 
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    
+    /* حدود نهدية ناعمة وتوهج خفيف */
+    border: 1px solid rgba(163, 65, 255, 0.25);
+    border-radius: 25px;
+    padding: 35px 25px;
+    
     display: flex;
-    flex-direction: row-reverse; /* أيقونة يسار، نص يمين */
+    flex-direction: column; /* الأيقونة فوق والنص تحتها */
     align-items: center;
-    justify-content: space-between;
+    justify-content: center;
+    text-align: center;
     transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     cursor: pointer;
-    text-align: right;
+    position: relative;
+    overflow: hidden;
 }
 
+/* تأثير اللمس (Hover) */
 .trait-card:hover {
-    transform: translateY(-5px);
-    border-color: var(--mint-green);
-    background: rgba(45, 212, 191, 0.08);
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    transform: translateY(-12px); /* رفعة واضحة */
+    background: rgba(163, 65, 255, 0.1);
+    border-color: #a341ff;
+    box-shadow: 0 15px 35px rgba(163, 65, 255, 0.3);
 }
 
+/* تنسيق الأيقونات */
 .icon-section {
-    font-size: 2rem;
-    color: var(--mint-green);
-    margin-left: 15px;
+    font-size: 3rem; /* حجم كبير وواضح */
+    color: #a341ff;
+    margin-bottom: 20px;
+    transition: 0.3s;
+    filter: drop-shadow(0 0 10px rgba(163, 65, 255, 0.4));
 }
 
+.trait-card:hover .icon-section {
+    color: #ffffff; /* الأيقونة تقلب أبيض عند اللمس */
+    transform: scale(1.1);
+    filter: drop-shadow(0 0 15px #a341ff);
+}
+
+/* تنسيق النصوص داخل الكارد */
 .card-info h3 {
-    font-size: 1.1rem;
-    margin-bottom: 5px;
-    color: #fff;
+    font-size: 1.4rem;
+    color: #ffffff;
+    margin-bottom: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
 }
 
 .tagline {
-    font-size: 0.85rem;
-    color: var(--slate-text);
+    font-size: 0.95rem;
+    color: #94a3b8; /* رمادي مزرق أنيق */
+    line-height: 1.5;
+    margin-bottom: 15px;
 }
 
-/* 5. تنسيق النافذة المنبثقة (Modal) */
+/* استبدال Processing بنص تفاعلي */
+.details {
+    font-size: 0.8rem;
+    color: #a341ff;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    opacity: 0.7;
+}
+
+.trait-card:hover .details {
+    opacity: 1;
+    color: #ffffff;
+}
+/* الشبكة البصرية (Visual Grid) */
+.visual-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); 
+    gap: 20px;
+    margin: 30px 0;
+    padding: 10px;
+}
+
+.visual-card {
+    background: rgba(30, 41, 59, 0.5);
+    border: 1px solid rgba(45, 212, 191, 0.2);
+    border-radius: 15px;
+    padding: 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.visual-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--mint-green);
+    background: rgba(45, 212, 191, 0.1);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.visual-card h3 { color: var(--mint-green); margin-bottom: 8px; font-size: 1.2rem; }
+.visual-card p { color: var(--slate-text); font-size: 0.9rem; }
+
+
+/* =========================================
+   6. ورشة العمل (Workshop Layout)
+========================================= */
+.workshop-container { margin-top: 50px; padding: 20px; }
+
+.workshop-layout {
+    display: flex;
+    gap: 30px;
+    background: rgba(15, 23, 42, 0.4);
+    padding: 30px;
+    border-radius: 25px;
+    border: 1px solid rgba(45, 212, 191, 0.1);
+    min-height: 500px;
+}
+
+.visual-sidebar {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.visual-tab {
+    background: rgba(30, 41, 59, 0.5);
+    border: 1px solid rgba(45, 212, 191, 0.2);
+    padding: 15px 20px;
+    border-radius: 12px;
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    transition: all 0.3s ease;
+    text-align: left;
+}
+
+.visual-tab i { color: var(--mint-green); font-size: 1.2rem; }
+.visual-tab.active {
+    background: rgba(45, 212, 191, 0.2);
+    border-color: var(--mint-green);
+    box-shadow: 0 0 15px rgba(45, 212, 191, 0.1);
+}
+
+.visual-display {
+    flex: 2.5;
+    background: #071a18;
+    border-radius: 20px;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(45, 212, 191, 0.1);
+}
+
+#dnaCanvas { width: 100%; height: 100%; max-height: 450px; }
+#visual-status {
+    position: absolute;
+    bottom: 15px;
+    color: var(--slate-text);
+    font-size: 0.85rem;
+    letter-spacing: 1px;
+}
+
+
+/* =========================================
+   7. النوافذ المنبثقة (Modal)
+========================================= */
 .modal {
     display: none;
-   
     z-index: 1000;
     left: 0; top: 0;
     width: 100%; height: 100%;
     background-color: rgba(0, 0, 0, 0.85);
     backdrop-filter: blur(8px);
 }
+
 .modal-content {
     background: #1e293b;
     margin: 5% auto;
@@ -200,41 +467,18 @@ button:hover {
     box-shadow: 0 0 30px rgba(45, 212, 191, 0.15);
 }
 
-/* 6. الفوتر */
-footer {
-    margin-top: auto;
-    padding: 30px;
-    color: #64748b;
-    text-align: center;
-}
 
-footer a {
-    color: var(--mint-green);
-    text-decoration: none;
-    margin: 0 10px;
-}
+/* =========================================
+   8. قسم الـ Random وزر العودة والفوتر
+========================================= */
+.random-area { width: 100%; text-align: left; margin-top: 50px; }
 
-/* شريط التمرير المخصص (Scrollbar) ليناسب التصميم */
-::-webkit-scrollbar {
-    width: 8px;
-}
-::-webkit-scrollbar-track {
-    background: var(--bg-dark);
-}
-::-webkit-scrollbar-thumb {
-    background: #334155;
-    border-radius: 10px;
-}
-::-webkit-scrollbar-thumb:hover {
-    background: var(--mint-green);
-}
-/* قسم الراندوم الجديد */
 .random-section {
     margin-top: 50px;
     padding: 30px;
-    background: rgba(255, 255, 255, 0.02); /* خلفية خفيفة جداً للتمييز */
+    background: rgba(255, 255, 255, 0.02);
     border-radius: 15px;
-    border: 1px dashed rgba(45, 212, 191, 0.2); /* إطار منقط */
+    border: 1px dashed rgba(45, 212, 191, 0.2);
     max-width: 800px;
     text-align: center;
 }
@@ -246,21 +490,567 @@ footer a {
     line-height: 1.5;
 }
 
-/* تصميم الزر الخاص */
 .special-random-btn {
     background: transparent !important;
-    border: 2px solid var(--amber-warm) !important; /* لون برتقالي دافئ */
+    border: 2px solid var(--amber-warm) !important;
     color: var(--amber-warm) !important;
     padding: 12px 30px !important;
     font-size: 1rem !important;
     font-weight: bold !important;
-    border-radius: 30px !important; /* شكل بيضوي مميز */
+    border-radius: 30px !important;
     transition: 0.3s all ease;
 }
 
 .special-random-btn:hover {
     background: var(--amber-warm) !important;
-    color: #0f172a !important; /* ينعكس اللون عند التمرير */
+    color: #0f172a !important;
     box-shadow: 0 0 15px rgba(251, 191, 36, 0.3);
     transform: scale(1.05);
 }
+
+/* زر العودة (Back Button) */
+.nav-container {
+    position: absolute;
+    top: 30px;
+    right: 40px;
+    z-index: 1000;
+}
+
+.back-btn {
+    text-decoration: none;
+    color: var(--mint-green);
+    font-size: 0.9rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    background: rgba(45, 212, 191, 0.1);
+    border: 1px solid rgba(45, 212, 191, 0.3);
+    border-radius: 30px;
+    transition: all 0.3s ease;
+}
+
+.back-btn:hover {
+    background: rgba(45, 212, 191, 0.2);
+    border-color: var(--mint-green);
+    transform: scale(1.05);
+    box-shadow: 0 0 15px rgba(45, 212, 191, 0.2);
+}
+
+@media (max-width: 768px) {
+    .nav-container {
+        position: relative;
+        top: 0;
+        right: 0;
+        margin-bottom: 20px;
+        display: flex;
+        justify-content: flex-end;
+    }
+}
+
+/* الفوتر */
+footer {
+    width: 100%;
+    margin-top: auto;
+    padding: 40px 0;
+    color: #64748b;
+    text-align: center;
+}
+
+/* تنسيق روابط الفوتر */
+footer a {
+    color: #94a3b8 !important; /* لون رمادي هادي عشان ما يشتت العين */
+    text-decoration: none;
+    margin: 0 10px;
+    transition: 0.3s all ease;
+    font-size: 0.9rem;
+}
+
+/* التغيير للنهدي عند تمرير الماوس */
+footer a:hover {
+    color: #a341ff !important; /* يقلب نهدي ملكي */
+    text-shadow: 0 0 10px rgba(163, 65, 255, 0.5); /* توهج نهدي خفيف */
+}
+/* 1. تنسيق زر الـ Generate (باستخدام الكلاس الموجود عندك بالصورة) */
+.generate-btn {
+    background: #a341ff !important;
+    color: white !important;
+    border: none !important;
+    padding: 12px 50px !important; /* الحجم اللي بدك ياه */
+    font-size: 1.2rem !important;
+    font-weight: bold !important;
+    border-radius: 12px !important;
+    min-width: 200px !important;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(163, 65, 255, 0.3);
+}
+
+.generate-btn:hover {
+    background: #bc77ff !important;
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(163, 65, 255, 0.5);
+}
+
+/* 2. تنسيق زر الـ Upload (حسب الآيدي الموجود بالصورة) */
+#uploadDNA {
+    background: rgba(163, 65, 255, 0.15) !important;
+    border: 1px solid #a341ff !important;
+    color: white !important;
+    padding: 10px 20px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+#uploadDNA:hover {
+    background: #a341ff !important;
+}
+
+/* تنسيق أيقونة الحذف */
+.icon-btn {
+    background: rgba(163, 65, 255, 0.1) !important;
+    border: 1px solid #a341ff !important;
+    color: #a341ff !important;
+
+    /* الحل لتوحيد الطول تماماً مع زر Generate */
+    padding: 12px !important;       /* تأكدي إنه نفس رقم padding زر generate */
+    font-size: 1.1rem !important;
+    line-height: 1 !important;      /* هذا السطر بيمنع الأيقونة إنها تطول بزيادة */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    
+    border-radius: 8px !important;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    width: 45px;                   /* عرض مناسب ليطلع مربع */
+}
+
+/* التنبيه باللون الأصفر عند اللمس */
+.icon-btn:hover {
+    background: #ffdc84 !important; /* اللون الأصفر اللي اخترتيه */
+    border-color: #fbbf24 !important;
+    color: #0f172a !important;      /* قلب لون الأيقونة لكحلي غامق عشان تبين فوق الأصفر */
+    transform: scale(1.1);
+}
+/* =========================================
+   تنسيق الكارد الزجاجي العريض للنتائج
+========================================= */
+
+
+/* --- تنسيق العناوين داخل الكارد --- */
+.results-header {
+    margin-bottom: 45px;
+}
+
+
+.results-title-english {
+    font-size: 1.1rem;
+    color: var(--slate-text);
+    letter-spacing: 5px;
+    text-transform: uppercase;
+    font-weight: 400;
+}
+
+/* --- تنسيق حاوية الأزرار --- */
+.path-buttons-container {
+    display: flex;
+    justify-content: center;
+    gap: 30px; /* مسافة بين البوابتين */
+    flex-wrap: wrap; /* عشان يتجاوب مع الشاشات الصغيرة */
+}
+
+/* --- تنسيق أزرار المسارات (The Portals) --- */
+.big-path-btn {
+    flex: 1;
+    max-width: 400px;
+    min-height: 160px;
+    padding: 30px;
+    background: rgba(163, 65, 255, 0.05); /* لون نهدي خفيف جداً */
+    border: 1px solid rgba(163, 65, 255, 0.25);
+    border-radius: 25px;
+    color: rgb(199, 127, 250);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    cursor: pointer;
+    transition: all 0.4s ease;
+}
+
+.big-path-btn i {
+    font-size: 2.2rem;
+    color: #a341ff; /* أيقونة نهدية */
+    transition: 0.3s;
+}
+
+.big-path-btn span {
+    font-size: 1.05rem;
+    font-weight: 500;
+    line-height: 1.4;
+}
+
+/* --- تأثيرات التفاعل (Hover Effects) --- */
+.big-path-btn:hover {
+    background: rgba(163, 65, 255, 0.15);
+    border-color: #a341ff;
+    transform: translateY(-8px); /* رفعة بسيطة */
+    box-shadow: 0 15px 30px rgba(163, 65, 255, 0.15);
+}
+
+.big-path-btn:hover i {
+    color: #ffffff;
+    transform: scale(1.1);
+    filter: drop-shadow(0 0 8px #a341ff);
+}
+
+/* استهداف خاص لكل مسار لإضافة لمسة تمييز (اختياري) */
+.artistic-portal:hover {
+    box-shadow: 0 10px 25px rgba(163, 65, 255, 0.2);
+}
+
+.scientific-portal:hover {
+    box-shadow: 0 10px 25px rgba(45, 212, 191, 0.15); /* لمسة خضراء بسيطة للمسار العلمي */
+}
+/* الحاوية الكبرى - نلغي أي خلفيات أو حدود قديمة هنا */
+.random-section-v3 {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin: 40px 0;
+    background: transparent !important; /* نضمن عدم وجود كرت خارجي */
+    border: none !important;
+}
+
+/* الكرت الواحد (الكبسولة) */
+.pill-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 25px;
+    
+    /* ستايل الزجاج */
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    
+    /* الحدود الصفراء الواضحة والضاوية */
+    border: 2px solid #fde047; 
+    box-shadow: 0 0 15px rgba(253, 224, 71, 0.3); 
+    
+    border-radius: 100px; /* شكل كبسولة */
+    padding: 8px 30px;
+    width: fit-content;
+}
+
+/* النص */
+.pill-text {
+    color: #ffffff;
+    font-size: 0.95rem;
+    margin: 0;
+    white-space: nowrap;
+}
+
+/* الزر مع الأيقونة */
+.pill-button {
+    background: #fef9c3 !important;
+    color: #0f172a !important;
+    border: none !important;
+    padding: 10px 20px !important;
+    border-radius: 50px !important;
+    font-weight: bold !important;
+    font-size: 0.9rem !important;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px; /* مسافة بين النرد والنص */
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.pill-button i {
+    font-size: 1.1rem; /* حجم النرد */
+}
+
+/* تأثير اللمس */
+.pill-button:hover {
+    background: #fffbb4 !important; /* يقلب أبيض عند اللمس أو درجة أفتح */
+    transform: scale(1.05);
+    box-shadow: 0 0 20px rgb(254, 240, 138, 0.8);
+}
+
+/* للموبايل: إذا كانت الشاشة صغيرة يتحول لعمودي */
+@media (max-width: 768px) {
+    .pill-container {
+        flex-direction: column;
+        border-radius: 20px;
+        padding: 20px;
+        text-align: center;
+    }
+    .pill-text {
+        white-space: normal;
+    }
+}
+/* =========================================
+   1. قسم كبسولة الراندوم (لا تعديل)
+========================================= */
+.random-section-v3 {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin: 40px 0;
+    background: transparent !important;
+    border: none !important;
+}
+
+.pill-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 25px;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border: 2px solid #fde047; 
+    box-shadow: 0 0 15px rgba(253, 224, 71, 0.3); 
+    border-radius: 100px;
+    padding: 8px 30px;
+    width: fit-content;
+}
+
+.pill-text {
+    color: #ffffff;
+    font-size: 0.95rem;
+    margin: 0;
+    white-space: nowrap;
+}
+
+.pill-button {
+    background: #fef9c3 !important;
+    color: #0f172a !important;
+    border: none !important;
+    padding: 10px 20px !important;
+    border-radius: 50px !important;
+    font-weight: bold !important;
+    font-size: 0.9rem !important;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.pill-button:hover {
+    background: #fffbb4 !important;
+    transform: scale(1.05);
+    box-shadow: 0 0 20px rgb(254, 240, 138, 0.8);
+}
+
+/* =========================================
+   2. قسم النتائج (المربعات المضيئة)
+========================================= */
+/* تنسيق القسم ليكون موازي للعناصر فوق */
+.results-section {
+    width: 100%;
+    /* قللنا الـ padding من اليسار ليتماشى مع الفورم فوق */
+    padding: 40px 10px; 
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; 
+}
+
+/* جملة العنوان - تعديل الإزاحة لتكون موازية */
+.results-header-top-left {
+    text-align: left;
+    padding-bottom: 10px;
+    margin-bottom: 50px;
+    border-bottom: 2px solid rgba(163, 65, 255, 0.3);
+    
+    /* هاد السطر هو السر: تأكدي إن المارجن لليسار 0 أو متناسق مع العناصر فوق */
+    margin-left: -5px; 
+    width: fit-content;
+}
+.main-results-title {
+    font-size: 1.1rem; /* الحجم اللي اخترتيه */
+    font-weight: 800;
+    color: #ffffff;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    margin: 0;
+    opacity: 0.95;
+    background: linear-gradient(to right, #ffffff, #a341ff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* حاوية الأزرار المركزية */
+.portals-center-wrapper {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 50px; 
+    margin-top: 20px;
+}
+
+/* الأزرار المربعة مع توهج دائم */
+.mega-portal-btn {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(15px);
+    border: 2px solid rgba(163, 65, 255, 0.6);
+    color: #ffffff;
+    
+    padding: 60px 40px;
+    min-width: 350px;
+    min-height: 250px;
+    border-radius: 22px; /* شكل المربع */
+    
+    font-size: 1.25rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.4s ease;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    /* التوهج النهدي الدائم */
+    box-shadow: 0 0 25px rgba(163, 65, 255, 0.4), 
+                inset 0 0 15px rgba(163, 65, 255, 0.2);
+}
+
+/* تأثير اللمس */
+.mega-portal-btn:hover {
+    transform: translateY(-10px) scale(1.01);
+    background: rgba(163, 65, 255, 0.15);
+    border-color: #a341ff;
+    box-shadow: 0 0 45px rgba(163, 65, 255, 0.7);
+}
+/* 1. تعديل الحاوية لتجبر الكروت على توزيع 3 في كل صف */
+.scientific-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* تجبر المتصفح على 3 أعمدة */
+    gap: 20px; /* مسافة معقولة بين الكروت */
+    width: 95%; /* لتعطي مساحة صغيرة عالأطراف */
+    max-width: 1200px;
+    margin: 30px auto; /* تتوسط الصفحة */
+}
+
+/* 2. تصغير حجم الكرت ليناسب التوزيع الجديد */
+.trait-card {
+    background: rgba(255, 255, 255, 0.04); 
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(163, 65, 255, 0.2);
+    border-radius: 15px;
+    display: flex;
+    flex-direction: row; 
+    min-height: 110px; /* قللنا الارتفاع ليصير أنيق */
+    overflow: hidden;
+    cursor: pointer;
+    transition: 0.3s ease;
+}
+/* تلوين أيقونات الكروت بشكل منفصل */
+
+.nutrition-card .card-left-icon i { color: #00f2fe; filter: drop-shadow(0 0 8px #00f2fe); } /* أزرق */
+.sports-card .card-left-icon i { color: #ffffff; filter: drop-shadow(0 0 8px #ffffff); }    /* أبيض */
+.sleep-card .card-left-icon i { color: #fde047; filter: drop-shadow(0 0 8px #fde047); }     /* أصفر */
+.skin-card .card-left-icon i { color: #ff007f; filter: drop-shadow(0 0 8px #ff007f); }      /* زهري */
+.cognitive-card .card-left-icon i { color: #a78bfa; filter: drop-shadow(0 0 8px #a78bfa); } /* بنفسجي */
+.stress-card .card-left-icon i { color: #fb923c; filter: drop-shadow(0 0 8px #fb923c); }    /* برتقالي */
+
+/* 3. تصغير مساحة الأيقونة */
+.card-left-icon {
+    flex: 0 0 30%; /* قللنا النسبة من 35% لـ 30% */
+    background: rgba(15, 23, 42, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-right: 1px solid rgba(163, 65, 255, 0.1);
+}
+
+.card-left-icon i {
+    font-size: 1.8rem; /* تصغير حجم الأيقونة شوي */
+    color: #a341ff;
+    filter: drop-shadow(0 0 5px rgba(163, 65, 255, 0.4));
+}
+
+/* 4. تنسيق النصوص لتبدو مرتبة في الحجم الصغير */
+.card-right-content {
+    flex: 1;
+    padding: 15px; /* قللنا الـ padding الداخلي */
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.card-title {
+    font-size: 1.05rem; /* تصغير العنوان */
+    color: #ffffff;
+    margin-bottom: 4px;
+    font-weight: 700;
+}
+
+.tagline {
+    font-size: 0.8rem; /* تصغير الوصف */
+    color: #94a3b8;
+    line-height: 1.2;
+}
+
+.details {
+    font-size: 0.7rem;
+    color: #a341ff;
+    margin-top: 5px;
+    font-weight: bold;
+}
+
+/* تخصيص لون أيقونة التغذية (أزرق) كما اتفقنا */
+.nutrition-card .card-left-icon i {
+    color: #00f2fe;
+    filter: drop-shadow(0 0 8px rgba(0, 242, 254, 0.5));
+}
+.nutrition-card .card-left-icon i {
+    color: #00f2fe; /* اللون الأزرق اللي اخترناه */
+    filter: drop-shadow(0 0 12px rgba(0, 242, 254, 0.8)); /* التوهج اللي بيخليها متل الصورة */
+    font-size: 2.2rem; /* كبريها شوي لتملأ الفراغ عاليسار */
+}
+/* الحاوية اللي بتجمعهم جنب بعض */
+.dna-nutrition-inline {
+    display: flex !important;
+    flex-direction: row !important; /* جنباً إلى جنب */
+    gap: 12px; /* مسافة بين الأيقونتين */
+    align-items: center;
+    justify-content: center;
+}
+
+/* تنسيق الأيقونات داخل كرت التغذية */
+.nutrition-card .card-left-icon i {
+    font-size: 1.6rem !important; /* حجم أصغر شوي عشان يوسعوا ثنيناتهم */
+    transition: 0.4s ease;
+}
+
+/* تخصيص لون الشوكة والسكين (أزرق نيون) */
+.nutrition-card .fa-utensils {
+    color: #00f2fe !important;
+    filter: drop-shadow(0 0 8px rgba(0, 242, 254, 0.6));
+}
+
+/* تخصيص لون الـ DNA (أبيض أو نهدي مضيء) */
+.nutrition-card .fa-dna {
+    color: #ffffff !important;
+    filter: drop-shadow(0 0 10px #a341ff);
+    transform: rotate(15deg); /* ميلان بسيط للـ DNA ليعطي شكل حيوي */
+}
+
+/* تأثير اللمس: خليهم يتقاربوا أو يضوا أكتر */
+.nutrition-card:hover .card-left-icon i {
+    transform: scale(1.1) rotate(0deg);
+    filter: brightness(1.2) drop-shadow(0 0 15px #00f2fe);
+}
+
