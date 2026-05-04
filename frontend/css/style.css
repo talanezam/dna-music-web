@@ -102,7 +102,7 @@ body {
 .scientific-main-title {
     font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
     font-size: 2.8rem;
-    font-weight: 900;
+    font-weight: 800;
     text-transform: uppercase;
     letter-spacing: 4px;
     text-align: center;
@@ -539,44 +539,62 @@ button:hover {
 }
 
 /* زر العودة (Back Button) */
+
+
+/* حاوية الزر - للتأكد من مكانه في أعلى الصفحة */
 .nav-container {
-    position: absolute;
-    top: 30px;
-    right: 40px;
-    z-index: 1000;
-}
-
-.back-btn {
-    text-decoration: none;
-    color: var(--mint-green);
-    font-size: 0.9rem;
-    font-weight: 500;
+    width: 100%;
+    padding: 30px 5%;
     display: flex;
+    justify-content: flex-start;
+}
+
+/* تنسيق زر العودة الزجاجي */
+.back-btn {
+    display: inline-flex;
     align-items: center;
-    gap: 8px;
-    padding: 10px 20px;
-    background: rgba(45, 212, 191, 0.1);
-    border: 1px solid rgba(45, 212, 191, 0.3);
-    border-radius: 30px;
-    transition: all 0.3s ease;
+    gap: 12px; /* مسافة بين النص والأيقونة */
+    padding: 12px 25px;
+    background: rgba(255, 255, 255, 0.03); /* شفافية زجاجية */
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(163, 65, 255, 0.3); /* إطار نهدي ناعم */
+    border-radius: 50px; /* شكل كبسولة أنيق */
+    color: #cbd5e1; /* لون رمادي فاتح مريح للعين */
+    text-decoration: none;
+    font-size: 0.95rem;
+    font-weight: 500;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    letter-spacing: 0.5px;
 }
 
+/* تنسيق الأيقونة داخل الزر */
+.back-btn i {
+    font-size: 1.1rem;
+    color: #a341ff; /* اللون النهدي الأساسي للهوية */
+    transition: transform 0.3s ease;
+}
+
+/* تأثيرات الـ Hover (عند تمرير الماوس) */
 .back-btn:hover {
-    background: rgba(45, 212, 191, 0.2);
-    border-color: var(--mint-green);
-    transform: scale(1.05);
-    box-shadow: 0 0 15px rgba(45, 212, 191, 0.2);
+    background: rgba(163, 65, 255, 0.1);
+    border-color: #a341ff;
+    color: white;
+    box-shadow: 0 0 20px rgba(163, 65, 255, 0.4); /* توهج نيون */
+    transform: translateX(-5px); /* حركة بسيطة للياسر توحي بالعودة */
 }
 
-@media (max-width: 768px) {
+.back-btn:hover i {
+    transform: scale(1.2); /* تكبير بسيط للأيقونة */
+}
+
     .nav-container {
-        position: relative;
-        top: 0;
-        right: 0;
-        margin-bottom: 20px;
-        display: flex;
-        justify-content: flex-end;
-    }
+    position: absolute !important;
+    top: 25px !important;      /* المسافة من فوق */
+    left: 25px !important;     /* المسافة من اليسار */
+    padding: 0 !important;
+    margin: 0 !important;
+    width: auto !important;    /* عشان ما يأخذ عرض الصفحة كامل ويخرب التوازن */
+    z-index: 1000 !important;  /* عشان يضل فوق أي عنصر تاني */
 }
 
 /* الفوتر */
@@ -1026,36 +1044,399 @@ footer a:hover {
 .details { font-size: 0.7rem !important; color: #a341ff !important; font-weight: bold; }
 
 /* تجبير الصفحة لتكون شبكة 3 كروت */
+/* تنسيق الـ Grid (3 كروت بالصف، مع التركيز على الشكل المربع) */
+
+/* 1. تصغير عرض الشبكة عشان الكروت ما تمط بالعرض */
 .scientific-grid {
     display: grid !important;
-    grid-template-columns: repeat(3, 1fr) !important; /* 3 أعمدة غصب عن الكل */
+    grid-template-columns: repeat(3, 1fr) !important;
     gap: 20px !important;
-    width: 95% !important;
-    max-width: 1200px !important;
-    margin: 40px auto !important;
+    width: 85% !important; /* صغرنا الحاوية شوي */
+    max-width: 1000px !important; /* حددنا العرض الأقصى */
+    margin: 30px auto !important;
 }
 
-/* تعديل الكرت ليكون أيقونة يسار وكلام يمين */
+/* 2. جعل الكرت "مربع" بشكل محكوم */
 .trait-card {
     display: flex !important;
-    flex-direction: row !important; /* جنب بعض */
+    flex-direction: column !important; /* الأيقونة فوق والنص تحتها */
     align-items: center !important;
-    width: 100% !important; /* ليشغل مساحة العمود فقط */
-    min-height: 120px !important;
+    justify-content: center !important;
+    text-align: center !important;
+    
+    /* هون السر في الحجم المربع الصغير */
+    min-height: 220px !important; 
     padding: 20px !important;
+    
+    background: rgba(255, 255, 255, 0.04) !important;
+    border: 1px solid rgba(163, 65, 255, 0.25) !important;
+    border-radius: 20px !important;
+    transition: 0.3s ease-in-out !important;
 }
 
-/* تكبير الأيقونات وتلوينها */
+/* 3. تعديل الأيقونات لتكون بالوسط وكبيرة شوي */
 .card-left-icon {
-    flex: 0 0 60px !important; /* مساحة ثابتة للأيقونة */
-    font-size: 2rem !important;
+    margin-bottom: 15px !important; /* مسافة بين الأيقونة والعنوان */
+    font-size: 2.5rem !important;
     display: flex !important;
     justify-content: center !important;
+    align-items: center !important;
 }
 
-/* النص يأخذ باقي المساحة */
+/* 4. سنترة النصوص */
 .card-right-content {
-    flex: 1 !important;
-    text-align: left !important;
-    padding-left: 15px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    padding: 0 !important;
+}
+
+.card-title {
+    font-size: 1.1rem !important;
+    margin-bottom: 8px !important;
+}
+
+.tagline {
+    font-size: 0.85rem !important;
+    line-height: 1.3 !important;
+}
+/*================================================================================*/
+/*  تعديل العرض وجوات الكارد بالكاتالوج*/
+/* 1. الطبقة الخلفية اللي بتغطي الشاشة */
+.modal {
+    display: none; /* بكون مخفي بالبداية */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(15, 23, 42, 0.6); /* سواد شفاف */
+    backdrop-filter: blur(12px); /* تغبيش للخلفية */
+    z-index: 2000;
+    justify-content: center;
+    align-items: center;
+}
+
+/* 2. صندوق النتائج اللي بنص الشاشة */
+.modal-content {
+    background: rgba(30, 41, 59, 0.7) !important;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(163, 65, 255, 0.3);
+    padding: 40px; /* زدنا المسافة الداخلية شوي لراحة العين */
+    border-radius: 24px;
+    
+    width: 95% !important;   /* بياخد معظم عرض الشاشة في الموبايل */
+    max-width: 850px !important; /* هون السر! كبرنا العرض الأقصى للابتوب */
+    
+    color: white;
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+}
+/*===============================================================================
+/*بداية تنسيق الموسيقى 
+/* 1. تنسيق الصفحة العام */
+/* تنسيق العنوان ليطابق الكتالوج مع تصغير الحجم */
+/* --- تنسيق خاص بصفحة الموسيقى فقط (Artistic Page) --- */
+
+/* 1. تنسيق الصفحة لتوزيع العناصر */
+.artistic-page {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    padding: 20px;
+}
+
+/* 2. زر العودة (يتحرك لليسار في صفحة الموسيقى فقط) */
+.artistic-page .back-btn {
+    align-self: flex-start !important; /* دفعه لليسار */
+    margin-bottom: 20px;
+}
+
+/* 3. العنوان الفخم (يتغير هنا فقط ولا يلمس الصفحة الرئيسية) */
+.artistic-page .main-title {
+    font-family: 'Segoe UI', sans-serif;
+    font-size: 3.5rem; /* الحجم الصغير اللي طلبتيه */
+    font-weight: 700;
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    
+    /* التدرج اللوني */
+    background: linear-gradient(to bottom, #ffffff 20%, #a341ff 70%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    
+    /* التوهج */
+    filter: drop-shadow(0 0 15px rgba(163, 65, 255, 0.5));
+}
+/* 4. الشرح (تحريك الجملة لليسار في صفحة الموسيقى فقط) */
+.artistic-page .intro-description {
+    display: block !important;    /* عشان نلغي تأثير الفليكس عليها */
+    width: 100% !important;       /* تأخذ العرض الكامل */
+    text-align: left !important;  /* النص يبدأ من اليسار */
+    
+    /* التحكم بالمسافات */
+    margin-top: 50px !important;    /* هاد الرقم اللي بينزلها تحت العنوان (كبريه لتنزل أكتر) */
+    margin-bottom: 20px !important; /* المسافة بينها وبين الكارد اللي تحتها */
+    
+    padding-left: 3% !important;   /* بيبعدها عن حافة الشاشة اليسار شوي عشان المنظر */
+}
+
+.artistic-page .intro-description p {
+    color: rgba(255, 255, 255, 0.8); /* لون أبيض شفاف قليلاً للفخامة */
+    font-size: 0.95rem;
+    line-height: 2.0;         /* تباعد أسطر مريح */
+}
+
+/* تنسيق الكارد الزجاجي وتوزيع محتوياته */
+/* --- التعديل المنقذ للكارد الشفاف --- */
+
+/* --- تنسيق المشغل الاحترافي مع شريط التقدم --- */
+
+.artistic-page .music-card {
+    background: rgba(255, 255, 255, 0.1) !important; /* زجاج شفاف جداً */
+    backdrop-filter: blur(0px);
+    border: 1px solid rgba(163, 65, 255, 0.08);
+    border-radius: 20px;
+    padding: 40px;
+    width: 80%;
+    max-width: 900px;
+    margin: 20px auto;
+    display: flex;
+    flex-direction: column;
+    gap: 20px; /* مسافة بين السطور */
+    min-height: 380px;
+   
+    /* سحر التوهج السميك والقوي */
+    box-shadow: 
+        0 0 15px 5px rgba(163, 65, 255, 0.6),  /* طبقة 1: وهج كثيف حول الحواف مباشرة */
+        0 0 50px 10px rgb(212, 167, 255), /* طبقة 2: انتشار ضوئي واسع خلف الكارد */
+        inset 0 0 20px rgba(163, 65, 255, 0.4) !important; /* وهج داخلي ليعطي إحساس العمق */
+
+    border: 2px solid rgba(129, 45, 208, 0.9) !important; /* زدنا سماكة الحد نفسه ليشع أكثر */
+}
+
+
+
+/* ترويسة الكارد (العنوان والوقت) */
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+/* الوقت (0:00 / 0:00) */
+.time-display {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.8rem;
+    font-family: monospace; /* خط تقني */
+}
+
+/* حاوية شريط التقدم */
+.progress-container {
+    width: 100%;
+    height: 12px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+/* شريط التقدم (الخط الخلفي) */
+.progress-bar {
+    width: 100%;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 2px;
+    position: relative;
+}
+
+/* الجزء الممتلئ من الشريط (النيون المضيء) */
+.progress-bar::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 0%; /* سيتغير بالجافا سكريبت */
+    background: #a341ff; /* اللون البنفسجي */
+    box-shadow: 0 0 10px rgba(163, 65, 255, 0.8); /* توهج نيون */
+    border-radius: 2px;
+    transition: width 0.1s linear; /* حركة ناعمة */
+}
+
+/* سطر الأزرار */
+.artistic-page .music-controls {
+    display: flex !important;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
+}
+
+/* --- تنسيق قسم التنزيل (Download Section) --- */
+.artistic-page .download-section {
+    width: 100%;
+    max-width: 650px;
+    margin: 40px auto; /* مسافة بينه وبين الكارد */
+    text-align: left;
+    padding-left: 3%;
+}
+
+/* تنسيق أزرار الأيقونات داخل الكارد */
+.icon-btn {
+    background: rgba(163, 65, 255, 0.2);
+    border: 1px solid rgba(163, 65, 255, 0.4);
+    color: white;
+    padding: 10px 15px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: 0.3s;
+    margin-right: 5px;
+}
+
+.icon-btn:hover {
+    background: #a341ff;
+    box-shadow: 0 0 10px rgba(163, 65, 255, 0.5);
+}
+
+/* توزيع الأزرار والآلة في سطر واحد */
+.artistic-page .music-controls {
+    display: flex !important;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+/* تنسيق قائمة الآلات لتناسب التصميم */
+#instrumentSelect {
+    background: rgba(0, 0, 0, 0.3) !important;
+    color: white !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    padding: 8px;
+    border-radius: 8px;
+    outline: none;
+}
+
+/* شريط الفوليوم في سطر مستقل أسفل العناصر */
+.artistic-page .volume-row {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+#volumeSlider {
+    flex-grow: 1;
+    accent-color: #a341ff;
+    cursor: pointer;
+}
+/* تنسيق عنوان الكارد (Music Player) */
+.artistic-page .card-label {
+    display: block !important;
+    width: 100%;
+    text-align: left !important; /* تحريك لليسار */
+    
+    /* الحجم والخط */
+    font-size: 1.45rem !important; /* تكبير الخط */
+    font-weight: 600;
+    letter-spacing: 1px;
+    margin-bottom: 10px;
+    
+    /* اللون: أبيض لؤلؤي مع لمسة توهج خفيفة */
+    color: #ffffff !important;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+    
+    /* مسافة صغيرة من اليسار عشان ما يلزق بالحافة */
+    padding-left: 5px;
+}
+/* خلفية الشريط */
+.progress-bar-bg {
+    width: 100%;
+    height: 8px;
+    
+    /* لون نهدي زجاجي واضح بدل الرمادي الشفاف */
+    background: rgba(163, 65, 255, 0.15) !important; 
+    
+    /* إضافة حدود نحيفة جداً لتبين أبعاد الشريط */
+    border: 2px solid rgba(163, 65, 255, 0.2);
+    
+    border-radius: 15px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.3); /* تأثير العمق */
+}
+
+/* خط النيون اللي رح يزحف (الأبيض والنهدي) */
+.progress-line-neon {
+    width: 0%; 
+    height: 100%;
+    
+    /* تدرج لوني أبيض من اليمين ونهدي من اليسار ليطلع "بشع" */
+    background: linear-gradient(90deg, #a341ff, #ffffff);
+    
+    /* توهج قوي عشان يغطي على لون الخلفية الباهت */
+    box-shadow: 0 0 15px #ffffff, 0 0 20px #a341ff;
+    border-radius: 15px;
+}
+
+/* حركة الشريط */
+.progress-line-neon.run-animation {
+    animation: dnaProgress 30s linear forwards;
+}
+
+.progress-line-neon {
+    width: 0%; 
+    height: 100%;
+    background: linear-gradient(90deg, transparent, #a341ff, #ffffff);
+    box-shadow: 0 0 15px #a341ff;
+    border-radius: 10px;
+    transition: none; /* عشان يرجع للصفر فوراً بدون تأخير */
+}
+
+/* الكلاس اللي بيشغل الحركة */
+.progress-line-neon.run-animation {
+    animation: dnaProgress 60s linear forwards;
+}
+
+@keyframes dnaProgress {
+    from { width: 0%; }
+    to { width: 100%; }
+}
+/* تنسيق أزرار التشغيل الدائرية */
+.artistic-page .neon-btn {
+    width: 55px !important;
+    height: 55px !important;
+    border-radius: 50% !important; /* فرض الدائرة */
+    
+    /* خلفية زجاجية خفيفة جداً */
+    background: rgba(201, 114, 251, 0.447) !important;
+    border: 1px solid rgba(163, 65, 255, 0.4) !important;
+    
+    color: rgb(255, 255, 255) !important;
+    font-size: 1.3rem !important;
+    
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    cursor: pointer !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    margin: 0 10px !important;
+    
+    /* توهج خفيف للأزرار وهي واقفه */
+    box-shadow: 0 0 10px rgba(163, 65, 255, 0.2) !important;
+}
+
+/* تأثير الهوفر (لما تلمسيهم بالماوس) */
+.artistic-page .neon-btn:hover {
+    background: rgba(163, 65, 255, 0.2) !important;
+    border-color: #ffffff !important; /* الحد بيقلب أبيض عشان يبين التفاعل */
+    transform: translateY(-5px) scale(1.05) !important; /* حركة طفو وتكبير بسيط */
+    
+    /* توهج قوي عند اللمس ليناسب الكارد */
+    box-shadow: 0 0 20px rgba(163, 65, 255, 0.6) !important;
+}
+
+/* لمسة فنية لأيقونة الـ Play عشان تطلع بالسنتر */
+.fa-play {
+    margin-left: 3px; 
 }
