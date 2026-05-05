@@ -19,39 +19,51 @@
 
 
 <div class="music-card">
-    
     <div class="card-header">
         <span class="card-label">Music Player</span>
-        
     </div>
 
     <div class="progress-container">
-    <div class="progress-bar-bg">
-        <div class="progress-line-neon" id="neonLine"></div>
-    </div>
-</div>
-
-    <div class="row music-controls">
-        <div class="main-buttons">
-            <button id="playBtn" class="icon-btn neon-btn"><i class="fas fa-play"></i></button>
-            <button id="stopBtn" class="icon-btn neon-btn"><i class="fas fa-stop"></i></button>
-        </div>
-
-        <div class="instrument-box">
-            <select id="instrumentSelect">
-                <option value="CINE" selected>Cinematic</option>
-                <option value="VIOLIN">Violin</option>
-                <option value="PIANO">Piano</option>
-                <option value="FLUTE">Flute</option>
-            </select>
+        <div class="progress-bar-bg">
+            <div class="progress-line-neon" id="neonLine"></div>
         </div>
     </div>
+
+    <div class="main-buttons">
+        <button id="playBtn" class="icon-btn neon-btn"><i class="fas fa-play"></i></button>
+        <button id="stopBtn" class="icon-btn neon-btn"><i class="fas fa-stop"></i></button>
+    </div>
+
+    <p id="statusText">Ready to Play</p>
 
     <div class="volume-row">
         <i class="fas fa-volume-up"></i>
         <input type="range" id="volumeSlider" min="0" max="100" value="80">
     </div>
 
+    <div class="instrument-selector">
+    <div class="instrument-item active" onclick="selectInstrument('Cinematic', this)">
+        <div class="inst-icon"><i class="fas fa-film"></i></div><span>Cinematic</span>
+    </div>
+    <div class="instrument-item" onclick="selectInstrument('Violin', this)">
+        <div class="inst-icon"><i class="fas fa-music"></i></div><span>Violin</span>
+    </div>
+    <div class="instrument-item" onclick="selectInstrument('Flute', this)">
+        <div class="inst-icon"><i class="fas fa-wind"></i></div><span>Flute</span>
+    </div>
+    <div class="instrument-item" onclick="selectInstrument('Trumpet', this)">
+        <div class="inst-icon"><i class="fas fa-trumpet"></i></div><span>Trumpet</span>
+    </div>
+    <div class="instrument-item" onclick="selectInstrument('Guitar', this)">
+        <div class="inst-icon"><i class="fas fa-guitar"></i></div><span>Guitar</span>
+    </div>
+    <div class="instrument-item" onclick="selectInstrument('Piano', this)">
+        <div class="inst-icon"><i class="fas fa-keyboard"></i></div><span>Piano</span>
+    </div>
+</div>
+
+    <button id="toggleNotesBtn">Show Music Notes 🎵</button>
+    <p id="notesDisplay" style="display:none;"></p>
 </div>
 
 <div class="download-section">
@@ -61,17 +73,6 @@
 </button>
 </div>
 
-
-
-  <!-- السطر الثاني -->
-  
-<button id="toggleNotesBtn">Show Music Notes 🎵</button>
-
-<p id="notesDisplay" style="display:none;"></p>
-<p id="statusText"></p>
-
-
-</div>
  <!-- قسم البطاقات من  هون بلش -------- اختيار البطاقات------>
 <!--<section id="visualSection" class="workshop-container">
     <h2>Choose Your Genetic Visual Identity</h2>
@@ -120,6 +121,20 @@ const progressBarEl = document.getElementById('progressBar');
 let progressUpdateInterval; // هاد رح نستخدمه لتحديث الشريط كل ثانية
 let playStartTime = 0;      // وقت بداية العزف
 let totalDuration = 0;      // المدة الكلية للموسيقى الناتجة
+
+function selectInstrument(name, element) {
+    // ضفنا .toUpperCase() عشان تتحول من Violin لـ VIOLIN وتتطابق مع المصفوفة
+    INSTRUMENT = name.toUpperCase(); 
+
+    document.querySelectorAll('.instrument-item').forEach(item => {
+        item.classList.remove('active');
+    });
+
+    element.classList.add('active');
+
+    console.log("Instrument changed to:", INSTRUMENT);
+}
+
 
 // دالة بتحول الثواني لشكل توقيت مفهوم (مثلاً 65 ثانية بتصير 1:05)
 function formatTime(seconds) {
@@ -392,10 +407,6 @@ timeouts.push(id);
 
 }
 
-document.getElementById("instrumentSelect").addEventListener("change", (e) => {
-  INSTRUMENT = e.target.value;
-  console.log("Instrument changed to:", INSTRUMENT);
-});
 document.getElementById("playBtn").addEventListener("click", async () => {
 const neon = document.getElementById('neonLine');
 neon.classList.remove('run-animation'); // تنظيف قديم
@@ -405,7 +416,7 @@ neon.classList.add('run-animation');    // تشغيل من الأول
 // إضافة كلاس النشاط للخلفية
 document.querySelector('.progress-bar-bg').classList.add('active-bg');
  
-  INSTRUMENT = document.getElementById("instrumentSelect").value;
+
   document.getElementById("statusText").textContent = "Generating music...";
 
   if (!window.lastNotes || !window.lastNotes.length) {
@@ -428,7 +439,7 @@ document.querySelector('.progress-bar-bg').classList.remove('active-bg');
   if (audioCtx.state === "running") {
     await audioCtx.suspend();
   }
-  document.getElementById("statusText").textContent = "Music stopped & saved";
+  document.getElementById("statusText").textContent = "Music stopped ";
 });
 let notesVisible = false;
 

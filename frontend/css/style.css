@@ -1317,18 +1317,29 @@ footer a:hover {
 }
 
 /* شريط الفوليوم في سطر مستقل أسفل العناصر */
+/* تصغير قسم الصوت ليكون عنصر ثانوياً */
 .artistic-page .volume-row {
     display: flex;
     align-items: center;
-    gap: 15px;
-    padding-top: 20px;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    gap: 8px; /* تقليل المسافة */
+    width: 120px !important; /* حجم صغير جداً ومحدد */
+    margin: 10px 0; /* مسافة بسيطة فوق وتحت */
+    padding: 0;
+    border: none; /* إلغاء أي حدود قديمة */
+}
+
+/* تصغير الأيقونة والسلايدر */
+.volume-row i {
+    font-size: 0.8rem; /* تصغير أيقونة السماعة */
+    opacity: 0.6;
 }
 
 #volumeSlider {
     flex-grow: 1;
+    height: 3px !important; /* تنحيف الشريط جداً */
     accent-color: #a341ff;
     cursor: pointer;
+    opacity: 0.7; /* شفافية عشان ما يبرز بزيادة */
 }
 /* تنسيق عنوان الكارد (Music Player) */
 .artistic-page .card-label {
@@ -1439,4 +1450,119 @@ footer a:hover {
 /* لمسة فنية لأيقونة الـ Play عشان تطلع بالسنتر */
 .fa-play {
     margin-left: 3px; 
+}
+.instrument-selector {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 20px;
+    flex-wrap: wrap; /* عشان لو الشاشة صغيرة ينزلوا سطر جديد */
+}
+
+.instrument-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    opacity: 0.5; /* خاملة وهي مو مختارة */
+}
+
+.inst-icon {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    border: 1px solid rgba(163, 65, 255, 0.3);
+    background: rgba(255, 255, 255, 0.05);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    color: white;
+    margin-bottom: 5px;
+    transition: all 0.3s ease;
+}
+
+.instrument-item span {
+    font-size: 0.7rem;
+    color: rgba(255, 255, 255, 0.7);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* حالة الآلة المختارة */
+.instrument-item.active {
+    opacity: 1;
+}
+
+.instrument-item.active .inst-icon {
+    background: rgba(163, 65, 255, 0.2);
+    border-color: #a341ff;
+    box-shadow: 0 0 15px rgba(163, 65, 255, 0.5);
+    transform: scale(1.1);
+}
+
+.instrument-item:hover .inst-icon {
+    border-color: white;
+}
+/*=============================================*/
+/* تنسيق سطر الحالة */
+#statusText {
+    margin: -10px 0 10px 0;
+    font-size: 0.90rem;
+    color: #b669ff;
+    text-shadow: 0 0 5px rgba(163, 65, 255, 0.5);
+    font-weight: bold;
+}
+
+/* تنسيق عنوان قسم الآلات */
+.section-title {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.5);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 15px;
+}
+
+
+/* تنسيق شبكة الآلات (Selector) */
+.instrument-selector {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* مصفوفة من 4 أعمدة */
+    gap: 15px;
+    justify-items: center;
+}
+/* زر النوتات المتوهج دائماً */
+#toggleNotesBtn {
+    /* خلفية نهدية واضحة (ليست رمادية) */
+    background: rgba(163, 65, 255, 0.25) !important; 
+    border: 1px solid rgba(163, 65, 255, 0.8) !important;
+    
+    /* كتابة بيضاء ناصعة وواضحة */
+    color: #ffffff !important; 
+    font-weight: 600 !important;
+    font-size: 0.75rem !important;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    
+    padding: 8px 20px !important;
+    border-radius: 12px !important;
+    cursor: pointer;
+    
+    /* التوهج الدائم (Neon Aura) */
+    box-shadow: 0 0 12px rgba(163, 65, 255, 0.5), 
+                inset 0 0 5px rgba(163, 65, 255, 0.2) !important;
+    
+    transition: all 0.3s ease;
+    width: fit-content !important;
+    align-self: center;
+    margin-top: 15px;
+    outline: none;
+}
+
+/* زيادة التوهج أكثر عند الهوفر (اختياري) */
+#toggleNotesBtn:hover {
+    background: rgba(163, 65, 255, 0.4) !important;
+    box-shadow: 0 0 20px rgba(163, 65, 255, 0.8) !important;
+    transform: translateY(-2px);
 }
