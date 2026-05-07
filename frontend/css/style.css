@@ -1153,21 +1153,25 @@ footer a:hover {
 
 /* 3. العنوان الفخم (يتغير هنا فقط ولا يلمس الصفحة الرئيسية) */
 .artistic-page .main-title {
-    font-family: 'Segoe UI', sans-serif;
-    font-size: 3.5rem; /* الحجم الصغير اللي طلبتيه */
-    font-weight: 700;
+
+    font-family: 'Exo 2', sans-serif !important;
+    font-style: italic !important; /* هون السحر! */
+    font-weight: 700 !important;   /* خليه سميك شوي ليعطي فخامة */
+    text-transform: uppercase;    /* حروف كبيرة بالكامل */
+    letter-spacing: 5px;          /* مسافة بين الحروف ليعطي فخامة */
+    font-size: 3rem !important;
+    color: #ffffff;
+    
+    /* توهج نيون أبيض ونهدي خفيف ليناسب الـ DNA */
+    text-shadow: 0 0 10px rgba(163, 65, 255, 0.5), 
+                 0 0 2px #ffffff;
+    
     text-align: center;
-    text-transform: uppercase;
-    letter-spacing: 3px;
-    
-    /* التدرج اللوني */
-    background: linear-gradient(to bottom, #ffffff 20%, #a341ff 70%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    
-    /* التوهج */
-    filter: drop-shadow(0 0 15px rgba(163, 65, 255, 0.5));
 }
+
+
+
+
 /* 4. الشرح (تحريك الجملة لليسار في صفحة الموسيقى فقط) */
 .artistic-page .intro-description {
     display: block !important;    /* عشان نلغي تأثير الفليكس عليها */
@@ -1467,27 +1471,87 @@ footer a:hover {
     transition: all 0.3s ease;
     opacity: 0.5; /* خاملة وهي مو مختارة */
 }
-
+/* =========================================
+   1. تنسيق الأزرار "العامة" (كل الآلات دايماً)
+   ========================================= */
 .inst-icon {
-    width: 45px;
-    height: 45px;
-    border-radius: 50%;
-    border: 1px solid rgba(163, 65, 255, 0.3);
-    background: rgba(255, 255, 255, 0.05);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.2rem;
-    color: white;
-    margin-bottom: 5px;
-    transition: all 0.3s ease;
+    width: 65px;                          /* عرض الزر */
+    height: 65px;                         /* طول الزر */
+    border-radius: 50% !important;        /* جعل الشكل دائري تماماً */
+    display: flex;                        /* لتوسيط الأيقونة داخل الدائرة */
+    align-items: center;                  /* توسيط عمودي */
+    justify-content: center;               /* توسيط أفقي */
+    font-size: 1.7rem;                    /* حجم الأيقونة (الغيتار، الكمان..) */
+    transition: all 0.3s ease;            /* نعومة في الانتقال بين الألوان */
+
+    /* --- الوضوح والألوان --- */
+    background: rgba(163, 65, 255, 0.15) !important; /* خلفية سوداء واضحة لتبرز فوق الـ DNA */
+    color: #ffffff !important;            /* لون الأيقونة أبيض ناصع دايماً */
+    opacity: 1 !important;                /* (أهم سطر) يمنع أي نوع من البهتان للكل */
+
+    /* --- خط النيون الدائم --- */
+    border: 2px solid #ffffff !important; /* إطار أبيض صريح يلف كل الدوائر */
+    
+    /* --- التوهج النهدي (Neon Glow) --- */
+    /* هاد السطر بيعمل هالة ضوئية نهدية حول كل الأزرار دايماً */
+    box-shadow: 0 0 40px #a341ff, 
+                0 0 40px #ffffff, 
+                inset 0 0 10px rgb(163, 65, 255,) !important;
 }
 
+/* تنسيق الكتابة (الأسماء) تحت كل الأيقونات */
 .instrument-item span {
-    font-size: 0.7rem;
-    color: rgba(255, 255, 255, 0.7);
-    text-transform: uppercase;
+    color: #ffffff !important;            /* لون الخط أبيض ناصع للكل */
+    opacity: 1 !important;                /* الخط مو شفاف أبداً */
+    font-weight: bold !important;         /* خط عريض ليكون واضح جداً */
+    margin-top: 10px;                     /* مسافة بين الدائرة والاسم */
+    display: block;                       /* ليكون الاسم تحت الدائرة */
+    text-shadow: 0 0 10px #a341ff;         /* توهج نهدي خلف الكلمات */
+}
+
+/* =========================================
+   2. تنسيق "الزر المختار" (الآلة النشطة)
+   ========================================= */
+.instrument-item.active .inst-icon {
+    /* تمييز المختار بتغيير لون النيون للأزرق السماوي (Cyan) */
+    border-color: #ffffff !important;     /* الإطار بيقلب أزرق */
+    background: rgba(163, 65, 255, 0.4) !important; /* خلفية زرقاء خفيفة */
+
+    /* توهج أزرق فاقع للمختار فقط */
+    box-shadow: 0 0 25px #a341ff
+                0 0 10px #ffffff, 
+                inset 0 0 15px rgba(163, 65, 255, 0.8) !important;
+
+    transform: scale(1.15);               /* تكبير الزر المختار شوي لنميزه */
+}
+
+/* تمييز اسم الآلة المختارة */
+.instrument-item.active span {
+    color: #ffffff !important;            /* الاسم بيقلب أزرق */
+    text-shadow: 0 0 12px #a341ff;        /* توهج أزرق خلف الكلمة المختارة */
+}
+
+/* 2. النصوص تحت الأيقونات (كلها أبيض واضح) */
+
+.instrument-item span {
+    color: #ffffff !important;
+    font-weight: 600;
+    margin-top: 10px;
+    font-size: 0.75rem;
     letter-spacing: 1px;
+    opacity: 1 !important;
+    display: block;
+}
+
+
+
+/* ترتيب الشبكة (Grid) لتكون متناسقة */
+.instrument-selector {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3 أعمدة بكل سطر */
+    gap: 25px;
+    margin-top: 30px;
+    padding: 20px;
 }
 
 /* حالة الآلة المختارة */
@@ -1495,12 +1559,9 @@ footer a:hover {
     opacity: 1;
 }
 
-.instrument-item.active .inst-icon {
-    background: rgba(163, 65, 255, 0.2);
-    border-color: #a341ff;
-    box-shadow: 0 0 15px rgba(163, 65, 255, 0.5);
-    transform: scale(1.1);
-}
+
+/* حركة بسيطة لاسم الآلة المختارة */
+
 
 .instrument-item:hover .inst-icon {
     border-color: white;
@@ -1565,4 +1626,111 @@ footer a:hover {
     background: rgba(163, 65, 255, 0.4) !important;
     box-shadow: 0 0 20px rgba(163, 65, 255, 0.8) !important;
     transform: translateY(-2px);
+}
+/* --- تنسيق الأيقونات العامة (وضوح تام ونيون نهدي) --- */
+.inst-icon {
+    width: 70px;
+    height: 70px;
+    border-radius: 60% !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.5) !important; /* خلفية داكنة لتبرز النيون */
+    border: 2px solid #ffffff !important;   /* إطار أبيض ناصع */
+    
+    /* توهج نيون نهدي قوي حول الدائرة */
+    box-shadow: 0 0 15px #a341ff, 
+                inset 0 0 10px rgba(163, 65, 255, 0.5) !important;
+    
+    opacity: 1 !important; /* يمنع أي بهتان للأيقونات */
+    transition: all 0.3s ease;
+}
+
+/* --- تنسيق الصور داخل الدوائر --- */
+.inst-icon img {
+    width: 80px; 
+    height: 80px;
+    object-fit: contain;
+    filter: saturate(2) 
+    brightness(1.2)
+    drop-shadow(0 0 5px rgba(163, 65, 255, 0.6));
+    transition: all 0.3s ease;
+}
+
+/* التنسيق عند تمرير الماوس*/
+.instrument-item:hover .inst-icon img {
+    filter: saturate(2.5) brightness(1.4);
+}
+/* --- تنسيق الآلة المختارة (توهج مضاعف) --- */
+.instrument-item.active .inst-icon {
+    border-color: #ffffff !important;
+    transform: scale(1.14); /* تكبير بسيط للمختار */
+    background: rgba(163, 65, 255, 0.2) !important; /* لمسة نهدي بالخلفية */
+    box-shadow: 0 0 25px #a341ff, 
+                0 0 10px #ffffff !important;
+}
+
+/* --- تنسيق النصوص تحت الآلات --- */
+.instrument-item span {
+    color: #ffffff !important;
+    display: block;
+    margin-top: 10px;
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    text-shadow: 0 0 8px #a341ff; /* توهج نهدي خلف النص */
+    opacity: 1 !important;
+}
+#show-notes-btn {
+    font-weight: 900 !important;        /* أقصى سماكة للخط */
+    text-transform: uppercase;          /* حروف كبيرة لتعطي هيبة */
+    letter-spacing: 2px;               /* مسافة بين الحروف بتخليها Pro */
+    color: #ffffff !important;         /* أبيض ناصع */
+    
+    /* سر الوضوح: ظل أسود خلف النص مباشرة */
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8), 
+                 0 0 10px #a341ff !important; 
+    
+    background: rgba(163, 65, 255, 0.3) !important; /* خلفية نهدية أغمق شوي */
+}
+/* --- الكارد الزجاجي المحيط بالتحميل --- */
+.download-card {
+    background: rgba(255, 255, 255, 0.05); /* شفافية زجاجية */
+    backdrop-filter: blur(10px);          /* تغبيش الخلفية */
+    border-radius: 20px;                   /* زوايا ناعمة */
+    padding: 25px;
+    margin-top: 30px;
+    border: 3px solid rgba(255, 215, 0, 0.3); /* إطار ذهبي خفيف جداً */
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8); /* ظل عميق */
+}
+
+.download-card p {
+    color: #ffffff;
+    font-size: 0.95rem;
+    margin-bottom: 15px;
+    font-weight: 500;
+}
+
+/* --- زر التحميل (الأصفر الذهبي النيون) --- */
+.download-btn {
+    background: #ffd700 !important;        /* لون ذهبي صريح */
+    color: #000000 !important;             /* كتابة سوداء لتبين بوضوح */
+    border: none !important;
+    padding: 12px 30px;
+    border-radius: 50px;                   /* زر بيضاوي */
+    font-weight: 900 !important;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    
+    /* توهج ذهبي قوي (Neon Gold) */
+    box-shadow: 0 0 15px rgba(255, 215, 0, 0.6),
+                0 0 30px rgba(255, 215, 0, 0.2) !important;
+}
+
+.download-btn:hover {
+    transform: translateY(-3px) scale(1.05); /* حركة خفيفة عند اللمس */
+    box-shadow: 0 0 25px rgba(255, 215, 0, 0.9) !important;
+    background: #faffb2 !important;         /* يقلب أبيض عند الـ Hover */
 }

@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <title>Genomic Identity System – Artistic Identity</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@1,300;1,700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body class="artistic-page">
@@ -41,24 +42,52 @@
         <input type="range" id="volumeSlider" min="0" max="100" value="80">
     </div>
 
+
     <div class="instrument-selector">
-    <div class="instrument-item active" onclick="selectInstrument('Cinematic', this)">
-        <div class="inst-icon"><i class="fas fa-film"></i></div><span>Cinematic</span>
+    <div class="instrument-item active" onclick="selectInstrument('CINE', this)">
+        <div class="inst-icon">
+            <img src="https://img.icons8.com/?size=128&id=103802&format=png
+" alt="Cinematic">
+        </div>
+        <span>Cinematic</span>
     </div>
-    <div class="instrument-item" onclick="selectInstrument('Violin', this)">
-        <div class="inst-icon"><i class="fas fa-music"></i></div><span>Violin</span>
+
+    <div class="instrument-item" onclick="selectInstrument('GUITAR', this)">
+        <div class="inst-icon">
+            <img src=" https://img.icons8.com/?size=96&id=VzDRYuJN6JLX&format=png" alt="Guitar">
+        </div>
+        <span>Guitar</span>
     </div>
-    <div class="instrument-item" onclick="selectInstrument('Flute', this)">
-        <div class="inst-icon"><i class="fas fa-wind"></i></div><span>Flute</span>
+
+    <div class="instrument-item" onclick="selectInstrument('FLUTE', this)">
+        <div class="inst-icon">
+            <img src=" https://img.icons8.com/?size=96&id=4nXuZdasq30o&format=png" alt="Flute">
+        </div>
+        <span>Flute</span>
     </div>
-    <div class="instrument-item" onclick="selectInstrument('Trumpet', this)">
-        <div class="inst-icon"><i class="fas fa-trumpet"></i></div><span>Trumpet</span>
+
+    <div class="instrument-item" onclick="selectInstrument('PIANO', this)">
+        <div class="inst-icon">
+            <img src=" https://img.icons8.com/?size=100&id=Hv3yy42Jaorx&format=png
+" alt="Piano">
+        </div>
+        <span>Piano</span>
     </div>
-    <div class="instrument-item" onclick="selectInstrument('Guitar', this)">
-        <div class="inst-icon"><i class="fas fa-guitar"></i></div><span>Guitar</span>
+
+    <div class="instrument-item" onclick="selectInstrument('VIOLIN', this)">
+        <div class="inst-icon">
+            <img src=" https://img.icons8.com/?size=160&id=vCjPEcyLpwqp&format=png
+" alt="Violin">
+        </div>
+        <span>Violin</span>
     </div>
-    <div class="instrument-item" onclick="selectInstrument('Piano', this)">
-        <div class="inst-icon"><i class="fas fa-keyboard"></i></div><span>Piano</span>
+
+    <div class="instrument-item" onclick="selectInstrument('TRUMPET', this)">
+        <div class="inst-icon">
+            <img src="https://img.icons8.com/?size=160&id=z1RsXWqICb4n&format=png
+ "alt="Trumpet">
+        </div>
+        <span>Trumpet</span>
     </div>
 </div>
 
@@ -66,11 +95,11 @@
     <p id="notesDisplay" style="display:none;"></p>
 </div>
 
-<div class="download-section">
-    <p class="download-text">You can download your unique DNA music from here:</p>
-    <button id="downloadBtn" class="download-button">
-    Download Now
-</button>
+<div class="download-card">
+    <p>You can download your unique DNA music from here:</p>
+    <button class="download-btn">
+        <i class="fas fa-download"></i> Download Now
+    </button>
 </div>
 
  <!-- قسم البطاقات من  هون بلش -------- اختيار البطاقات------>
