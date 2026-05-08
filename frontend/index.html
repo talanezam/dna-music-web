@@ -48,9 +48,9 @@
             Discover Your Musical Identity
         </button>
 
-        <button class="mega-portal-btn" onclick="location.href='visual.html'">
+        <button class="mega-portal-btn glow-permanent" id="visualPathBtn">
     Visual Genetic Identity
-        </button>
+</button>
 
     </div>
 </section>
@@ -177,6 +177,15 @@
     document.getElementById("dnaInput").addEventListener("input", function() {
       this.value = this.value.toUpperCase().replace(/[^ACGT]/g, "");
     });
+
+    /*كود المسار الثالث*/
+    document.getElementById("visualPathBtn").addEventListener("click", () => {
+  if (localStorage.getItem("dnaReady") === "true") {
+    window.location.href = "visual.html";
+  } else {
+    alert("Please generate DNA first.");
+  }
+});
   </script>
 
 </body>
