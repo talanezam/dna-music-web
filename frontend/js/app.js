@@ -27,7 +27,7 @@ function toggleDetails(id) {
     const introSection = document.createElement("div");
     introSection.style.cssText = "display: flex; align-items: flex-start; gap: 30px; margin-bottom: 40px; padding: 20px; background: rgba(255,255,255,0.02); border-radius: 15px;";
     
-    introSection.innerHTML = 
+    introSection.innerHTML = `
         <div style="font-size: 3.5rem; font-weight: 800; color: #00f2fe; line-height: 1;">${efficiencyScore}%</div>
         <div style="text-align: left;">
             <h3 style="margin: 0; color: #f8fafc; font-size: 1.2rem; text-transform: uppercase; letter-spacing: 1px;">Genetic Efficiency Score</h3>
@@ -35,8 +35,8 @@ function toggleDetails(id) {
                 This metric quantifies your body's cellular capacity to absorb and utilize essential nutrients. 
                 A score of ${efficiencyScore}% reflects your unique metabolic pathways influenced by ${nutritionGenes.length} genomic markers.
             </p>
-        </div>
-    ;
+        </div>`;
+    
     modalBody.appendChild(introSection);
 
     // 3. دالة إضافة العناصر (بدون أيقونات) - متل ما طلبتي بالظبط
@@ -47,12 +47,12 @@ function toggleDetails(id) {
         const isNormal = result.includes("Normal")  result.includes("Efficient")  result.includes("Tolerant");
         const resColor = isNormal ? "#2dd4bf" : "#ef4444";
 
-        item.innerHTML = 
+        item.innerHTML = `
             <div style="color: ${titleColor}; font-size: 1.1rem; font-weight: 600; margin-bottom: 4px;">${title}</div>
             <div style="color: rgba(248, 250, 252, 0.5); font-size: 0.85rem; margin-bottom: 6px;">Gene ID: ${gene}</div>
             <div style="color: #f8fafc; font-size: 0.95rem; margin-bottom: 4px;">Result: <span style="color: ${resColor}; font-weight: bold;">${result}</span></div>
             <div style="color: #94a3b8; font-size: 0.85rem; font-style: italic;">Advice: ${advice}</div>
-        ;
+        `;
         container.appendChild(item);
     };
 

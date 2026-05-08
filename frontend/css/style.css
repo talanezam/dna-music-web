@@ -1159,7 +1159,7 @@ footer a:hover {
     font-weight: 700 !important;   /* خليه سميك شوي ليعطي فخامة */
     text-transform: uppercase;    /* حروف كبيرة بالكامل */
     letter-spacing: 5px;          /* مسافة بين الحروف ليعطي فخامة */
-    font-size: 3rem !important;
+    font-size: 3.0rem !important;
     color: #ffffff;
     
     /* توهج نيون أبيض ونهدي خفيف ليناسب الـ DNA */
@@ -1167,29 +1167,10 @@ footer a:hover {
                  0 0 2px #ffffff;
     
     text-align: center;
+    margin-bottom: 70px;
 }
 
 
-
-
-/* 4. الشرح (تحريك الجملة لليسار في صفحة الموسيقى فقط) */
-.artistic-page .intro-description {
-    display: block !important;    /* عشان نلغي تأثير الفليكس عليها */
-    width: 100% !important;       /* تأخذ العرض الكامل */
-    text-align: left !important;  /* النص يبدأ من اليسار */
-    
-    /* التحكم بالمسافات */
-    margin-top: 50px !important;    /* هاد الرقم اللي بينزلها تحت العنوان (كبريه لتنزل أكتر) */
-    margin-bottom: 20px !important; /* المسافة بينها وبين الكارد اللي تحتها */
-    
-    padding-left: 3% !important;   /* بيبعدها عن حافة الشاشة اليسار شوي عشان المنظر */
-}
-
-.artistic-page .intro-description p {
-    color: rgba(255, 255, 255, 0.8); /* لون أبيض شفاف قليلاً للفخامة */
-    font-size: 0.95rem;
-    line-height: 2.0;         /* تباعد أسطر مريح */
-}
 
 /* تنسيق الكارد الزجاجي وتوزيع محتوياته */
 /* --- التعديل المنقذ للكارد الشفاف --- */
@@ -1305,6 +1286,7 @@ footer a:hover {
 /* توزيع الأزرار والآلة في سطر واحد */
 .artistic-page .music-controls {
     display: flex !important;
+    flex-wrap: wrap;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 30px;
