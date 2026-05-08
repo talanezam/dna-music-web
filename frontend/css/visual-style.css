@@ -1,53 +1,36 @@
-/* التنسيق الأساسي للصفحة - أزلنا الخلفية من هنا لتظهر خلفية المشروع الأصلية */
-body {
-    margin: 0;
-    padding: 0;
-    direction: ltr; 
-}
-
+/* الحاوية الكبيرة اللي بتجمع الكرتين */
 .main-wrapper {
-    position: relative;
-    width: 100%;
-    height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
-    /* لا نضع أي background هنا لكي تظهر خلفية الـ DNA الأساسية */
+    gap: 30px; /* مسافة بين الكرتين */
+    padding: 40px;
+    flex-wrap: wrap; /* مشان إذا الشاشة صغيرة ينزلوا تحت بعض */
 }
 
-/* الكارد الزجاجي المتطابق مع صفحة الـ Music Player */
+/* ستايل الكرت الزجاجي (GENOVA Glass Card) */
 .genova-glass-card {
-    position: relative;
-    width: 85%;
-    max-width: 900px;
-    height: 65vh;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 20px;
-    
-    /* خلفية شبه شفافة مع تأثير الزجاج المضبب */
-    background: rgba(10, 20, 40, 0.3); 
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    
-    /* الإطار النيوني الأزرق المتوهج (يطابق الكارد في الصورة تماماً) */
-    border: 2px solid rgba(219, 60, 255, 0.8);
-    box-shadow: 
-        0 0 40px rgba(203, 60, 255, 0.5),      /* توهج خارجي قوي */
-        inset 0 0 30px rgba(213, 60, 255, 0.3); /* توهج داخلي */
-        
-    display: flex;
-    justify-content: center;
-    align-items: center;
     padding: 20px;
-    z-index: 10;
+    width: 450px;  /* عرض الكرت */
+    height: 550px; /* طول الكرت */
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.8);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
-/* حاوية الرسمة داخل الكارد */
+/* حاوية الرسم (الفراكتال) داخل الكرت */
 .fractal-container {
     width: 100%;
-    height: 100%;
-    border-radius: 12px;
+    height: 400px; /* مساحة الرسم */
+    margin-bottom: 20px;
+    border-radius: 15px;
     overflow: hidden;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    position: relative;
+    /* النيون اللي طلبتيه دايما ظاهر */
+    border: 1px solid rgba(0, 255, 255, 0.3); 
 }

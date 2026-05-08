@@ -42,9 +42,9 @@ function toggleDetails(id) {
     // 3. دالة إضافة العناصر (بدون أيقونات) - متل ما طلبتي بالظبط
     const addSimpleItem = (container, title, gene, result, advice, titleColor) => {
         const item = document.createElement("div");
-        item.style.cssText = margin-bottom: 25px; padding-left: 15px; border-left: 2px solid ${titleColor}44;;
+        item.style.cssText = `margin-bottom: 25px; padding-left: 15px; border-left: 2px solid ${titleColor}44;`;
         
-        const isNormal = result.includes("Normal")  result.includes("Efficient")  result.includes("Tolerant");
+        const isNormal =` result.includes("Normal")  result.includes("Efficient")  result.includes("Tolerant")`;
         const resColor = isNormal ? "#2dd4bf" : "#ef4444";
 
         item.innerHTML = `
