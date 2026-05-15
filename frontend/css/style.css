@@ -1716,3 +1716,31 @@ footer a:hover {
     box-shadow: 0 0 25px rgba(255, 215, 0, 0.9) !important;
     background: #faffb2 !important;         /* يقلب أبيض عند الـ Hover */
 }
+
+/* تنسيق الأيقونات المقصوصة (الشفافة) */
+.trait-card .card-left-icon img {
+    width: 140px !important;
+    height: 140px !important;
+    object-fit: contain;
+    display: block;
+    margin: 0 auto;
+    
+    /* ما عاد بدنا mix-blend-mode لأن الصورة صارت مقصوصة جاهزة */
+    
+    /* بس منضيف وهج نيون عشان تطلع فخمة فوق لون كرتك */
+    filter: drop-shadow(0 0 10px rgba(0, 242, 254, 0.8));
+}
+/* الكود لتقريب الصاعقة من الدماغ */
+.stress-card .card-left-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: -10px; /* إذا كنتِ مستخدمة جاب، منخليه سالب */
+}
+
+.stress-card .card-left-icon img:last-child {
+    margin-left: -40px; /* هاد السطر هو اللي رح يسحب الدماغ لعند الصاعقة */
+    position: relative;
+    z-index: 1;
+}
+

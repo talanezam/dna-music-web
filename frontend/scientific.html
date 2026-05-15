@@ -10,23 +10,11 @@
     
 </head>
 <body class="scientific-page">
-    <div class="nav-container">
-        <a href="index.html" class="back-btn">
-            Back to Home <i class="fas fa-home"></i>
-        </a>
-    </div>
+    <div class="scientific-grid">
 
-    <div class="container">
-        <header>
-            <h1 class="scientific-main-title">Genomic Interpretive Catalog</h1>
-            <p class="subtitle">Personalized Human Manual based on DNA Mapping</p>
-        </header>
-<div class="scientific-grid">
-    
     <div class="trait-card nutrition-card" onclick="toggleDetails('diet')">
-        <div class="card-left-icon genomic-apple-wrapper">
-            <i class="fa-solid fa-apple-whole apple-base"></i> 
-            <i class="fa-solid fa-dna dna-helix"></i>          
+        <div class="card-left-icon">
+            <img src="assets/green.png" style="width: 45px; height: 45px; object-fit: contain;">
         </div>
         <div class="card-right-content">
             <h3 class="card-title">Nutrigenomics</h3>
@@ -37,7 +25,7 @@
 
     <div class="trait-card sports-card" onclick="toggleDetails('fitness')">
         <div class="card-left-icon">
-            <i class="fa-solid fa-person-running"></i>
+            <img src="assets/sport.png" style="width: 45px; height: 45px; object-fit: contain;">
         </div>
         <div class="card-right-content">
             <h3 class="card-title">Sports Physiology</h3>
@@ -48,7 +36,7 @@
 
     <div class="trait-card sleep-card" onclick="toggleDetails('sleep')">
         <div class="card-left-icon">
-            <i class="fa-solid fa-moon"></i>
+            <img src="assets/sleep.png" style="width: 45px; height: 45px; object-fit: contain;">
         </div>
         <div class="card-right-content">
             <h3 class="card-title">Circadian Rhythm</h3>
@@ -57,20 +45,9 @@
         </div>
     </div>
 
-    <div class="trait-card skin-card" onclick="toggleDetails('skin')">
-        <div class="card-left-icon">
-            <i class="fa-solid fa-wand-magic-sparkles"></i>
-        </div>
-        <div class="card-right-content">
-            <h3 class="card-title">Dermatology</h3>
-            <p class="tagline">Skin health, collagen, and UV protection.</p>
-            <div id="skin" class="details">Processing...</div>
-        </div>
-    </div>
-
     <div class="trait-card cognitive-card" onclick="toggleDetails('cognitive')">
         <div class="card-left-icon">
-            <i class="fa-solid fa-brain"></i>
+            <img src="assets/brain.png" style="width: 45px; height: 45px; object-fit: contain;">
         </div>
         <div class="card-right-content">
             <h3 class="card-title">Cognitive Traits</h3>
@@ -81,7 +58,9 @@
 
     <div class="trait-card stress-card" onclick="toggleDetails('stress')">
         <div class="card-left-icon">
-            <i class="fa-solid fa-bolt"></i>
+            <img src="assets/blue.png" style="width: 45px; height: 45px; object-fit: contain;">
+            <img src="assets/brain1.png" style="width: 45px; height: 45px; object-fit: contain;">
+            
         </div>
         <div class="card-right-content">
             <h3 class="card-title">Stress Response</h3>
@@ -90,7 +69,21 @@
         </div>
     </div>
 
-</div> 
+    <div class="trait-card skin-card" onclick="toggleDetails('skin')">
+        <div class="card-left-icon">
+            <img src="assets/face.png" style="width: 45px; height: 45px; object-fit: contain;">
+        </div>
+        <div class="card-right-content">
+            <h3 class="card-title">Dermatology</h3>
+            <p class="tagline">Skin health, collagen, and UV protection.</p>
+            <div id="skin" class="details">Processing...</div>
+        </div>
+    </div>
+
+</div>
+
+
+    
         <footer>
             <button class="download-btn" onclick="generateFullPDF()">Download Full Manual (PDF)</button>
 
