@@ -34,3 +34,30 @@
     /* النيون اللي طلبتيه دايما ظاهر */
     border: 1px solid rgba(0, 255, 255, 0.3); 
 }
+.visual-page{
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    padding: 20px;
+}
+.visual-page .back-btn{
+    align-self: flex-start !important; /* دفعه لليسار */
+    margin-bottom: 20px;
+}
+
+.visual-page .main-title {
+    font-family: 'Exo 2', sans-serif !important;
+    font-style: italic !important; /* هون السحر! */
+    font-weight: 700 !important;   /* خليه سميك شوي ليعطي فخامة */
+    text-transform: uppercase;    /* حروف كبيرة بالكامل */
+    letter-spacing: 5px;          /* مسافة بين الحروف ليعطي فخامة */
+    font-size: 3.0rem !important;
+    color: #ffffff;
+    
+    /* توهج نيون أبيض ونهدي خفيف ليناسب الـ DNA */
+    text-shadow: 0 0 10px rgba(163, 65, 255, 0.5), 
+                 0 0 2px #ffffff;
+    
+    text-align: center;
+    margin-bottom: 70px;
+}

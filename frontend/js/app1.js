@@ -208,145 +208,124 @@ if (vertexShader && fragmentShader) {
 // =========================================================
 // =========================================================
 // =========================================================
-// 4. كبسولة الحلزون الجيني (Long Centered Neon Spiral)
-// منطقة آمنة ومعزولة - لا تمس كود النجمة
+// SECTION 4: THE GENOMIC SPIRAL (COMPLEX MANDELBROT)
+// نسخة مطورة بناءً على "طرف الخيط" - تفاصيل دقيقة وخلفية داكنة
 // =========================================================
 
 function renderGenovaSpiral() {
     const spiralContainer = document.getElementById('mandelbrot-container'); 
-    if (!spiralContainer) return; 
+    if (!spiralContainer) return;
 
     spiralContainer.innerHTML = ''; 
-    const canvas = document.createElement('canvas');
-    canvas.width = spiralContainer.offsetWidth;
-    canvas.height = spiralContainer.offsetHeight;
-    spiralContainer.appendChild(canvas);
+    const canvas2 = document.createElement('canvas');
+    canvas2.width = spiralContainer.offsetWidth;
+    canvas2.height = spiralContainer.offsetHeight;
+    container2 = spiralContainer.appendChild(canvas2);
 
-    const gl = canvas.getContext('webgl');
-    if (!gl) return;
+    const gl2 = canvas2.getContext('webgl');
+    if (!gl2) return;
 
-    const localDNA = localStorage.getItem("userDNA") || "ATGC";
-
-    // --- تحليل الـ DNA للتحكم بالتفاصيل ---
+    const dna = localStorage.getItem("userDNA") || "ACGT";
     let cA = 0, cC = 0, cG = 0, cT = 0;
-    for (let i = 0; i < localDNA.length; i++) {
-        let b = localDNA[i].toUpperCase();
-        if (b === 'A') cA++; else if (b === 'C') cC++;
-        else if (b === 'G') cG++; else if (b === 'T') cT++;
+    for (let char of dna) {
+        if (char === 'A') cA++; else if (char === 'C') cC++;
+        else if (char === 'G') cG++; else if (char === 'T') cT++;
     }
-    
-    let total = localDNA.length; 
-    let pG = cG / total, pC = cC / total, pA = cA / total;
-    
-    // الألوان النيونية
-    let maxBase = Object.keys({A:cA, C:cC, G:cG, T:cT}).reduce((a, b) => ({A:cA, C:cC, G:cG, T:cT})[a] > ({A:cA, C:cC, G:cG, T:cT})[b] ? a : b);
+    let total = dna.length || 1;
+    let pC = cC / total, pA = cA / total;
+
     const palettes = {
-        T: { c1:[0.0, 1.0, 1.0], c2:[0.0, 0.5, 1.0], c3:[0.0, 0.1, 0.4] }, // سيان ساطع
-        C: { c1:[1.0, 0.2, 0.9], c2:[0.7, 0.0, 1.0], c3:[0.2, 0.0, 0.4] }, // بنفسجي/زهري
-        A: { c1:[1.0, 0.9, 0.0], c2:[1.0, 0.4, 0.0], c3:[0.4, 0.1, 0.0] }, // ذهبي متوهج
-        G: { c1:[0.7, 0.2, 1.0], c2:[0.4, 0.0, 0.9], c3:[0.1, 0.0, 0.4] }  // أرجواني عميق
+        A: { c1:[1.0, 0.8, 0.2], c2:[0.6, 0.3, 0.0], c3:[0.01, 0.0, 0.02] }, // ذهبي
+        C: { c1:[1.0, 0.2, 0.8], c2:[0.4, 0.1, 0.6], c3:[0.0, 0.0, 0.02] }, // زهري/موف
+        G: { c1:[0.6, 0.2, 1.0], c2:[0.2, 0.0, 0.5], c3:[0.0, 0.0, 0.01] }, // بنفسجي عميق
+        T: { c1:[0.0, 1.0, 1.0], c2:[0.0, 0.3, 0.6], c3:[0.0, 0.0, 0.02] }  // سيان
     };
+    
+    let maxBase = (cA >= cC && cA >= cG && cA >= cT) ? 'A' : (cC >= cG && cC >= cT) ? 'C' : (cG >= cT) ? 'G' : 'T';
     let pal = palettes[maxBase];
 
-    // إحداثيات دقيقة لمركز سلسلة حلزونية طويلة في ماندلبوت
-    let baseX = -0.74364388;
-    let baseY = 0.13182590;
-
-    // الـ DNA يغير الانحناء والمركز بشكل طفيف جداً للحفاظ على التمركز
-    let centerX = baseX + (pG * 0.0005);
-    let centerY = baseY + (pA * 0.0005);
-    
-    // زووم عالي لإظهار السلسلة الطويلة (C يتحكم بعمق السلسلة)
-    let zoomLevel = 3500.0 + (pC * 2000.0);
-
-    const vsSource = `attribute vec2 position; void main() { gl_Position = vec4(position, 0.0, 1.0); }`;
-
-    const fsSource =` 
+    const vs = `attribute vec2 p; void main(){ gl_Position=vec4(p,0,1); }`;
+    const fs =` 
         precision highp float;
-        uniform vec2 u_res;
-        uniform vec2 u_center;
-        uniform float u_zoom;
-        uniform vec3 u_c1; uniform vec3 u_c2; uniform vec3 u_c3;
-        
+        uniform vec2 res;
+        uniform float zoom;
+        uniform float rot;
+        uniform vec3 c1; uniform vec3 c2; uniform vec3 c3;
+
         void main() {
-            // ضبط الإحداثيات لتكون في منتصف الشاشة تماماً
-            vec2 uv = (gl_FragCoord.xy - 0.5 * u_res) / min(u_res.y, u_res.x);
-            vec2 c = u_center + uv / u_zoom;
+            // 1. تحويل الإحداثيات (Zoom مُعدل لرؤية الأشكال الصغيرة تنمو)
+            vec2 uv = (gl_FragCoord.xy - 0.5 * res) / min(res.y, res.x);
+            float s = sin(rot), co = cos(rot);
+            uv = vec2(uv.x * co - uv.y * s, uv.x * s + uv.y * co);
+            
+            // 2. نقطة الارتكاز (Seahorse Valley) بزووم فائق
+            vec2 c = vec2(-0.7452, 0.1127) + (uv / (zoom * 2.0));
             vec2 z = vec2(0.0);
             
             float iter = 0.0;
-            float trap1 = 100.0; // للخطوط النيونية
-            float trap2 = 100.0; // للتوهج الداخلي
+            float orbit = 1000.0;
             
-            for(int i = 0; i < 250; i++) {
+            for(int i = 0; i < 256; i++) {
                 z = vec2(z.x*z.x - z.y*z.y, 2.0*z.x*z.y) + c;
                 
-                // هندسة النيون: التقاط المسارات لإنشاء تأثير السلسلة الكهربائية
-                trap1 = min(trap1, abs(z.x * z.y)); 
-                trap2 = min(trap2, length(z - vec2(0.0))); 
+                // Orbit Trap مُعدل لالتقاط "حواف" الأشكال الصغيرة
+                orbit = min(orbit, length(z)); 
                 
-                if(dot(z,z) > 16.0) break;
-                iter++;
+                if(length(z) > 4.0) break;
+                iter += 1.0;
             }
             
-            vec3 color = vec3(0.005, 0.01, 0.02); // خلفية كحلية داكنة جداً
-            
-            if(iter < 250.0) {
-                float dist = length(z);
-                float log_iter = iter - log2(log2(dist)) + 4.0;
-                float m = log_iter / 250.0;
-                
-                // لون العمق (الظل)
-                color = mix(u_c3, u_c2, m * 2.0);
-                
-                // إضافة تفاصيل النيون الساطعة جداً
-                color += u_c1 * (0.01 / (trap1 + 0.002)); // خطوط حادة
-                color += u_c2 * (0.02 / (trap2 + 0.01));  // توهج ناعم
+            // 3. نظام تلوين "ناعم" وخلفية داكنة (Smooth Shading)
+            float f = iter / 256.0;
+            if (iter < 256.0) {
+                // تباين عالي: الألوان تظهر فقط عند الاقتراب من الحواف
+                float smooth_f = iter + 1.0 - log(log(length(z)))/log(2.0);
+                f = smooth_f / 64.0; 
             }
             
-            // زيادة التباين (Contrast) لإبراز النيون
-            gl_FragColor = vec4(pow(color, vec3(1.2)), 1.0);
+            // دمج الألوان بناءً على العمق (c3 هي الخلفية السوداء)
+            vec3 glow = (0.01 / (orbit + 0.005)) * c1;
+            vec3 bg = mix(c3, c2, f);
+            
+            // النتيجة النهائية مع تباين قوي (Power) لضمان سواد الخلفية
+            vec3 final = bg + glow;
+            gl_FragColor = vec4(pow(final, vec3(1.3)), 1.0);
         }
     `;
-    function compile(gl, src, type) {
-        const sh = gl.createShader(type);
-        gl.shaderSource(sh, src); gl.compileShader(sh);
-        return gl.getShaderParameter(sh, gl.COMPILE_STATUS) ? sh : null;
+
+    function createS(gl, src, type) {
+        const s = gl.createShader(type);
+        gl.shaderSource(s, src); gl.compileShader(s);
+        return s;
     }
 
-    const vs = compile(gl, vsSource, gl.VERTEX_SHADER);
-    const fs = compile(gl, fsSource, gl.FRAGMENT_SHADER);
+    const program = gl2.createProgram();
+    gl2.attachShader(program, createS(gl2, vs, gl2.VERTEX_SHADER));
+    gl2.attachShader(program, createS(gl2, fs, gl2.FRAGMENT_SHADER));
+    gl2.linkProgram(program); gl2.useProgram(program);
+    const buffer = gl2.createBuffer();
+    gl2.bindBuffer(gl2.ARRAY_BUFFER, buffer);
+    gl2.bufferData(gl2.ARRAY_BUFFER, new Float32Array([-1,-1, 1,-1, -1,1, 1,1]), gl2.STATIC_DRAW);
+    const pL = gl2.getAttribLocation(program, "p");
+    gl2.enableVertexAttribArray(pL); gl2.vertexAttribPointer(pL, 2, gl2.FLOAT, false, 0, 0);
 
-    if (vs && fs) {
-        const prog = gl.createProgram();
-        gl.attachShader(prog, vs); gl.attachShader(prog, fs);
-        gl.linkProgram(prog); gl.useProgram(prog);
-        
-        const buf = gl.createBuffer();
-        gl.bindBuffer(gl.ARRAY_BUFFER, buf);
-        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1, 1,-1, -1,1, 1,1]), gl.STATIC_DRAW);
-
-        const posLoc = gl.getAttribLocation(prog, "position");
-        gl.enableVertexAttribArray(posLoc);
-        gl.vertexAttribPointer(posLoc, 2, gl.FLOAT, false, 0, 0);
-
-        function draw() {
-            if (canvas.width !== spiralContainer.offsetWidth || canvas.height !== spiralContainer.offsetHeight) {
-                canvas.width = spiralContainer.offsetWidth; canvas.height = spiralContainer.offsetHeight;
-                gl.viewport(0, 0, canvas.width, canvas.height);
-            }
-            gl.uniform2f(gl.getUniformLocation(prog, "u_res"), canvas.width, canvas.height);
-            gl.uniform2f(gl.getUniformLocation(prog, "u_center"), centerX, centerY);
-            gl.uniform1f(gl.getUniformLocation(prog, "u_zoom"), zoomLevel);
-            gl.uniform3fv(gl.getUniformLocation(prog, "u_c1"), pal.c1);
-            gl.uniform3fv(gl.getUniformLocation(prog, "u_c2"), pal.c2);
-            gl.uniform3fv(gl.getUniformLocation(prog, "u_c3"), pal.c3);
-            gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+    function draw() {
+        if (canvas2.width !== spiralContainer.offsetWidth || canvas2.height !== spiralContainer.offsetHeight) {
+            canvas2.width = spiralContainer.offsetWidth; canvas2.height = spiralContainer.offsetHeight;
+            gl2.viewport(0, 0, canvas2.width, canvas2.height);
         }
-        window.addEventListener('resize', draw);
-        draw();
+        gl2.uniform2f(gl2.getUniformLocation(program, "res"), canvas.width, canvas.height);
+        // تكبير الزووم ليتناسب مع التفاصيل الصغيرة
+        gl2.uniform1f(gl2.getUniformLocation(program, "zoom"), 500.0 + (pC * 3000.0));
+        gl2.uniform1f(gl2.getUniformLocation(program, "rot"), pA * 6.28);
+        gl2.uniform3fv(gl2.getUniformLocation(program, "c1"), pal.c1);
+        gl2.uniform3fv(gl2.getUniformLocation(program, "c2"), pal.c2);
+        gl2.uniform3fv(gl2.getUniformLocation(program, "c3"), pal.c3);
+        gl2.drawArrays(gl2.TRIANGLE_STRIP, 0, 4);
     }
+    
+    window.addEventListener('resize', draw);
+    draw();
 }
 
-// تشغيل السلسلة الحلزونية
 renderGenovaSpiral();
