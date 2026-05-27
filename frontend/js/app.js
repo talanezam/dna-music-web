@@ -383,14 +383,14 @@ function generateFullPDF() {
     const content = element.querySelector('#pdfContent');
 
     // --- 1. قسم الفيتامينات (Vitamins & Supplements) ---
-    addPDFSection(content, "Vitamins & Supplements Analysis", "#4ade80", [
+    addPDFSection(content, "Vitamins & Supplements Analysis", "#1e40af", [
         { title: "Vitamin D", res: dna.includes("AGTC"), pos: "Reduced Absorption: Maintain moderate sun exposure.", neg: "Normal Absorption: Balanced levels." },
         { title: "Vitamin B12", res: dna.includes("TTCG"), pos: "Tendency for Deficiency: Focus on B12-rich foods.", neg: "Normal Levels: Stable absorption." },
         { title: "Vitamin A", res: dna.includes("GCTA"), pos: "Reduced Efficiency: Include pre-formed Vitamin A in diet.", neg: "Normal Conversion: Efficient processing." }
     ]);
 
     // --- 2. قسم المعالجة الغذائية (Nutritional Processing - 7 Points) ---
-    addPDFSection(content, "Nutritional Processing", "#d4af37", [
+    addPDFSection(content, "Nutritional Processing", "#1e40af", [
         { title: "Sodium Sensitivity", res: dna.includes("TTCA"), pos: "Salt Sensitive: Limit salt to protect heart health.", neg: "Normal: Standard salt intake is fine." },
         { title: "Sugar Processing", res: dna.includes("TCF7"), pos: "High Spiking Risk: Focus on complex carbs and fiber.", neg: "Efficient: Your body handles glucose well." },
         { title: "Fat Breakdown", res: dna.includes("FTO"), pos: "Slower Breakdown: Limit saturated fats (red meat/butter).", neg: "Efficient: Balanced fat intake is well-processed." },
@@ -401,19 +401,19 @@ function generateFullPDF() {
     ]);
 
     // 2. Stress & Mental Health (توتر)
-    addPDFSection(content, "Stress & Mental Health", "#818cf8", [
+    addPDFSection(content, "Stress & Mental Health", "#1e40af", [
         { title: "Stress Response (COMT)", res: dna.includes("GAAA"), pos: "Worrier: High focus but needs meditation to manage anxiety.", neg: "Warrior: Calm under pressure, thrives in high-stress tasks." }
     ]);
 
     // 3. Sports Physiology (رياضة)
-    addPDFSection(content, "Sports Physiology", "#2dd4bf", [
+    addPDFSection(content, "Sports Physiology", "#1e40af", [
         { title: "Muscle Fiber Type", res: (dna.match(/RR/g) || []).length > (dna.match(/XX/g)||  []).length, pos: "Power/Sprint: Focus on heavy lifting and explosive movements.", neg: "Endurance: Focus on long-distance cardio and stamina." },
         { title: "Recovery Speed", res: dna.includes("GGAA"), pos: "Fast: Can handle high-frequency training sessions.", neg: "Slow: Requires 48-72h rest between intense workouts." },
         { title: "Injury Risk", res: dna.includes("CCAA"), pos: "High Risk: Focus on mobility, warm-ups, and collagen support.", neg: "Low Risk: Standard warm-up is sufficient." }
     ]);
 
     // 4. Sleep & Circadian Rhythm (نوم)
-    addPDFSection(content, "Sleep & Circadian Rhythm", "#fbbf24", [
+    addPDFSection(content, "Sleep & Circadian Rhythm", "#1e40af", [
         { title: "Chronotype", res: dna.includes("CC") || dna.includes("GG"), pos: "Night Owl: Peak mental energy is in the evening.", neg: "Early Bird: Peak mental energy is in the early morning." },
         { title: "Caffeine Sleep Impact", res: dna.includes("AA"), pos: "High Impact: Even small amounts can ruin deep sleep quality.", neg: "Low Impact: Caffeine clears the system quickly." },
         { title: "Sleep Depth", res: dna.includes("AG") || dna.includes("TT"), pos: "Light Sleeper: Use earplugs/eye masks to prevent waking.", neg: "Deep Sleeper: Highly restorative sleep cycles." },
@@ -422,7 +422,7 @@ function generateFullPDF() {
         { title: "Restless Legs (RLS)", res: dna.includes("BTBD9"), pos: "Increased Risk: Stretch legs and check Iron/Magnesium levels.", neg: "Low Risk: No significant movement issues during sleep." }
     ]);
     // 5. Dermatology & Beauty (بشرة)
-    addPDFSection(content, "Dermatology & Beauty", "#f472b6", [
+    addPDFSection(content, "Dermatology & Beauty", "#1e40af", [
         { title: "Collagen Formation", res: dna.includes("GG"), pos: "Optimal: Skin maintains elasticity well.", neg: "At Risk: Use Peptides and Vitamin C to support structure." },
         { title: "Sun Sensitivity", res: dna.includes("MC1R"), pos: "High: SPF 50+ is mandatory to prevent DNA damage.", neg: "Normal: Natural protection, SPF 30 is sufficient." },
         { title: "Pigmentation Risk", res: dna.includes("AG"), pos: "High: Prone to sunspots; use brightening serums.", neg: "Low: Even skin tone distribution." },
@@ -433,7 +433,7 @@ function generateFullPDF() {
     ]);
 
     // 6. Cognitive Traits (إدراك)
-    addPDFSection(content, "Cognitive Traits", "#a78bfa", [
+    addPDFSection(content, "Cognitive Traits", "#1e40af", [
         { title: "Learning Plasticity", res: dna.includes("AG"), pos: "High: Brain adapts quickly to new complex skills.", neg: "Standard: Needs repetition to solidify new memory pathways." },
         { title: "Processing Speed", res: dna.includes("CC"), pos: "Rapid: Fast recall and information processing.", neg: "Focused: Slower but more meticulous information recall." },
         { title: "Creative Style", res: dna.includes("TTAA"), pos: "Divergent: Natural flair for creative problem solving.", neg: "Convergent: Stronger in logical and analytical deduction." },

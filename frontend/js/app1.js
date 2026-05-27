@@ -204,128 +204,301 @@ if (vertexShader && fragmentShader) {
 }
 /*==================&&&&&&&&&&&&انتهاء كود النجمة &&&&&&&&&&&&&&&&&&&&&&&==========================*/
 // =========================================================
-// 4. كبسولة الحلزون الجيني (Mandelbrot Spiral) - منطقة آمنة معزولة
 // =========================================================
-// =========================================================
-// =========================================================
-// SECTION 4: THE GENOMIC SPIRAL (COMPLEX MANDELBROT)
-// نسخة مطورة بناءً على "طرف الخيط" - تفاصيل دقيقة وخلفية داكنة
+// SECTION 4: THE GENETIC MATRIX CRYSTAL (SACRED GEOMETRY)
+// كود البلورة الكسورية المعتمد على ثلاثيات الـ DNA (Codons)
 // =========================================================
 
 function renderGenovaSpiral() {
-    const spiralContainer = document.getElementById('mandelbrot-container'); 
-    if (!spiralContainer) return;
+    // 1. استهداف حاوية الكرت الثاني
+    const container = document.getElementById('mandelbrot-container');
+    if (!container) return;
 
-    spiralContainer.innerHTML = ''; 
-    const canvas2 = document.createElement('canvas');
-    canvas2.width = spiralContainer.offsetWidth;
-    canvas2.height = spiralContainer.offsetHeight;
-    container2 = spiralContainer.appendChild(canvas2);
+    container.innerHTML = '';
+    const canvas = document.createElement('canvas');
+    canvas.width = container.offsetWidth;
+    canvas.height = container.offsetHeight;
+    container.appendChild(canvas);
 
-    const gl2 = canvas2.getContext('webgl');
-    if (!gl2) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
 
-    const dna = localStorage.getItem("userDNA") || "ACGT";
-    let cA = 0, cC = 0, cG = 0, cT = 0;
+    // 2. إعدادات الخلفية المظلمة الفخمة
+    ctx.fillStyle = '#020206';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.globalCompositeOperation = 'lighter'; // دمج ضوئي نيون عند تقاطع الخطوط
+
+    // 3. جلب الـ DNA وتقسيمه إلى ثلاثيات (Codons)
+    const dna = localStorage.getItem("userDNA") || "ATGCCGTAGACT";
+    let codons = [];
+    for (let i = 0; i < dna.length - 2; i += 3) {
+        codons.push(dna.substring(i, i + 3).toUpperCase());
+    }
+    if (codons.length === 0) codons = ["ATG", "CCG", "TAG"];
+
+    // حساب نسب القواعد لتحديد كثافة الشبكة وألوانها
+    let cGC = 0, cAT = 0;
     for (let char of dna) {
-        if (char === 'A') cA++; else if (char === 'C') cC++;
-        else if (char === 'G') cG++; else if (char === 'T') cT++;
+        if (char === 'G' || char === 'C') cGC++;
+        if (char === 'A' || char === 'T') cAT++;
     }
-    let total = dna.length || 1;
-    let pC = cC / total, pA = cA / total;
+    let totalLen = dna.length || 1;
+    let cyanDensity = cGC / totalLen;
+    let goldDensity = cAT / totalLen;
 
-    const palettes = {
-        A: { c1:[1.0, 0.8, 0.2], c2:[0.6, 0.3, 0.0], c3:[0.01, 0.0, 0.02] }, // ذهبي
-        C: { c1:[1.0, 0.2, 0.8], c2:[0.4, 0.1, 0.6], c3:[0.0, 0.0, 0.02] }, // زهري/موف
-        G: { c1:[0.6, 0.2, 1.0], c2:[0.2, 0.0, 0.5], c3:[0.0, 0.0, 0.01] }, // بنفسجي عميق
-        T: { c1:[0.0, 1.0, 1.0], c2:[0.0, 0.3, 0.6], c3:[0.0, 0.0, 0.02] }  // سيان
-    };
-    
-    let maxBase = (cA >= cC && cA >= cG && cA >= cT) ? 'A' : (cC >= cG && cC >= cT) ? 'C' : (cG >= cT) ? 'G' : 'T';
-    let pal = palettes[maxBase];
+    // 4. خوارزمية الرسم العودية للمصفوفة البلورية المقدسة (Sierpinski Matrix)
+    function drawCrystalTriangle(x1, y1, x2, y2, x3, y3, depth, maxDepth, codonIndex) {
+        if (depth > maxDepth) return;
 
-    const vs = `attribute vec2 p; void main(){ gl_Position=vec4(p,0,1); }`;
-    const fs =` 
-        precision highp float;
-        uniform vec2 res;
-        uniform float zoom;
-        uniform float rot;
-        uniform vec3 c1; uniform vec3 c2; uniform vec3 c3;
+        // جلب الثلاثية الحالية المؤثرة على هذا المستوى من البلورة
+        let currentCodon = codons[codonIndex % codons.length];
+        
+        // قفل أمان جيني (OFF): إذا كانت الثلاثية شفرة توقف (Stop Codon)، يتم تخفيف إضاءة المثلث كلياً
+        let isStopCodon = (currentCodon === "TAA" || currentCodon === "TAG"  ||currentCodon === "TGA");
+        
+        if (!isStopCodon) {
+            // رسم المثلث الحالي بخطوط نيونية حادة
+            ctx.beginPath();
+            ctx.moveTo(x1, y1);
+            ctx.lineTo(x2, y2);
+            ctx.lineTo(x3, y3);
+            ctx.closePath();
 
-        void main() {
-            // 1. تحويل الإحداثيات (Zoom مُعدل لرؤية الأشكال الصغيرة تنمو)
-            vec2 uv = (gl_FragCoord.xy - 0.5 * res) / min(res.y, res.x);
-            float s = sin(rot), co = cos(rot);
-            uv = vec2(uv.x * co - uv.y * s, uv.x * s + uv.y * co);
-            
-            // 2. نقطة الارتكاز (Seahorse Valley) بزووم فائق
-            vec2 c = vec2(-0.7452, 0.1127) + (uv / (zoom * 2.0));
-            vec2 z = vec2(0.0);
-            
-            float iter = 0.0;
-            float orbit = 1000.0;
-            
-            for(int i = 0; i < 256; i++) {
-                z = vec2(z.x*z.x - z.y*z.y, 2.0*z.x*z.y) + c;
-                
-                // Orbit Trap مُعدل لالتقاط "حواف" الأشكال الصغيرة
-                orbit = min(orbit, length(z)); 
-                
-                if(length(z) > 4.0) break;
-                iter += 1.0;
+            // تحديد اللون: خلط السيان والذهب بناءً على موقع الحروف في الكود
+            if (currentCodon.includes("G") || currentCodon.includes("C")) {
+                ctx.strokeStyle = '#00f0ff'; // سيان نيون حاد
+                ctx.shadowColor = '#00f0ff';
+                ctx.lineWidth = (maxDepth - depth) * 0.4 + 0.5;
+            } else {
+                ctx.strokeStyle = '#ffd700'; // ذهب متوهج
+                ctx.shadowColor = '#ffd700';
+                ctx.lineWidth = (maxDepth - depth) * 0.3 + 0.5;
             }
-            
-            // 3. نظام تلوين "ناعم" وخلفية داكنة (Smooth Shading)
-            float f = iter / 256.0;
-            if (iter < 256.0) {
-                // تباين عالي: الألوان تظهر فقط عند الاقتراب من الحواف
-                float smooth_f = iter + 1.0 - log(log(length(z)))/log(2.0);
-                f = smooth_f / 64.0; 
-            }
-            
-            // دمج الألوان بناءً على العمق (c3 هي الخلفية السوداء)
-            vec3 glow = (0.01 / (orbit + 0.005)) * c1;
-            vec3 bg = mix(c3, c2, f);
-            
-            // النتيجة النهائية مع تباين قوي (Power) لضمان سواد الخلفية
-            vec3 final = bg + glow;
-            gl_FragColor = vec4(pow(final, vec3(1.3)), 1.0);
-        }
-    `;
 
-    function createS(gl, src, type) {
-        const s = gl.createShader(type);
-        gl.shaderSource(s, src); gl.compileShader(s);
-        return s;
+            ctx.shadowBlur = depth < 3 ? 10 : 2; // توهج ناعم للخارج وحدّة للداخل
+            ctx.globalAlpha = 0.8 - (depth * 0.08); // تلاشي تدريجي للعمق لتجنب الطمس
+            ctx.stroke();
+        }
+
+        // حساب نقاط المنتصف لتقسيم المثلث الكسوري إلى 3 مثلثات فرعية متناظرة
+        const mx12 = (x1 + x2) / 2;
+        const my12 = (y1 + y2) / 2;
+        const mx23 = (x2 + x3) / 2;
+        const my23 = (y2 + y3) / 2;
+        const mx31 = (x3 + x1) / 2;
+        const my31 = (y3 + y1) / 2;
+
+        // الانتقال العودي للمستويات الأصغر (تنمو وتتداخل للداخل)
+        // الحرف الأول يوجه النمو للمثلث العلوي، الثاني لليسرى، الثالث لليمنى
+        drawCrystalTriangle(x1, y1, mx12, my12, mx31, my31, depth + 1, maxDepth, codonIndex + 1);
+        drawCrystalTriangle(mx12, my12, x2, y2, mx23, my23, depth + 1, maxDepth, codonIndex + 2);
+        drawCrystalTriangle(mx31, my31, mx23, my23, x3, y3, depth + 1, maxDepth, codonIndex + 3);
     }
 
-    const program = gl2.createProgram();
-    gl2.attachShader(program, createS(gl2, vs, gl2.VERTEX_SHADER));
-    gl2.attachShader(program, createS(gl2, fs, gl2.FRAGMENT_SHADER));
-    gl2.linkProgram(program); gl2.useProgram(program);
-    const buffer = gl2.createBuffer();
-    gl2.bindBuffer(gl2.ARRAY_BUFFER, buffer);
-    gl2.bufferData(gl2.ARRAY_BUFFER, new Float32Array([-1,-1, 1,-1, -1,1, 1,1]), gl2.STATIC_DRAW);
-    const pL = gl2.getAttribLocation(program, "p");
-    gl2.enableVertexAttribArray(pL); gl2.vertexAttribPointer(pL, 2, gl2.FLOAT, false, 0, 0);
-
-    function draw() {
-        if (canvas2.width !== spiralContainer.offsetWidth || canvas2.height !== spiralContainer.offsetHeight) {
-            canvas2.width = spiralContainer.offsetWidth; canvas2.height = spiralContainer.offsetHeight;
-            gl2.viewport(0, 0, canvas2.width, canvas2.height);
-        }
-        gl2.uniform2f(gl2.getUniformLocation(program, "res"), canvas.width, canvas.height);
-        // تكبير الزووم ليتناسب مع التفاصيل الصغيرة
-        gl2.uniform1f(gl2.getUniformLocation(program, "zoom"), 500.0 + (pC * 3000.0));
-        gl2.uniform1f(gl2.getUniformLocation(program, "rot"), pA * 6.28);
-        gl2.uniform3fv(gl2.getUniformLocation(program, "c1"), pal.c1);
-        gl2.uniform3fv(gl2.getUniformLocation(program, "c2"), pal.c2);
-        gl2.uniform3fv(gl2.getUniformLocation(program, "c3"), pal.c3);
-        gl2.drawArrays(gl2.TRIANGLE_STRIP, 0, 4);
-    }
+    // 5. ضبط أبعاد وموقع البلورة في منتصف الكانفاس تماماً
+    const size = Math.min(canvas.width, canvas.height) * 0.85;
+    const height = size * (Math.sqrt(3) / 2);
     
-    window.addEventListener('resize', draw);
-    draw();
+    // إحداثيات رؤوس المثلث البلوري الكبير المتمركز في المنتصف
+    const x1 = canvas.width / 2,          y1 = (canvas.height - height) / 2;
+    const x2 = (canvas.width - size) / 2, y2 = y1 + height;
+    const x3 = (canvas.width + size) / 2, y3 = y1 + height;
+
+    // حساب عمق البلورة (كثافة الشبكة) بناءً على طول الـ DNA (بين عمق 4 إلى 7 لمنع الاكتظاظ)
+    let crystalDepth = Math.min(7, Math.max(4, Math.floor(totalLen / 10)));
+
+    // إطلاق رسم البلورة الكسورية المقدسة
+    drawCrystalTriangle(x1, y1, x2, y2, x3, y3, 1, crystalDepth, 0);
 }
 
-renderGenovaSpiral();
+// تشغيل البلورة الجينية عند تحميل الصفحة
+window.addEventListener('load', renderGenovaSpiral);
+
+//=================================================================================================
+// =========================================================
+// SECTION 5: FUTURE MASTER CANVAS INITIALIZATION
+// حجز وإعداد مساحة الرسم للمستطيل العلوي الجديد
+// =========================================================
+
+function initMasterGeneticCanvas() {
+    const masterContainer = document.getElementById('master-panel-container');
+    if (!masterContainer) return;
+
+    const masterCanvas = document.getElementById('masterGeneticCanvas');
+    if (!masterCanvas) return;
+
+    const masterCtx = masterCanvas.getContext('2d');
+    if (!masterCtx) return;
+
+    // دالة لضبط دقة أبعاد الكانفاس الداخيلة لتطابق حجم العنصر تماماً
+    function resizeMasterCanvas() {
+        masterCanvas.width = masterContainer.offsetWidth;
+        masterCanvas.height = masterContainer.offsetHeight;
+
+        // هنا حجزنا مكان الرسم (حالياً سنضع خلفية نظيفة ليكون جاهزاً للوحة القادمة)
+        masterCtx.fillStyle = 'transparent'; 
+        masterCtx.fillRect(0, 0, masterCanvas.width, masterCanvas.height);
+        
+        // يمكنكِ مستقبلاً كتابة كود الرسم هنا مباشرة داخل هذه الدالة...
+    }
+
+    // تشغيل الضبط الفوري وعند تغيير حجم الشاشة
+    resizeMasterCanvas();
+    window.addEventListener('resize', resizeMasterCanvas);
+}
+
+// تشغيل دالة الإعداد عند تحميل الصفحة
+window.addEventListener('load', initMasterGeneticCanvas);
+//=============================================================================
+// =========================================================================
+// SECTION 5: MASTER GENETIC MATRIX CRYSTAL GENERATOR (GENOVA NEON ENGINE)
+// المحرك الإنتاجي المطور للوحة العلوية بناءً على المعاملات الكونية والحالات الأربع
+// =========================================================================
+
+// =========================================================================
+// SECTION 5: MASTER GENETIC MATRIX COSMOLOGY GENERATOR (ULTIMATE ENGINE)
+// المحرك الإنتاجي المتطور - اللوحة الكونية الموحدة عالية الكثافة والتداخل الكسيري
+// =========================================================================
+
+// =========================================================================
+// GENOVA ENGINE - SHAPE 1: PYTHAGORAS SQUARE TREE (INDIVIDUAL 1)
+// خوارزمية الشجرة المربعة الكسيرية بالنمط الهندسي والنيون المطلوب
+// =========================================================================
+
+// =========================================================================
+// GENOVA ENGINE - SHAPE 1: DNA-DRIVEN PYTHAGORAS TREE (DYNAMIC COLORS)
+// التعديل: ربط كثافة التفرع (GC) ولوحة الألوان (A-T-C-G Ratios) بالـ DNA
+// =========================================================================
+
+// =========================================================================
+// GENOVA ENGINE - BACK TO THE LAST WORKING CODE (CRISP & CONTRASTY)
+// العودة للكود الناجح والمضمون 100% باللون السيان والبنفسجي الثابت
+// =========================================================================
+
+// =========================================================================
+// GENOVA ENGINE - SHAPE 1: DNA-DRIVEN PYTHAGORAS TREE
+// خوارزمية الشجرة المكونة ديناميكياً بناءً على مؤشرات شريط الـ DNA
+// =========================================================================
+
+function initOrganicSquareTree() {
+    const masterContainer = document.getElementById('master-panel-container');
+    if (!masterContainer) return;
+
+    const masterCanvas = document.getElementById('masterGeneticCanvas');
+    if (!masterCanvas) return;
+
+    const ctx = masterCanvas.getContext('2d');
+    if (!ctx) return;
+
+    // 1. جلب الـ DNA وتحليله كمؤشر برميجي (Genomic Mapping)
+    const dna = localStorage.getItem("userDNA") || "ATGCCGTAGACTAGCCG"; // شريط افتراضي في حال عدم وجوده
+    const L = dna.length || 1;
+    let nC = 0, nG = 0;
+
+    for (let i = 0; i < L; i++) {
+        let base = dna[i].toUpperCase();
+        if (base === 'C' || base === 'G') nC++;
+    }
+
+    // حساب نسبة الـ GC-Content (تتراوح بين 0 و 1)
+    const gcContent = (nC + nG) / L;
+
+    // القاعدة البرمجية: تحديد عمق التفرع (العجقة) ديناميكياً بناءً على الـ GC
+    // إذا النسبة عالية بيوصل العمق لـ 8 (معجوقة جداً)، وإذا قليلة بيبقى عند 5 أو 6
+    const maxDepth = Math.min(8, Math.max(5, Math.floor(gcContent * 5) + 5));
+
+    // 2. دالة رسم المربعات بتوهج وسماكة تتأقلم مع العمق الكلي لمنع الطمس
+    function drawNeonSquare(x1, y1, x2, y2, x3, y3, x4, y4, currentDepth) {
+        ctx.save();
+        
+        ctx.beginPath();
+        ctx.moveTo(x1, y1);
+        ctx.lineTo(x2, y2);
+        ctx.lineTo(x3, y3);
+        ctx.lineTo(x4, y4);
+        ctx.closePath();
+
+        // التعبئة البنفسجية الشفافة
+        ctx.fillStyle = 'rgba(168, 85, 247, 0.28)'; 
+        ctx.fill();
+
+        // حساب النسبة البرمجية للعمق الحالي مقارنة بالعمق الأقصى
+        const depthRatio = currentDepth / maxDepth; 
+        
+        // ضبط التوهج والسماكة: كل ما زاد العمق الكلي (العجقة)، بنحّف الخطوط عشان تطلع تفاصيل المربعات لولبية ونظيفة
+        ctx.shadowBlur = (maxDepth > 7) ? 8 * depthRatio : 12 * depthRatio; 
+        ctx.shadowColor = '#00f0ff';
+        ctx.strokeStyle = '#00f0ff';
+        
+        // خطوط أنعم جداً للأعماق الكبيرة (مثل 8) لمنع تكتل اللون
+        ctx.lineWidth = (maxDepth > 7) ? 0.3 + (1.0 * depthRatio) : 0.5 + (1.5 * depthRatio); 
+        
+        ctx.stroke();
+        ctx.restore();
+    }
+
+    // 3. الخوارزمية العودية الثنائية
+    function branchPythagoras(x1, y1, x2, y2, depth) {
+        if (depth === 0) return;
+
+        let dx = x2 - x1;
+        let dy = y1 - y2;
+
+        let x3 = x2 - dy;
+        let y3 = y2 - dx;
+        let x4 = x1 - dy;
+        let y4 = y1 - dx;
+
+        drawNeonSquare(x1, y1, x2, y2, x3, y3, x4, y4, depth);
+
+        let x5 = x4 + (dx - dy) * 0.5;
+        let y5 = y4 - (dx + dy) * 0.5;
+
+        branchPythagoras(x4, y4, x5, y5, depth - 1); 
+        branchPythagoras(x5, y5, x3, y3, depth - 1); 
+    }
+
+    // 4. بناء الجذع وتوليد اللوحة الفنية
+    function drawCanvasContent() {
+        const w = masterCanvas.width;
+        const h = masterCanvas.height;
+
+        ctx.fillStyle = '#020206';
+        ctx.fillRect(0, 0, w, h);
+
+        ctx.globalCompositeOperation = 'lighter';
+
+        // أبعاد الجذع المتناسقة
+        let baseWidth = 36; 
+        let startX1 = w / 2 - baseWidth / 2;
+        let startX2 = w / 2 + baseWidth / 2;
+        let startY = h - 30; 
+
+        let currentY = startY;
+        let trunkHeight = 5; 
+
+        for (let i = 0; i < trunkHeight; i++) {
+            let nextY = currentY - baseWidth;
+            drawNeonSquare(startX1, currentY, startX2, currentY, startX2, nextY, startX1, nextY, maxDepth);
+            currentY = nextY;
+        }
+
+        // تشغيل التفرع بالعمق المحسوب ديناميكياً من الـ DNA
+        branchPythagoras(startX1, currentY, startX2, currentY, maxDepth);
+        // طباعة المؤشر الفني على الكانفاس لتوثيق العمل الجيني (إختياري وممتاز للمناقشة)
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+        ctx.font = '12px monospace';
+        ctx.fillText(`DNA Length: ${L} | GC Content: ${(gcContent * 100).toFixed(1)}% | Generated Depth: ${maxDepth}`, 20, 30);
+    }
+
+    function resizeCanvas() {
+        masterCanvas.width = masterContainer.offsetWidth;
+        masterCanvas.height = masterContainer.offsetHeight;
+        drawCanvasContent();
+    }
+
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+}
+
+window.addEventListener('load', initOrganicSquareTree);

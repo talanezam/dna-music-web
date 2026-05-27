@@ -96,10 +96,30 @@
 
     
         <footer>
-            <button class="download-btn" onclick="generateFullPDF()">Download Full Manual (PDF)</button>
+
+            <button  class="download-btn" onclick="generateFullPDF()" >Download Full Manual (PDF)</button>
+            <style>
+  /* استهداف العناوين والخطوط الجانبية بداخل حاوية الـ PDF المحدثة */
+  .pdf-report h2, 
+  .pdf-report h3, 
+  .pdf-report .section-title,
+  .pdf-content h2,
+  .pdf-content h3 {
+      color: #1e3a8a !important; /* تحويل الخطوط للكحلي الملكي */
+  }
+
+  /* توحيد ألوان الخطوط الجانبية العمودية بداخل الـ PDF للكحلي */
+  .pdf-report div, 
+  .pdf-report section,
+  .pdf-content div,
+  .pdf-content section {
+      border-left-color: #1e3a8a !important;
+  }
+</style>
 
         </footer>
     </div>
+  
 <div id="reportModal" class="modal">
         <div class="modal-content">
             <span class="close-btn" onclick="closeModal()">&times;</span>
