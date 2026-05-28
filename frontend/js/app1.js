@@ -302,11 +302,17 @@ function renderGenovaSpiral() {
             ctx.lineTo(x3, y3);
             ctx.closePath();
 
-            ctx.strokeStyle = triangleColor; 
-            ctx.shadowColor = triangleColor;
-            ctx.lineWidth = (maxDepth - depth) * 0.35 + 0.55;
+           ctx.strokeStyle = triangleColor;
+ctx.lineWidth = (maxDepth - depth) * 0.35 + 0.55;
+if (depth === 1) {
+    ctx.shadowColor = triangleColor;
+    ctx.shadowBlur = 10;
+} else {
+    ctx.shadowColor = 'transparent';
+    ctx.shadowBlur = 0;
+}
 
-            ctx.shadowBlur = depth < 3 ? 10 : 2; 
+            ctx.shadowBlur = depth === 1 ? 10 :0; 
             ctx.globalAlpha = 0.85 - (depth * 0.07); 
             ctx.stroke();
             
@@ -438,8 +444,14 @@ function initMasterGeneticCanvas() {
             ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.lineTo(x3, y3); ctx.lineTo(x4, y4); ctx.closePath();
             ctx.fillStyle = palette.fill; ctx.fill();
             const depthRatio = currentDepth / maxDepth; 
-            ctx.shadowBlur = (maxDepth > 7) ? 8 * depthRatio : 12 * depthRatio; 
-            ctx.shadowColor = palette.glow;
+            
+            if (currentDepth > maxDepth - 2) {
+    ctx.shadowColor = palette.glow;
+    ctx.shadowBlur = 12 * depthRatio;
+} else {
+    ctx.shadowColor = 'transparent';
+    ctx.shadowBlur = 0;
+}
             ctx.strokeStyle = (currentDepth % 2 === 0) ? palette.strokeA : palette.strokeB;
             ctx.lineWidth = (maxDepth > 7) ? 0.3 + (1.0 * depthRatio) : 0.5 + (1.5 * depthRatio); 
             ctx.stroke(); ctx.restore();
@@ -455,7 +467,7 @@ function initMasterGeneticCanvas() {
 
     // 2. استدعاء البلورة الجينية لتتفتح عند رأس الغصن الحالي مع الحفاظ على منطق الـ Codons
     // المتغيرات (crystalDepth) ممررة تلقائياً لأن الدالة معزولة داخلياً
-    drawCrystalTriangle(x1, y1, x2, y2, x3, y3, 1, crystalDepth, 0);
+    drawCrystalTriangle(x1, y1, x2, y2, x3, y3, 1, 3, 0);
     return;
 }
             let dx = x2 - x1; let dy = y1 - y2;
@@ -473,7 +485,7 @@ function initMasterGeneticCanvas() {
             case 'C': triangleColor = '#fbff83'; break;
             case 'G': triangleColor = '#355ad5'; break;
         }
-        
+
         // دمج ورسم الشجرة في النصف السفلي لتصعد وتتداخل للأعلى
         let baseWidth = 36; 
         let startX1 = w / 2 - baseWidth / 2; let startX2 = w / 2 + baseWidth / 2; let startY = h - 25; 
