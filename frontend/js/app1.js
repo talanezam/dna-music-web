@@ -218,37 +218,82 @@ if (vertexShader && fragmentShader) {
             // =====================================================================
             // ⬢ 1. تهيئة وإعداد كانفاس الكارد الثاني (Genomic Spiral)
             // =====================================================================
+           
+
+            // =====================================================================
+            // ⬢ تثبيت سيربنسكي السداسي الجيني المطور (الحل النهائي الجاهز مية بالمية)
+            // =====================================================================
+            // =====================================================================
+            // 🔮 تثبيت المصفوفة التوأم المتداخلة (Concentric Interlocking Twin)
+            // =====================================================================
+           // =====================================================================
+            // 🔮 تثبيت شكل النواة والتابع (Center & Satellite) الموزون داخل الشاشة
+            // =====================================================================
             const mContainer = document.getElementById('mandelbrot-container');
-            mContainer.innerHTML = ''; // تنظيف الكارد من أي مخلفات
+            if (mContainer) {
+                mContainer.innerHTML = ''; 
+                const mCanvas = document.createElement('canvas');
+                mCanvas.width = mContainer.offsetWidth || 400;
+                mCanvas.height = mContainer.offsetHeight || 400;
+                mContainer.appendChild(mCanvas);
+                const ctx = mCanvas.getContext('2d');
 
-            const mCanvas = document.createElement('canvas');
-            mCanvas.width = mContainer.offsetWidth || 400;
-            mCanvas.height = mContainer.offsetHeight || 400;
-            mContainer.appendChild(mCanvas);
+                let targetDNA = (typeof userDNA !== 'undefined' && userDNA) ? userDNA : 'ATCGGTTAACCGGGTTTAAA';
 
-            const ctx = mCanvas.getContext('2d');
+                let countC = (targetDNA.match(/C/g) || []).length;
+                let countG = (targetDNA.match(/G/g) || []).length;
+                let cgPercent = ((countC + countG) / (targetDNA.length || 1)) * 100;
 
-            // =====================================================================
-            // 🧬 2. رسم سيربنسكي السداسي الجيني المتدرج بالحجم والتعقيد الأقصى
-            // =====================================================================
-            ctx.save();
+                let maxHexDepth = cgPercent > 60 ? 5 : 4; 
+                if (mCanvas.width < 500) maxHexDepth = Math.min(maxHexDepth, 4); 
 
-            // ربط ديناميكي حقيقي مع سلسلة الـ DNA الموجودة بنظامكِ (userDNA)
-            let targetDNA = (typeof userDNA !== 'undefined' && userDNA) ? userDNA : 'ATCGGTTAACCGGGTTTAAA';
+                let hexX = mCanvas.width / 2;
+                let hexY = mCanvas.height / 2;
+                let hexRadius = Math.min(mCanvas.width, mCanvas.height) * 0.48;
 
-            // الإحداثيات والأبعاد المحدثة (حجم كبير وتفاصيل فائقة الكثافة)
-            let hexX = mCanvas.width / 2;
-            let hexY = mCanvas.height / 2;
-            let hexRadius = Math.min(mCanvas.width, mCanvas.height) * 0.48; // الحجم الكبير
-            let maxHexDepth = 5;                                            // الكثافة المعقدة
+                ctx.save();
+                ctx.lineCap = 'round';
+                ctx.lineJoin = 'round';
+                
+                // 1️⃣ [السداسية الرئيسية الضخمة]: زحزحناها نتفة لليسار والأسفل لتترك مساحة للتابع
+                let mainX = hexX - 25;
+                let mainY = hexY + 20;
+                let mainRadius = hexRadius * 0.72; // تصغير الحجم لتظل داخل الأمان
+                drawAdvancedHexaflake(ctx, mainX, mainY, mainRadius, maxHexDepth, maxHexDepth, targetDNA);
+                
+                // 2️⃣ [السداسية التابعة الصغيرة]: وضعناها في الزاوية العلوية اليمنى داخل حدود الكانفاس بالظبط
+                let satelliteX = hexX + 105;
+                let satelliteY = hexY - 105;
+                let satelliteRadius = hexRadius * 0.28; // حجم مجهري فخم متناسق
+                drawAdvancedHexaflake(ctx, satelliteX, satelliteY, satelliteRadius, maxHexDepth, maxHexDepth, targetDNA);
+                
+                ctx.restore();
+                // 🛡️ درع حماية وعزل كامل (Scope Isolation) لمنع تداخل الأسماء نهائياً
+        {
+            let safeCanvas = ctx.canvas;
+            let safeX = safeCanvas.width / 2;
+            let safeY = safeCanvas.height / 2;
+            let safeRadius = Math.min(safeCanvas.width, safeCanvas.height) * 0.48;
+            let safeDepth = (typeof maxHexDepth !== 'undefined' && !isNaN(maxHexDepth)) ? maxHexDepth : 4;
+            let safeDNA = (typeof targetDNA !== 'undefined' && targetDNA) ? targetDNA : 'ATCGGTTAACCGGGTTTAAA';
 
-            ctx.lineCap = 'round';
-            ctx.lineJoin = 'round';
+            // استخدام أسماء محلية فريدة مستحيل تضرب مع أي سطر بالملف
+            let localMainX = safeX - 25;
+            let localMainY = safeY + 20;
+            let localMainRadius = safeRadius * 0.72;
+            drawAdvancedHexaflake(ctx, localMainX, localMainY, localMainRadius, safeDepth, safeDepth, safeDNA);
 
-            // تشغيل التوليد الفركتلي بالتدرج الثنائي الجيني
-            drawAdvancedHexaflake(ctx, hexX, hexY, hexRadius, maxHexDepth, maxHexDepth, targetDNA);
+            let localSatelliteX = safeX + 105;
+            let localSatelliteY = safeY - 105;
+            let localSatelliteRadius = safeRadius * 0.28;
+            drawAdvancedHexaflake(ctx, localSatelliteX, localSatelliteY, localSatelliteRadius, safeDepth, safeDepth, safeDNA);
+        }
 
-            ctx.restore();
+
+
+
+
+            }
 
 //=============================================================================
 // =========================================================================
@@ -864,56 +909,93 @@ let triangleHeight = 200;
 window.addEventListener('load', initMasterGeneticCanvas);
 
 // 🧬 دالة سيربنسكي السداسية المطورة بالتدرج الثنائي الجيني
+// 🧬 دالة سيربنسكي السداسية الجينية المتقدمة (حل نهائي ومدمج مية بالمية)
+// 🧬 دالة سيربنسكي السداسية الجينية المتقدمة (نسخة آمنة مية بالمية ومشروحة سطر بسطر)
+// 🧬 دالة سيربنسكي السداسية الجينية بنظام ألوان الـ HEX السهل (مشروحة سطر بسطر)
+// 🧬 دالة سيربنسكي السداسية الجينية المتقدمة - نسخة الإبداع الهندسي الصافي (HEX)
 function drawAdvancedHexaflake(ctx, x, y, radius, depth, maxDepth, dnaStr) {
-    if (depth === 0) {
-        ctx.beginPath();
-        for (let i = 0; i < 6; i++) {
-            let angle = (i * Math.PI) / 3;
-            let hX = x + Math.cos(angle) * radius;
-            let hY = y + Math.sin(angle) * radius;
-            if (i === 0) ctx.moveTo(hX, hY);
-            else ctx.lineTo(hX, hY);
-        }
-        ctx.closePath();
-        ctx.stroke();
-        return;
-    }
+    
+    // 🛡️ صمام أمان: لو السلسلة فيها مشكلة بيعتمد حروف افتراضية عشان الكانفاس ما يختفي
+    let dna = (typeof dnaStr === 'string' && dnaStr) ? dnaStr : 'ATCG';
 
+    // 🎨 [باليت الألوان بنظام الـ HEX] - غيري الرموز هنا مبااااشرة بالنسخ واللصق على كيفك
+    const colorOuter = '#00f0ff'; // ⬢ اللون الخارجي: سيان نيون ليزري مشع
+    const colorInner = '#9d4edd'; // ⬢ اللون الداخلي: أرجواني كوزمي عميق
+
+    // 📐 حساب نسبة العمق الحالي (من 1.0 في أقصى الخارج لـ 0.0 في المركز لجوا)
+    let depthRatio = depth / maxDepth;
+
+    ctx.save(); // حفظ حالة الكانفاس قبل تطبيق الألوان والخطوط الجديدة
+
+    // ✨ [التناوب اللوني الذكي]: الطبقات الزوجية بتاخذ لون السيان، والفردية بتاخذ الأرجواني لخلق نسيج متداخل غني
+    ctx.strokeStyle = (depth % 2 === 0) ? colorOuter : colorInner;
+    ctx.shadowColor = ctx.strokeStyle;
+
+    // 🔒 [حماية الأداء]: التوهج النيوني الثقيل بيشتغل برة بس (15 بكسل)، وجوا (0) عشان اللابتوب ما يعلق
+    ctx.shadowBlur = (depth === maxDepth) ? 15 : 0;
+
+    // 📐 [التحكم بالشفافية وسُمك الخط]: الخطوط برة سميكة ومعتمة، وجوا بتصير خيوط دقيقة وشفافة لتعطي بُعد ونفق بصري
+    ctx.globalAlpha = 0.3 + 0.7 * depthRatio;
+    ctx.lineWidth = 0.4 + 2.0 * depthRatio;
+
+    ctx.beginPath(); // بدء مسار رسم السداسي الحالي
+    
+    // حلقة بناء النقاط الستة للشكل السداسي المنتظم
+    for (let i = 0; i < 6; i++) {
+        let angle = (i * Math.PI) / 3; // الزاوية الهندسية (60 درجة لكل رأس)
+
+        // 🔍 قراءة الجين المقابل لهذا الرأس بالظبط
+        let baseIndex = (depth * 6 + i) % dna.length;
+        let base = dna[baseIndex] || 'A';
+
+        // 🧬 [تعديل الأبعاد جينياً]: لو الحرف A أو G بيعمل نبضة وتمدد طفيف بالرأس بيكسر جمود الهيكل
+        let pulse = (base === 'A' || base === 'G') ? 1.03 : 0.97;
+
+        let hX = x + Math.cos(angle) * radius * pulse;
+        let hY = y + Math.sin(angle) * radius * pulse;
+
+        if (i === 0) ctx.moveTo(hX, hY);
+        else ctx.lineTo(hX, hY);
+
+        // 🔮 [النقاط المجهرية الفخمة]: لو الحرف C أو T بنرسم نقطة مضيئة ناعمة جداً كأنها جزيء مشع
+        if (depth <= 2 && (base === 'C' || base === 'T')) {
+            ctx.fillStyle = colorOuter;
+            ctx.fillRect(hX - 1, hY - 1, 2, 2); // رسم مربع مجهري ناعم مية بالمية على الرأس
+        }
+    }
+    
+    ctx.closePath(); // إغلاق الشكل
+    if (depth < maxDepth) ctx.stroke(); // طباعة الخطوط الملونة على الشاشة
+    ctx.restore(); // استعادة حالة الكانفاس
+
+    if (depth === 0) return; // شرط التوقف الحاسم لمنع التعليق
+
+    // الحسابات الفركتلية للطبقات الأصغر لجوا
     let newRadius = radius / 3;
     let dist = (2 / 3) * radius;
 
-    // الدوران على الرؤوس الستة وربط كل رأس بقاعدة نتروجينية من السلسلة
+    // إطلاق الأذرع الستة العودية
     for (let i = 0; i < 6; i++) {
         let angle = (i * Math.PI) / 3;
-        let newX = x + Math.cos(angle) * dist;
-        let newY = y + Math.sin(angle) * dist;
 
-        // 🔍 قراءة القاعدة المقابلة لهذا الفرع (مع صمام أمان لو السلسلة قصيرة)
-        let baseIndex = (depth * 6 + i) % dnaStr.length;
-        let base = dnaStr[baseIndex] || 'A';
+        // 🔍 قراءة الجين لتطبيق تأثير الالتواء الحلزوني (Twist)
+        let baseIndex = (depth * 6 + i) % dna.length;
+        let base = dna[baseIndex] || 'A';
+        
+        // لو الحرف T أو C بيعمل انحراف زاوية مذهل (0.04 راديان) بيخلي الفروع تلف متل الدوامة الجينية
+        let twist = (base === 'T' || base === 'C') ? 0.04 : 0;
 
-        // 🧠 تطبيق منطق التدرج الثنائي (Monochromatic Shift)
-        // الأساس هو لون السيان (درجة زاوية 182 في HSL)
-        let depthRatio = depth / maxDepth; // 1.0 في الخارج، وبتقل كل ما غصنا لجوا
-        let lightness = 20; // الحد الأدنى للإضاءة (سيان داكن وعميق)
+        let newX = x + Math.cos(angle + twist) * dist;
+        let newY = y + Math.sin(angle + twist) * dist;
 
-        if (base === 'A' || base === 'G') {
-            // ✨ البيورينات: درجات فاتحة ومضيئة جداً في الطبقات الخارجية
-            lightness += 30 * depthRatio; 
-            ctx.globalAlpha = 0.4 + 0.6 * depthRatio;
-        } else {
-            // 🔮 البيريميدينات: درجات أغمق وخافتة لتعطي عمق ونفق بصري
-            lightness += 12 * depthRatio;
-            ctx.globalAlpha = 0.2 + 0.4 * depthRatio;
-        }
-
-        // تطبيق الألوان وسُمك الخط الديناميكي
-        ctx.strokeStyle =` hsl(182, 100%, ${lightness}%)`;
-        ctx.shadowColor =  `hsl(182, 100%, ${lightness}%)`;
-        ctx.shadowBlur = 5 + 15 * depthRatio; // توهج قوي للخارج وخافت للداخل
-        ctx.lineWidth = 0.4 + 1.6 * depthRatio;
-
-        // استدعاء عودي للطبقة التالية
-        drawAdvancedHexaflake(ctx, newX, newY, newRadius, depth - 1, maxDepth, dnaStr);
+        // استدعاء عودي لبناء الطبقة الداخلية التالية
+        drawAdvancedHexaflake(ctx, newX, newY, newRadius, depth - 1, maxDepth, dna);
     }
+}
+//--------------------&&&&&&&&&&&&&&&&&&&&&&&&&&بدأ دالة جوليا&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+//&&&&&&&&&&&&&&****************************************&&&&&&&&&&&&&&&&&&&&&&&&&&&**************************
+// 🧬 دالة رسم فركتل جوليا الجيني الجديد (توضع بأسفل الملف تماماً)
+function drawJuliaSet(ctx, width, height, dnaStr) {
+    // هون بكون كود جوليا المعتمد على ألوان الـ HEX والـ DNA اللي جهزتيه
+    // ...
 }
