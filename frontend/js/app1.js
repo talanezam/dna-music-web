@@ -208,24 +208,31 @@ if (vertexShader && fragmentShader) {
 // SECTION 4: THE GENETIC MATRIX CRYSTAL (SACRED GEOMETRY)
 // كود البلورة الكسورية المعتمد على ثلاثيات الـ DNA (Codons)
 // =========================================================
+// =====================================================================
+// 🧬 دالة توليد ماندلبورت الجيني (Mandelbrot Set) بأداء 0 ثانية
+// =====================================================================
 function renderGenovaSpiral() {
-    // 1. استهداف حاوية الكرت الكسوري
+    // 1. استهداف حاوية الكرت الكسوري والتأكد من وجودها
     const container = document.getElementById('mandelbrot-container');
     if (!container) return;
 
-    // تنظيف الحاوية وخلق الكانفاس
-   canvas.width = 250; 
-canvas.height = 250;
-canvas.style.width = '100%';
-canvas.style.height = '280px'; // إعطاء ارتفاع حقيقي ثابت لمنع انخساف الكانفاس بالـ CSS
-canvas.style.display = 'block';
-canvas.style.borderRadius = '12px'; // تدوير الحواف ليتطابق مع الـ Glass Card الفخمة عندكِ
-container.appendChild(canvas);
+    // تنظيف الحاوية لمنع تراكم العناصر وخلق الكانفاس من جديد
+    container.innerHTML = '';
+    const canvas = document.createElement('canvas');
+    
+    // ⚡ حماية الأبعاد: دقة ثابتة وسريعة جداً، وتمطيط ذكي لمنع الانخساف بالـ CSS
+    canvas.width = 250; 
+    canvas.height = 250;
+    canvas.style.width = '100%';
+    canvas.style.height = '280px'; // ارتفاع ثابت ومضمون ليملأ الكرت الشفاف
+    canvas.style.display = 'block';
+    canvas.style.borderRadius = '12px'; // حواف ناعمة متناسقة مع ثيم الـ Glassmorphism
+    container.appendChild(canvas);
 
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    // 2. جلب الـ DNA وتحليله
+    // 2. جلب الـ DNA وتحليله ديناميكياً من الـ localStorage
     const dna = localStorage.getItem("userDNA") || "ATGCCGTAGACT";
     let codons = [];
     for (let i = 0; i < dna.length - 2; i += 3) {
@@ -233,7 +240,7 @@ container.appendChild(canvas);
     }
     if (codons.length === 0) codons = ["ATG", "CCG", "TAG"];
 
-    // 3. حساب تكرار القواعد لتحديد الحرف المهيمن وقنوات الألوان (RGB)
+    // 3. حساب تكرار القواعد لتحديد الحرف المهيمن وقنوات الألوان (RGB) للنيون
     let nA = 0, nT = 0, nC = 0, nG = 0;
     for (let i = 0; i < dna.length; i++) {
         let base = dna[i].toUpperCase();
@@ -249,26 +256,26 @@ container.appendChild(canvas);
     if (nC > maxCount) { dominantBase = 'C'; maxCount = nC; }
     if (nG > maxCount) { dominantBase = 'G'; maxCount = nG; }
 
-    // ضبط درجات النيون بناءً على جينوم المستخدم
+    // تخصيص درجات النيون (RGB) بناءً على النمط الجيني للمستخدم
     let rMax = 0, gMax = 242, bMax = 255; // الافتراضي: سيان للـ T
-    if (dominantBase === 'A') { rMax = 255; gMax = 0; bMax = 127; }     // فوشيا
+    if (dominantBase === 'A') { rMax = 255; gMax = 0; bMax = 127; }     // فوشيا مشع
     else if (dominantBase === 'C') { rMax = 59; gMax = 204; bMax = 2; }  // أخضر فسفوري
     else if (dominantBase === 'G') { rMax = 162; gMax = 0; bMax = 255; } // بنفسجي سايبربانك
 
-    // 4. تجهيز مصفوفة البكسلات المباشرة
+    // 4. تجهيز مصفوفة البكسلات المباشرة (ImageData) لمنع الـ Lag تماماً
     const w = canvas.width;
     const h = canvas.height;
     const imageData = ctx.createImageData(w, h);
     const pixels = imageData.data;
 
-    // إحداثيات سنترة قلب ماندلبورت في منتصف الكرت تماماً
+    // حدود الرياضيات العقدية لسنترة قلب ماندلبورت تماماً بالمنتصف
     const minRe = -2.0, maxRe = 0.6;
     const minIm = -1.3, maxIm = 1.3;
-    const maxIter = 35; // عمق موزون للوهج النيوني والسلاسة
+    const maxIter = 35; // عمق تفاصيل موزون لسرعة خارقة وهالات نظيفة
 
     let isScattered = (dominantBase === 'G' || dominantBase === 'A');
 
-    // 5. الحلقة الرياضية الكبرى لصبغ البكسلات الكسورية
+    // 5. الحلقة الرياضية الكبرى لصبغ البكسلات (Z = Z^2 + C)
     for (let y = 0; y < h; y++) {
         let ci = minIm + (y / h) * (maxIm - minIm);
         for (let x = 0; x < w; x++) {
@@ -286,33 +293,40 @@ container.appendChild(canvas);
 
             let pixelIdx = (y * w + x) * 4;
 
-            if (iter === maxIter) {
-                // جسم ماندلبورت الداخلي (النواة المظلمة الفخمة)
-                pixels[pixelIdx] = 6;      
-                pixels[pixelIdx + 1] = 6;  
-                pixels[pixelIdx + 2] = 14; 
-                pixels[pixelIdx + 3] = 255;
+           if (iter === maxIter) {
+                // السطر 295: تلوين قلب ماندلبورت بنفسجي غامق ملكي (Deep Purple Core)
+                pixels[pixelIdx] = 35;      // قناة الأحمر (R)
+                pixels[pixelIdx + 1] = 0;   // قناة الأخضر (G)
+                pixels[pixelIdx + 2] = 70;  // قناة الأزرق (B)
+                pixels[pixelIdx + 3] = 255; // تشبع كامل
             } else {
-                // الهالات التوليدية والغبار النيوني المحيط بالحواف
+                // السطر 302: حسابات التوهج والحافة البيضاء الحارقة المعتمدة عندكِ
                 let ratio = iter / maxIter;
+                let glow = Math.pow(ratio, 1.2); 
+                let coreIntensity = Math.pow(ratio, 6.0); 
+
                 if (isScattered) {
                     let sparkle = (Math.sin(iter * 3.5) + 1) * 0.5;
-                    ratio = Math.pow(ratio, 1.8) * sparkle;
-                } else {
-                    ratio = Math.pow(ratio, 1.2);
+                    glow = Math.pow(ratio, 1.5) * sparkle;
                 }
 
-                pixels[pixelIdx] = Math.floor(rMax * ratio);
-                pixels[pixelIdx + 1] = Math.floor(gMax * ratio);
-                pixels[pixelIdx + 2] = Math.floor(bMax * ratio);
-                pixels[pixelIdx + 3] = 255; 
+                // ⚡ السر هنا: دمج لون خلفية كحلي/بنفسجي داكن جداً (5, 3, 18) مع التوهج الأزرق النيوني
+                // عندما يكون التوهج صفر، يظهر لون الخلفية الداكن الفخم بدلاً من الأسود السادة
+                pixels[pixelIdx]     = Math.min(255, Math.floor(5 + 0 * glow + 255 * coreIntensity));   // الأحمر
+                pixels[pixelIdx + 1] = Math.min(255, Math.floor(3 + 140 * glow + 255 * coreIntensity)); // الأخضر (درجة النيون)
+                pixels[pixelIdx + 2] = Math.min(255, Math.floor(18 + 255 * glow + 255 * coreIntensity)); // الأزرق المشع
+                pixels[pixelIdx + 3] = 255; // السطر 323: تشبع كامل لطبقة البكسل
             }
         }
     }
 
-    // 6. سكب البيانات على الشاشة دفعة واحدة
+    // 6. سكب البكسلات على الشاشة دفعة واحدة بـ 0 ثانية تراكب
     ctx.putImageData(imageData, 0, 0);
 }
+// تشغيل ذاتي آمن ومستقل تماماً لماندلبورت فور تحميل الواجهة
+window.addEventListener('load', () => {
+    renderGenovaSpiral();
+});
 
 
 //=============================================================================
@@ -331,6 +345,9 @@ function initMasterGeneticCanvas() {
 
     const ctx = masterCanvas.getContext('2d');
     if (!ctx) return;
+    // ضبط دقة الرسم لتطابق الحجم الجديد بالـ HTML وتمنع أي غبش
+    masterCanvas.width = masterContainer.clientWidth; 
+    masterCanvas.height = 650;
 
     // دالة المعالجة والتوليد المشترك للشكلين معاً
     function drawMasterArt() {
@@ -357,9 +374,73 @@ function initMasterGeneticCanvas() {
         if (nC > maxCount) { dominantBase = 'C'; maxCount = nC; }
         if (nG > maxCount) { dominantBase = 'G'; maxCount = nG; }
 
+// =====================================================================
+        // ✨ الخطوة 1: تجهيز البكسلات ورسم فضاء ماندلبورت كـ خلفية للجدارية ✨
+        // =====================================================================
+        const imageData = ctx.createImageData(w, h);
+        const pixels = imageData.data;
+
+        // حدود الرياضيات لسنترة ماندلبورت بالخلفية بشكل متناسق
+        const minRe = -2.0, maxRe = 0.6;
+        const minIm = -1.3, maxIm = 1.3;
+        const maxIter = 35; // عمق متوازن لسرعة خارقة وعدم حدوث أي لاغ
+
+        // تشغيل النمط المتناثر بناءً على جينات المستخدم الحالية
+        let isScattered = (dominantBase === 'G' || dominantBase === 'A');
+
+        // الحلقة الكبرى لصبغ الفضاء الكوزمي بكسل بكسل
+        for (let y = 0; y < h; y++) {
+            let ci = minIm + (y / h) * (maxIm - minIm);
+            for (let x = 0; x < w; x++) {
+                let cr = minRe + (x / w) * (maxRe - minRe);
+
+                let zr = 0.0, zi = 0.0;
+                let iter = 0;
+
+                while (zr * zr + zi * zi <= 4.0 && iter < maxIter) {
+                    let temp = zr * zr - zi * zi + cr;
+                    zi = 2.0 * zr * zi + ci;
+                    zr = temp;
+                    iter++;
+                }
+
+                let pixelIdx = (y * w + x) * 4;
+
+                if (iter === maxIter) {
+                    // 🟣 تلوين قلب ماندلبورت بنفسجي غامق ملكي
+                    pixels[pixelIdx]     = 35;  // R
+                    pixels[pixelIdx + 1] = 0;   // G
+                    pixels[pixelIdx + 2] = 70;  // B
+                    pixels[pixelIdx + 3] = 255;
+                } else {
+                    // 🔵 تلوين التوهج أزرق نيوني مشع مع الحافة البيضاء الحارقة
+                    let ratio = iter / maxIter;
+                    let glow = Math.pow(ratio, 1.2);
+                    let coreIntensity = Math.pow(ratio, 6.0);
+
+                    if (isScattered) {
+                        let sparkle = (Math.sin(iter * 3.5) + 1) * 0.5;
+                        glow = Math.pow(ratio, 1.5) * sparkle;
+                    }
+
+                    // دمج ألوان النيون الأزرق مع أرضية الخلفية الكحلية العميقة (5, 3, 18)
+                    pixels[pixelIdx]     = Math.min(255, Math.floor(5 + 0 * glow + 255 * coreIntensity));
+                    pixels[pixelIdx + 1] = Math.min(255, Math.floor(3 + 140 * glow + 255 * coreIntensity));
+                    pixels[pixelIdx + 2] = Math.min(255, Math.floor(18 + 255 * glow + 255 * coreIntensity));
+                    pixels[pixelIdx + 3] = 255;
+                }
+            }
+        }
+
+        // سكّب بكسلات فضاء ماندلبورت فوراً على الشاشة الكبيرة
+       // ctx.putImageData(imageData, 0, 0);
+        
+
+
+
         // تصفير كامل وإجبار الخلفية المظلمة المعتمة وتفعيل المزج النيوني
-        ctx.fillStyle = '#020206';
-        ctx.fillRect(0, 0, w, h);
+       ctx.fillStyle = '#020206';
+       ctx.fillRect(0, 0, w, h);
         ctx.globalCompositeOperation = 'lighter';
         ctx.fillStyle = '#ffffff'; // لون سيان نيوني متناسق مع الثيم
 ctx.font = '20px monospace';
@@ -457,23 +538,84 @@ let y5 = y4 - dx * hFactor - dy * pFactor;
        setTimeout(() => {
     // إعادة مسح الشاشة السوداء لتختفي كلمة Processing ويبدأ الرسم النظيف
    ctx.globalCompositeOperation = 'source-over'; // نمط الرسم العادي لمسح الكلمة القديمة تماماً
-ctx.fillStyle = '#020206';
-ctx.fillRect(0, 0, w, h);
+   ctx.putImageData(imageData,0,0)
+//ctx.fillStyle = '#020206';
+//ctx.fillRect(0, 0, w, h);
 ctx.globalCompositeOperation = 'lighter';     // إعادة تشغيل النمط النيوني المتوهج للشجرة
 
-    let baseWidth = 36; 
-    let startX1 = w / 2 - baseWidth / 2; let startX2 = w / 2 + baseWidth / 2; let startY = h - 25; 
-    let currentY = startY; let trunkHeight = 5; 
+// =====================================================================
+        // 📐 هندسة الجذور: بناء مثلث سيربينسكي والخطوط العمودية النقية للجذع 📐
+        // =====================================================================
+        // =====================================================================
+        // 📐 هندسة الجذور: الحل الوسط الفخم (جذع ممتد، عريض، وبدون خطوط أفقية) 📐
+        // =====================================================================
+        let triangleHeight = 200; // ارتفاع المثلث الحاضن بالأسفل
+        let baseWidth = 45;       // 🎯 جعلنا الجذع أعرض ليعطي هيبة وفخامة كشجرة حقيقية تطابق الهدف
 
-    for (let i = 0; i < trunkHeight; i++) {
-        let nextY = currentY - baseWidth;
-        drawNeonSquare(startX1, currentY, startX2, currentY, startX2, nextY, startX1, nextY, maxDepth);
-        currentY = nextY;
-    }
-    branchPythagoras(startX1, currentY, startX2, currentY, maxDepth);
-}, 150); // تأخير بسيط جداً بالملي ثانية ليضمن ظهور نص المعالجة أولاً
+        let topX = w / 2;
+        let topY = h - 15 - triangleHeight; // رأس قمة المثلث بالظبط
 
+        // 🌳 إعداد أبعاد الجذع: ينطلق من داخل المثلث ويصعد ليمتد فوق القمة براحة
+        let startY = topY + 35;             // ينزل 35 بكسل داخل المثلث ليتلاحم معه عضويّاً كالجذور
+        let trunkLength = 170;               // 🚀 طول الجذع المناسب (يمتد 55 بكسل فوق رأس المثلث قبل أن تتفرع الشجرة)
+        let endY = startY - trunkLength;
 
+        let startX1 = topX - baseWidth / 2;
+        let startX2 = topX + baseWidth / 2;
+
+        // 🧬 1. دالة رسم مثلث سيربينسكي الفركتلي (يظل واضحاً ومشرقاً مية بالمية)
+        function drawSierpinski(x1, y1, x2, y2, x3, y3, depth) {
+            if (depth === 0) {
+                ctx.beginPath();
+                ctx.moveTo(x1, y1);
+                ctx.lineTo(x2, y2);
+                ctx.lineTo(x3, y3);
+                ctx.closePath();
+                ctx.stroke();
+                return;
+            }
+            let x12 = (x1 + x2) / 2, y12 = (y1 + y2) / 2;
+            let x23 = (x2 + x3) / 2, y23 = (y2 + y3) / 2;
+            let x31 = (x3 + x1) / 2, y31 = (y3 + y1) / 2;
+
+            drawSierpinski(x1, y1, x12, y12, x31, y31, depth - 1);
+            drawSierpinski(x12, y12, x2, y2, x23, y23, depth - 1);
+            drawSierpinski(x31, y31, x23, y23, x3, y3, depth - 1);
+        }
+
+        let leftX = topX - 130, leftY = h - 15;
+        let rightX = topX + 130, rightY = h - 15;
+
+        // 🔺 تفعيل لون وتوهج السيان النيوني مية بالمية مثل رؤوس الأغصان العلوية
+   // ❄️ توليفة الأزرق الثلجي المشع الاحترافية (Ice Blue-White) ❄️
+    ctx.strokeStyle = '#acd1ff'; // لون الخط: أبيض ثلجي نقي وناصع مية بالمية
+    ctx.lineWidth = 1.4;         // سماكة الخط لتظهر التفاصيل البلورية
+
+    ctx.shadowColor = '#0015f8'; // لون التوهج: أزرق جليدي مشع (Neon Ice Blue)
+    ctx.shadowBlur = 15;         // قوة انتشار الوميض الثلجي حوالين المثلث
+
+    // (اتركي سطر رسم المثلث وسطر تصفير التوهج اللي بعده متل ما هني تماماً)
+    drawSierpinski(topX, topY, leftX, leftY, rightX, rightY, 4);
+    ctx.shadowBlur = 0;
+
+        // 🌳 2. رسم الجذع النقي: خطين عموديين متوازيين فقط يمران فوق القمة (بدون أي خط أفقي مزعج)
+        ctx.strokeStyle = '#e335f3'; // خطوط نيون بيضاء مشعة للجذع
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        
+        // الخط العمودي الأيسر (ينطلق من داخل المثلث ويصعد فوقه)
+        ctx.moveTo(startX1, startY);
+        ctx.lineTo(startX1, endY);
+        
+        // الخط العمودي الأيمن (ينطلق من داخل المثلث ويصعد فوقه)
+        ctx.moveTo(startX2, startY);
+        ctx.lineTo(startX2, endY);
+        
+        ctx.stroke();
+
+        // 🚀 3. انطلاق تفرعات الشجرة التوليدية فوراً من نهاية الخطين المرتفعين بالمنتصف
+        branchPythagoras(startX1, endY, startX2, endY, maxDepth);}
+    )
         // =================================================================
         // [2] إعداد ورسم الشكل الثاني: المثلث البلوري الموحد (نفس المنطق الداخلي تماماً)
         // =================================================================
