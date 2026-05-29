@@ -207,127 +207,48 @@ if (vertexShader && fragmentShader) {
 // =========================================================
 // SECTION 4: THE GENETIC MATRIX CRYSTAL (SACRED GEOMETRY)
 // كود البلورة الكسورية المعتمد على ثلاثيات الـ DNA (Codons)
-// =========================================================
 // =====================================================================
-// 🧬 دالة توليد ماندلبورت الجيني (Mandelbrot Set) بأداء 0 ثانية
-// =====================================================================
-function renderGenovaSpiral() {
-    // 1. استهداف حاوية الكرت الكسوري والتأكد من وجودها
-    const container = document.getElementById('mandelbrot-container');
-    if (!container) return;
+// 🧬 دالة توليد ماندلبورت الجيني (Mandelbrot Set) بأداء 0 ثانية/
+            // ⬢ تثبيت سيربنسكي السداسي عالي الكثافة في المساحة اليمينية
+            // =====================================================================
+// ⬢ تهيئة وإعداد كانفاس الكارد الثاني (Genomic Spiral) مية بالمية
+        // =====================================================================
+            // ⬢ تثبيت سيربنسكي السداسي الجيني المتدرج (Genomic Hexaflake)
+            // =====================================================================
+            // =====================================================================
+            // ⬢ 1. تهيئة وإعداد كانفاس الكارد الثاني (Genomic Spiral)
+            // =====================================================================
+            const mContainer = document.getElementById('mandelbrot-container');
+            mContainer.innerHTML = ''; // تنظيف الكارد من أي مخلفات
 
-    // تنظيف الحاوية لمنع تراكم العناصر وخلق الكانفاس من جديد
-    container.innerHTML = '';
-    const canvas = document.createElement('canvas');
-    
-    // ⚡ حماية الأبعاد: دقة ثابتة وسريعة جداً، وتمطيط ذكي لمنع الانخساف بالـ CSS
-    canvas.width = 250; 
-    canvas.height = 250;
-    canvas.style.width = '100%';
-    canvas.style.height = '280px'; // ارتفاع ثابت ومضمون ليملأ الكرت الشفاف
-    canvas.style.display = 'block';
-    canvas.style.borderRadius = '12px'; // حواف ناعمة متناسقة مع ثيم الـ Glassmorphism
-    container.appendChild(canvas);
+            const mCanvas = document.createElement('canvas');
+            mCanvas.width = mContainer.offsetWidth || 400;
+            mCanvas.height = mContainer.offsetHeight || 400;
+            mContainer.appendChild(mCanvas);
 
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
+            const ctx = mCanvas.getContext('2d');
 
-    // 2. جلب الـ DNA وتحليله ديناميكياً من الـ localStorage
-    const dna = localStorage.getItem("userDNA") || "ATGCCGTAGACT";
-    let codons = [];
-    for (let i = 0; i < dna.length - 2; i += 3) {
-        codons.push(dna.substring(i, i + 3).toUpperCase());
-    }
-    if (codons.length === 0) codons = ["ATG", "CCG", "TAG"];
+            // =====================================================================
+            // 🧬 2. رسم سيربنسكي السداسي الجيني المتدرج بالحجم والتعقيد الأقصى
+            // =====================================================================
+            ctx.save();
 
-    // 3. حساب تكرار القواعد لتحديد الحرف المهيمن وقنوات الألوان (RGB) للنيون
-    let nA = 0, nT = 0, nC = 0, nG = 0;
-    for (let i = 0; i < dna.length; i++) {
-        let base = dna[i].toUpperCase();
-        if (base === 'A') nA++;
-        else if (base === 'T') nT++;
-        else if (base === 'C') nC++;
-        else if (base === 'G') nG++;
-    }
+            // ربط ديناميكي حقيقي مع سلسلة الـ DNA الموجودة بنظامكِ (userDNA)
+            let targetDNA = (typeof userDNA !== 'undefined' && userDNA) ? userDNA : 'ATCGGTTAACCGGGTTTAAA';
 
-    let dominantBase = 'A';
-    let maxCount = nA;
-    if (nT > maxCount) { dominantBase = 'T'; maxCount = nT; }
-    if (nC > maxCount) { dominantBase = 'C'; maxCount = nC; }
-    if (nG > maxCount) { dominantBase = 'G'; maxCount = nG; }
+            // الإحداثيات والأبعاد المحدثة (حجم كبير وتفاصيل فائقة الكثافة)
+            let hexX = mCanvas.width / 2;
+            let hexY = mCanvas.height / 2;
+            let hexRadius = Math.min(mCanvas.width, mCanvas.height) * 0.48; // الحجم الكبير
+            let maxHexDepth = 5;                                            // الكثافة المعقدة
 
-    // تخصيص درجات النيون (RGB) بناءً على النمط الجيني للمستخدم
-    let rMax = 0, gMax = 242, bMax = 255; // الافتراضي: سيان للـ T
-    if (dominantBase === 'A') { rMax = 255; gMax = 0; bMax = 127; }     // فوشيا مشع
-    else if (dominantBase === 'C') { rMax = 59; gMax = 204; bMax = 2; }  // أخضر فسفوري
-    else if (dominantBase === 'G') { rMax = 162; gMax = 0; bMax = 255; } // بنفسجي سايبربانك
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
 
-    // 4. تجهيز مصفوفة البكسلات المباشرة (ImageData) لمنع الـ Lag تماماً
-    const w = canvas.width;
-    const h = canvas.height;
-    const imageData = ctx.createImageData(w, h);
-    const pixels = imageData.data;
+            // تشغيل التوليد الفركتلي بالتدرج الثنائي الجيني
+            drawAdvancedHexaflake(ctx, hexX, hexY, hexRadius, maxHexDepth, maxHexDepth, targetDNA);
 
-    // حدود الرياضيات العقدية لسنترة قلب ماندلبورت تماماً بالمنتصف
-    const minRe = -2.0, maxRe = 0.6;
-    const minIm = -1.3, maxIm = 1.3;
-    const maxIter = 35; // عمق تفاصيل موزون لسرعة خارقة وهالات نظيفة
-
-    let isScattered = (dominantBase === 'G' || dominantBase === 'A');
-
-    // 5. الحلقة الرياضية الكبرى لصبغ البكسلات (Z = Z^2 + C)
-    for (let y = 0; y < h; y++) {
-        let ci = minIm + (y / h) * (maxIm - minIm);
-        for (let x = 0; x < w; x++) {
-            let cr = minRe + (x / w) * (maxRe - minRe);
-
-            let zr = 0.0, zi = 0.0;
-            let iter = 0;
-            
-            while (zr * zr + zi * zi <= 4.0 && iter < maxIter) {
-                let temp = zr * zr - zi * zi + cr;
-                zi = 2.0 * zr * zi + ci;
-                zr = temp;
-                iter++;
-            }
-
-            let pixelIdx = (y * w + x) * 4;
-
-           if (iter === maxIter) {
-                // السطر 295: تلوين قلب ماندلبورت بنفسجي غامق ملكي (Deep Purple Core)
-                pixels[pixelIdx] = 35;      // قناة الأحمر (R)
-                pixels[pixelIdx + 1] = 0;   // قناة الأخضر (G)
-                pixels[pixelIdx + 2] = 70;  // قناة الأزرق (B)
-                pixels[pixelIdx + 3] = 255; // تشبع كامل
-            } else {
-                // السطر 302: حسابات التوهج والحافة البيضاء الحارقة المعتمدة عندكِ
-                let ratio = iter / maxIter;
-                let glow = Math.pow(ratio, 1.2); 
-                let coreIntensity = Math.pow(ratio, 6.0); 
-
-                if (isScattered) {
-                    let sparkle = (Math.sin(iter * 3.5) + 1) * 0.5;
-                    glow = Math.pow(ratio, 1.5) * sparkle;
-                }
-
-                // ⚡ السر هنا: دمج لون خلفية كحلي/بنفسجي داكن جداً (5, 3, 18) مع التوهج الأزرق النيوني
-                // عندما يكون التوهج صفر، يظهر لون الخلفية الداكن الفخم بدلاً من الأسود السادة
-                pixels[pixelIdx]     = Math.min(255, Math.floor(5 + 0 * glow + 255 * coreIntensity));   // الأحمر
-                pixels[pixelIdx + 1] = Math.min(255, Math.floor(3 + 140 * glow + 255 * coreIntensity)); // الأخضر (درجة النيون)
-                pixels[pixelIdx + 2] = Math.min(255, Math.floor(18 + 255 * glow + 255 * coreIntensity)); // الأزرق المشع
-                pixels[pixelIdx + 3] = 255; // السطر 323: تشبع كامل لطبقة البكسل
-            }
-        }
-    }
-
-    // 6. سكب البكسلات على الشاشة دفعة واحدة بـ 0 ثانية تراكب
-    ctx.putImageData(imageData, 0, 0);
-}
-// تشغيل ذاتي آمن ومستقل تماماً لماندلبورت فور تحميل الواجهة
-window.addEventListener('load', () => {
-    renderGenovaSpiral();
-});
-
+            ctx.restore();
 
 //=============================================================================
 // =========================================================================
@@ -452,6 +373,7 @@ function initMasterGeneticCanvas() {
         const rgbHeartG = parseColorToRGB(G_heart); const rgbGlowG = parseColorToRGB(G_glow);
 
         // 🌌 الحلقة الكبرى لصبغ الفضاء الكوزمي بكسل بكسل
+       // 🌌 الحلقة الكبرى المطورة لصبغ الفضاء الكوزمي مع تدرج سديمي مدمج بكسل بكسل
         for (let y = 0; y < h; y++) {
             let ci = minIm + (y / h) * (maxIm - minIm);
             for (let x = 0; x < w; x++) {
@@ -469,6 +391,16 @@ function initMasterGeneticCanvas() {
 
                 let pixelIdx = (y * w + x) * 4;
                 let r = 0, g = 0, b = 0;
+
+                // 🌌 حساب بُعد البكسل الحالي عن مركز الشاشة ديناميكياً لصنع عمق السديم
+                let distX = (x - w / 2) / (w / 2);
+                let distY = (y - h / 2) / (h / 2);
+                let dist = Math.min(1, Math.sqrt(distX * distX + distY * distY));
+
+                // 🔥 تعديل: رفعنا قوة إضاءة ألوان التدرج الكوني ليظهر الوهج البنفسجي/الأزرق بوضوح ورا الشجرة
+                let baseR = Math.floor(35 * (1 - dist) + 2 * dist);  // لون أحمر كوزمي في المركز
+                let baseG = Math.floor(15 * (1 - dist) + 2 * dist);  // لون أخضر كوزمي في المركز
+                let baseB = Math.floor(85 * (1 - dist) + 6 * dist);  // لون أزرق لافندر مشع في المركز
 
                 if (iter === maxIter) {
                     // تلوين قلب ماندلبورت الداخلي (جوا)
@@ -504,10 +436,10 @@ function initMasterGeneticCanvas() {
                         glowR = rgbGlowG.r; glowG = rgbGlowG.g; glowB = rgbGlowG.b;
                     }
 
-                    // دمج التوهج ضمن معادلة المحرك
-                    r = Math.min(255, Math.floor(5 + glowR * glow + 255 * coreIntensity));
-                    g = Math.min(255, Math.floor(3 + glowG * glow + 255 * coreIntensity));
-                    b = Math.min(255, Math.floor(18 + glowB * glow + 255 * coreIntensity));
+                    // دمج التوهج فوق ألوان الأرضية السديمية المحسوبة لكل بكسل بالملّي
+                    r = Math.min(255, Math.floor(baseR + glowR * glow + 255 * coreIntensity));
+                    g = Math.min(255, Math.floor(baseG + glowG * glow + 255 * coreIntensity));
+                    b = Math.min(255, Math.floor(baseB + glowB * glow + 255 * coreIntensity));
                 }
 
                 // حقن البكسلات النهائي
@@ -523,8 +455,15 @@ function initMasterGeneticCanvas() {
         
 
         // تصفير كامل وإجبار الخلفية المظلمة المعتمة وتفعيل المزج النيوني
-       ctx.fillStyle = '#020206';
-       ctx.fillRect(0, 0, w, h);
+      
+        // ✨ تفعيل التدرج الكوني العميق للخلفية (بديل الأسود السادة)
+        let bgGradient = ctx.createRadialGradient(w / 2, h / 2, 50, w / 2, h / 2, Math.max(w, h));
+        bgGradient.addColorStop(0, '#0c0721');   // قلب السديم: بنفسجي كوزمي غامق
+        bgGradient.addColorStop(0.5, '#040414'); // أزرق ليلي عميق يمتص الضوء
+        bgGradient.addColorStop(1, '#010105');   // الأطراف: أسود معتم مية بالمية لزيادة التباين
+        
+        ctx.fillStyle = bgGradient;
+        ctx.fillRect(0, 0, w, h);
         ctx.globalCompositeOperation = 'lighter';
         
         ctx.fillStyle = '#ffffff'; // لون سيان نيوني متناسق مع الثيم
@@ -593,17 +532,19 @@ ctx.fillText("GENOVA SYSTEM: PROCESSING GENETIC DATA...", w / 2, h / 2);
             ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.lineTo(x3, y3); ctx.lineTo(x4, y4); ctx.closePath();
             ctx.fillStyle = palette.fill; ctx.fill();
             const depthRatio = currentDepth / maxDepth; 
+
+            // ✨ تفعيل هالة التوهج النيوني الشاملة لكل جسد وفروع الشجرة ديناميكياً
+        ctx.shadowColor = palette.glow;
+        ctx.shadowBlur = 6 + 16 * depthRatio; // وميض نيون ذكي يتصاعد بقوة وجمال نحو الأطراف
             
-            if (currentDepth > maxDepth - 2) {
-    ctx.shadowColor = palette.glow;
-    ctx.shadowBlur = 12 * depthRatio;
-} else {
-    ctx.shadowColor = 'transparent';
-    ctx.shadowBlur = 0;
-}
+
             ctx.strokeStyle = (currentDepth % 2 === 0) ? palette.strokeA : palette.strokeB;
-            ctx.lineWidth = (maxDepth > 7) ? 0.3 + (1.0 * depthRatio) : 0.5 + (1.5 * depthRatio); 
-            ctx.stroke(); ctx.restore();
+        
+        // 🔥 التعديل الفني: سُمك انسيابي يبدأ عريضاً وقوياً (3.8px) بالأسفل وينحف تدريجياً لـ (0.4px) بالأطراف
+        ctx.lineWidth = 0.4 + 3.4 * Math.pow(depthRatio, 2);
+        
+        ctx.stroke(); 
+        ctx.restore();
         }
 
         function branchPythagoras(x1, y1, x2, y2, depth) {
@@ -807,6 +748,25 @@ let triangleHeight = 200;
     ctx.lineTo(startX2, endY);
     
     ctx.stroke();
+    // =====================================================================
+    // ⚡ الفكرة الثانية: مسرع الطاقة النيوني (Neon Pulse Ladder) بين الخطين
+    // =====================================================================
+    ctx.save();
+    ctx.strokeStyle = currentTrunkGlow; // بيأخذ لون نيون النمط الجيني المسيطر فوراً
+    ctx.lineWidth = 3;                  // خطوط أفقية رشيقة ودقيقة جداً لعدم إحداث زحمة
+    ctx.shadowColor = currentTrunkGlow;
+    ctx.shadowBlur = 12;                // هالة نيون حادة ونظيفة تشع بانتظام
+
+    // رسم نبضات الطاقة بانتظام هندسي متناظر من الأسفل للأعلى
+    let pulseSpacing = 10; // 👈 المسافة بالبكسل بين كل خط وخط (تقدري تكبريها أو تصغريها)
+    
+    for (let pulseY = startY; pulseY >= endY; pulseY -= pulseSpacing) {
+        ctx.beginPath();
+        ctx.moveTo(startX1, pulseY); // ينطلق من الخط الأيسر بالملّي
+        ctx.lineTo(startX2, pulseY); // يقفل عند الخط الأيمن بالملّي
+        ctx.stroke();
+    }
+    ctx.restore();
 
     // 🛑 [هام جداً] تصفير التوهج فوراً لحماية الأغصان القادمة من التغبيش
     ctx.shadowBlur = 0;
@@ -814,6 +774,25 @@ let triangleHeight = 200;
         // 🚀 3. انطلاق تفرعات الشجرة التوليدية فوراً من نهاية الخطين المرتفعين بالمنتصف
        
     branchPythagoras(startX1, endY, startX2, endY, maxDepth);
+    // 🌌 4. إضافة غبار النيون وجزيئات الطاقة الجينية حول فروع الشجرة
+            ctx.save();
+            // توليد 120 جزيء ضوئي دقيق سابح حول الهيكل العلوي
+            for (let i = 0; i < 210; i++) {
+                let px = Math.random() * w;                     // توزيع عشوائي على عرض الشاشة
+                let py = Math.random() * (h * 0.55);            // تركيز الغبار بالنصف العلوي حول الأغصان
+                
+                // تنويع الألوان ديناميكياً بين أبيض ثلجي وتوهج القاعدة المسيطرة
+                ctx.fillStyle = (Math.random() > 0.4) ? palette.glow : '#ffffff';
+                ctx.globalAlpha = Math.random() * 0.7;          // شفافية عشوائية ليعطي عمق وأبعاد
+                
+                ctx.shadowColor = palette.glow;
+                ctx.shadowBlur = Math.random() * 8 + 3;         // هالة توهج متفاوتة لكل نجمة
+                
+                ctx.beginPath();
+                ctx.arc(px, py, Math.random() * 1.5 + 0.5, 0, Math.PI * 2); // أحجام دقيقة وناعمة جداً
+                ctx.fill();
+            }
+            ctx.restore();
 });
         // =================================================================
         // [2] إعداد ورسم الشكل الثاني: المثلث البلوري الموحد (نفس المنطق الداخلي تماماً)
@@ -883,3 +862,58 @@ let triangleHeight = 200;
 
 // تشغيل اللوحة المدمجة الكبرى عند تحميل الصفحة
 window.addEventListener('load', initMasterGeneticCanvas);
+
+// 🧬 دالة سيربنسكي السداسية المطورة بالتدرج الثنائي الجيني
+function drawAdvancedHexaflake(ctx, x, y, radius, depth, maxDepth, dnaStr) {
+    if (depth === 0) {
+        ctx.beginPath();
+        for (let i = 0; i < 6; i++) {
+            let angle = (i * Math.PI) / 3;
+            let hX = x + Math.cos(angle) * radius;
+            let hY = y + Math.sin(angle) * radius;
+            if (i === 0) ctx.moveTo(hX, hY);
+            else ctx.lineTo(hX, hY);
+        }
+        ctx.closePath();
+        ctx.stroke();
+        return;
+    }
+
+    let newRadius = radius / 3;
+    let dist = (2 / 3) * radius;
+
+    // الدوران على الرؤوس الستة وربط كل رأس بقاعدة نتروجينية من السلسلة
+    for (let i = 0; i < 6; i++) {
+        let angle = (i * Math.PI) / 3;
+        let newX = x + Math.cos(angle) * dist;
+        let newY = y + Math.sin(angle) * dist;
+
+        // 🔍 قراءة القاعدة المقابلة لهذا الفرع (مع صمام أمان لو السلسلة قصيرة)
+        let baseIndex = (depth * 6 + i) % dnaStr.length;
+        let base = dnaStr[baseIndex] || 'A';
+
+        // 🧠 تطبيق منطق التدرج الثنائي (Monochromatic Shift)
+        // الأساس هو لون السيان (درجة زاوية 182 في HSL)
+        let depthRatio = depth / maxDepth; // 1.0 في الخارج، وبتقل كل ما غصنا لجوا
+        let lightness = 20; // الحد الأدنى للإضاءة (سيان داكن وعميق)
+
+        if (base === 'A' || base === 'G') {
+            // ✨ البيورينات: درجات فاتحة ومضيئة جداً في الطبقات الخارجية
+            lightness += 30 * depthRatio; 
+            ctx.globalAlpha = 0.4 + 0.6 * depthRatio;
+        } else {
+            // 🔮 البيريميدينات: درجات أغمق وخافتة لتعطي عمق ونفق بصري
+            lightness += 12 * depthRatio;
+            ctx.globalAlpha = 0.2 + 0.4 * depthRatio;
+        }
+
+        // تطبيق الألوان وسُمك الخط الديناميكي
+        ctx.strokeStyle =` hsl(182, 100%, ${lightness}%)`;
+        ctx.shadowColor =  `hsl(182, 100%, ${lightness}%)`;
+        ctx.shadowBlur = 5 + 15 * depthRatio; // توهج قوي للخارج وخافت للداخل
+        ctx.lineWidth = 0.4 + 1.6 * depthRatio;
+
+        // استدعاء عودي للطبقة التالية
+        drawAdvancedHexaflake(ctx, newX, newY, newRadius, depth - 1, maxDepth, dnaStr);
+    }
+}
