@@ -208,29 +208,24 @@ if (vertexShader && fragmentShader) {
 // SECTION 4: THE GENETIC MATRIX CRYSTAL (SACRED GEOMETRY)
 // كود البلورة الكسورية المعتمد على ثلاثيات الـ DNA (Codons)
 // =========================================================
-
 function renderGenovaSpiral() {
-    // 1. استهدف حاوية الكرت الثاني
+    // 1. استهداف حاوية الكرت الكسوري
     const container = document.getElementById('mandelbrot-container');
     if (!container) return;
 
-    container.innerHTML = '';
-    const canvas = document.createElement('canvas');
-    
-    // أبعاد أمان للحاوية لضمان عدم حدوث شاشة فارغة
-    canvas.width = container.offsetWidth || 350;
-    canvas.height = container.offsetHeight || 350;
-    container.appendChild(canvas);
+    // تنظيف الحاوية وخلق الكانفاس
+   canvas.width = 250; 
+canvas.height = 250;
+canvas.style.width = '100%';
+canvas.style.height = '280px'; // إعطاء ارتفاع حقيقي ثابت لمنع انخساف الكانفاس بالـ CSS
+canvas.style.display = 'block';
+canvas.style.borderRadius = '12px'; // تدوير الحواف ليتطابق مع الـ Glass Card الفخمة عندكِ
+container.appendChild(canvas);
 
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    // 2. إعدادات الخلفية المظلمة الفخمة والدمج النيوني
-    ctx.fillStyle = '#020206';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    ctx.globalCompositeOperation = 'lighter'; 
-
-    // 3. جلب الـ DNA وتحليله لمعرفة الحرف المهيمن (Genomic Mapping)
+    // 2. جلب الـ DNA وتحليله
     const dna = localStorage.getItem("userDNA") || "ATGCCGTAGACT";
     let codons = [];
     for (let i = 0; i < dna.length - 2; i += 3) {
@@ -238,136 +233,87 @@ function renderGenovaSpiral() {
     }
     if (codons.length === 0) codons = ["ATG", "CCG", "TAG"];
 
-    // حساب تكرار الحروف لتحديد لون المثلث الموحد
+    // 3. حساب تكرار القواعد لتحديد الحرف المهيمن وقنوات الألوان (RGB)
     let nA = 0, nT = 0, nC = 0, nG = 0;
-    for (let char of dna) {
-        let base = char.toUpperCase();
+    for (let i = 0; i < dna.length; i++) {
+        let base = dna[i].toUpperCase();
         if (base === 'A') nA++;
         else if (base === 'T') nT++;
         else if (base === 'C') nC++;
         else if (base === 'G') nG++;
     }
-    let totalLen = dna.length || 1;
 
-    // خوارزمية تحديد الحرف المهيمن لربط اللون الموحد للمثلت
     let dominantBase = 'A';
     let maxCount = nA;
     if (nT > maxCount) { dominantBase = 'T'; maxCount = nT; }
     if (nC > maxCount) { dominantBase = 'C'; maxCount = nC; }
     if (nG > maxCount) { dominantBase = 'G'; maxCount = nG; }
 
-    // تعريف الألوان الأربعة الموحدة بدقة حسب طلبك
-    let triangleColor = '#00f0ff'; // الافتراضي أزرق فاتح سيان
-    let paletteName = "";
+    // ضبط درجات النيون بناءً على جينوم المستخدم
+    let rMax = 0, gMax = 242, bMax = 255; // الافتراضي: سيان للـ T
+    if (dominantBase === 'A') { rMax = 255; gMax = 0; bMax = 127; }     // فوشيا
+    else if (dominantBase === 'C') { rMax = 59; gMax = 204; bMax = 2; }  // أخضر فسفوري
+    else if (dominantBase === 'G') { rMax = 162; gMax = 0; bMax = 255; } // بنفسجي سايبربانك
 
-    switch(dominantBase) {
-        case 'A': // 1. أزرق فاتح (سيان) يلي عملناه
-            triangleColor = '#00f0ff';
-            paletteName = "Light Blue Cyan (A-Type)";
-            break;
-        case 'T': // 2. بنفسجي فاتح
-            triangleColor = '#ad5aff';
-            paletteName = "Light Purple (T-Type)";
-            break;
-        case 'C': // 3. بنفسجي غامق نيوني
-            triangleColor = '#fcf391';
-            paletteName = "Dark Neon Purple (C-Type)";
-            break;
-        case 'G': // 4. زهري
-            triangleColor = '#ff00aa';
-            paletteName = "Neon Pink (G-Type)";
-            break;
-    }
+    // 4. تجهيز مصفوفة البكسلات المباشرة
+    const w = canvas.width;
+    const h = canvas.height;
+    const imageData = ctx.createImageData(w, h);
+    const pixels = imageData.data;
 
-    // 4. خوارزمية الرسم العودية للمصفوفة البلورية الموحدة اللون
-    function drawCrystalTriangle(x1, y1, x2, y2, x3, y3, depth, maxDepth, codonIndex) {
-        if (depth > maxDepth) return;
+    // إحداثيات سنترة قلب ماندلبورت في منتصف الكرت تماماً
+    const minRe = -2.0, maxRe = 0.6;
+    const minIm = -1.3, maxIm = 1.3;
+    const maxIter = 35; // عمق موزون للوهج النيوني والسلاسة
 
-        // حساب نقاط المنتصف للتفرع الكسيري الداخلي
-        const mx12 = (x1 + x2) / 2;
-        const my12 = (y1 + y2) / 2;
-        const mx23 = (x2 + x3) / 2;
-        const my23 = (y2 + y3) / 2;
-        const mx31 = (x3 + x1) / 2;
-        const my31 = (y3 + y1) / 2;
+    let isScattered = (dominantBase === 'G' || dominantBase === 'A');
 
-        let currentCodon = codons[codonIndex % codons.length];
-        let isStopCodon = (currentCodon === "TAA" || currentCodon === "TAG" || currentCodon === "TGA");
-        
-        if (!isStopCodon) {
-            // رسم المثلث الخارجي (الكل يأخذ نفس اللون الموحد للحالة الحالية ليكون لون واحد)
-            ctx.beginPath();
-            ctx.moveTo(x1, y1);
-            ctx.lineTo(x2, y2);
-            ctx.lineTo(x3, y3);
-            ctx.closePath();
+    // 5. الحلقة الرياضية الكبرى لصبغ البكسلات الكسورية
+    for (let y = 0; y < h; y++) {
+        let ci = minIm + (y / h) * (maxIm - minIm);
+        for (let x = 0; x < w; x++) {
+            let cr = minRe + (x / w) * (maxRe - minRe);
 
-           ctx.strokeStyle = triangleColor;
-ctx.lineWidth = (maxDepth - depth) * 0.35 + 0.55;
-if (depth === 1) {
-    ctx.shadowColor = triangleColor;
-    ctx.shadowBlur = 10;
-} else {
-    ctx.shadowColor = 'transparent';
-    ctx.shadowBlur = 0;
-}
-
-            ctx.shadowBlur = depth === 1 ? 10 :0; 
-            ctx.globalAlpha = 0.85 - (depth * 0.07); 
-            ctx.stroke();
+            let zr = 0.0, zi = 0.0;
+            let iter = 0;
             
-            ctx.globalAlpha = 1.0; // قفل حماية الشفافية للكانفاس
+            while (zr * zr + zi * zi <= 4.0 && iter < maxIter) {
+                let temp = zr * zr - zi * zi + cr;
+                zi = 2.0 * zr * zi + ci;
+                zr = temp;
+                iter++;
+            }
 
-            // رسم التفاصيل الإضافية (المثلث المقلوب الداخلي) بنسخة أنعم وأخف من نفس اللون لمنع العجقة البصرية
-            if (depth < maxDepth) {
-                ctx.save();
-                ctx.beginPath();
-                ctx.moveTo(mx12, my12);
-                ctx.lineTo(mx23, my23);
-                ctx.lineTo(mx31, my31);
-                ctx.closePath();
-                ctx.strokeStyle = triangleColor; 
-                ctx.globalAlpha = 0.3; // جعل الخط الداخلي شفاف وناعم جداً لبروز التفاصيل الفخمة
-                ctx.lineWidth = 0.5;
-                ctx.stroke();
-                ctx.restore();
+            let pixelIdx = (y * w + x) * 4;
+
+            if (iter === maxIter) {
+                // جسم ماندلبورت الداخلي (النواة المظلمة الفخمة)
+                pixels[pixelIdx] = 6;      
+                pixels[pixelIdx + 1] = 6;  
+                pixels[pixelIdx + 2] = 14; 
+                pixels[pixelIdx + 3] = 255;
+            } else {
+                // الهالات التوليدية والغبار النيوني المحيط بالحواف
+                let ratio = iter / maxIter;
+                if (isScattered) {
+                    let sparkle = (Math.sin(iter * 3.5) + 1) * 0.5;
+                    ratio = Math.pow(ratio, 1.8) * sparkle;
+                } else {
+                    ratio = Math.pow(ratio, 1.2);
+                }
+
+                pixels[pixelIdx] = Math.floor(rMax * ratio);
+                pixels[pixelIdx + 1] = Math.floor(gMax * ratio);
+                pixels[pixelIdx + 2] = Math.floor(bMax * ratio);
+                pixels[pixelIdx + 3] = 255; 
             }
         }
-
-        // الانتقال العودي للمستويات الأصغر للداخل
-        drawCrystalTriangle(x1, y1, mx12, my12, mx31, my31, depth + 1, maxDepth, codonIndex + 1);
-        drawCrystalTriangle(mx12, my12, x2, y2, mx23, my23, depth + 1, maxDepth, codonIndex + 2);
-        drawCrystalTriangle(mx31, my31, mx23, my23, x3, y3, depth + 1, maxDepth, codonIndex + 3);
     }
 
-    // 5. ضبط أبعاد وموقع البلورة في منتصف الكانفاس تماماً
-    const size = Math.min(canvas.width, canvas.height) * 0.85;
-    const height = size * (Math.sqrt(3) / 2);
-    
-    const x1 = canvas.width / 2,          y1 = (canvas.height - height) / 2;
-    const x2 = (canvas.width - size) / 2, y2 = y1 + height;
-    const x3 = (canvas.width + size) / 2, y3 = y1 + height;
-
-    // حساب عمق البلورة (كثافة الشبكة) بناءً على طول الـ DNA
-    let crystalDepth = Math.min(7, Math.max(4, Math.floor(totalLen / 10)));
-
-    // إطلاق رسم البلورة الكسورية الموحدة
-    drawCrystalTriangle(x1, y1, x2, y2, x3, y3, 1, crystalDepth, 0);
-
-    // طباعة اسم اللون الحالي للتوثيق الفني بأسفل الكانفاس بشكل ناعم
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
-    ctx.font = '11px monospace';
-    ctx.fillText(`Dominant: ${dominantBase} | Theme: ${paletteName}`, 15, canvas.height - 15);
+    // 6. سكب البيانات على الشاشة دفعة واحدة
+    ctx.putImageData(imageData, 0, 0);
 }
 
-// -----------------------------------------------------------------
-// نظام التشغيل الآمن والفوري لحل مشكلة التبويبات كلياً
-// -----------------------------------------------------------------
-if (document.readyState === 'complete' || document.readyState === 'interactive') {
-    renderGenovaSpiral();
-} else {
-    window.addEventListener('DOMContentLoaded', renderGenovaSpiral);
-}
 
 //=============================================================================
 // =========================================================================
@@ -415,6 +361,10 @@ function initMasterGeneticCanvas() {
         ctx.fillStyle = '#020206';
         ctx.fillRect(0, 0, w, h);
         ctx.globalCompositeOperation = 'lighter';
+        ctx.fillStyle = '#ffffff'; // لون سيان نيوني متناسق مع الثيم
+ctx.font = '20px monospace';
+ctx.textAlign = 'center';
+ctx.fillText("GENOVA SYSTEM: PROCESSING GENETIC DATA...", w / 2, h / 2);
 
         // =================================================================
         // [1] إعداد ورسم الشكل الأول: الشجرة المربعة (نفس المنطق الداخلي تماماً)
@@ -474,7 +424,23 @@ function initMasterGeneticCanvas() {
             let x3 = x2 - dy; let y3 = y2 - dx;
             let x4 = x1 - dy; let y4 = y1 - dx;
             drawNeonSquare(x1, y1, x2, y2, x3, y3, x4, y4, depth);
-            let x5 = x4 + (dx - dy) * 0.5; let y5 = y4 - (dx + dy) * 0.5;
+
+           // 1. حساب نسب التفرع والارتفاع ديناميكياً بناءً على السيناريوهات الأربعة الكبرى
+let pFactor = 0.50; // التمركز الأفقي الافتراضي (حالة A المستقيمة)
+let hFactor = 0.55; // الارتفاع العمودي الافتراضي (حالة A المستقيمة)
+
+if (dominantBase === 'T') { 
+    pFactor = 0.77; hFactor = 0.70; // تفوق الفرع الأيمن ليصنع انحناءً حلزونياً لليمين
+} else if (dominantBase === 'C') { 
+    pFactor = 0.82; hFactor = 0.55; // تفوق الفرع الأيسر ليصنع انحناءً حلزونياً لليسار
+} else if (dominantBase === 'G') { 
+    pFactor = 0.83; hFactor = 0.58;  // تقليل الارتفاع لتفرش الأغصان بشكل أفقي عريض جداً
+}
+
+// 2. تطبيق المعادلات الهندسية الكسيرية الجديدة المربوطة بالـ DNA
+let x5 = x4 + dx * pFactor - dy * hFactor;
+let y5 = y4 - dx * hFactor - dy * pFactor;
+
             branchPythagoras(x4, y4, x5, y5, depth - 1); 
             branchPythagoras(x5, y5, x3, y3, depth - 1); 
         }
@@ -487,16 +453,25 @@ function initMasterGeneticCanvas() {
         }
 
         // دمج ورسم الشجرة في النصف السفلي لتصعد وتتداخل للأعلى
-        let baseWidth = 36; 
-        let startX1 = w / 2 - baseWidth / 2; let startX2 = w / 2 + baseWidth / 2; let startY = h - 25; 
-        let currentY = startY; let trunkHeight = 5; 
+        
+       setTimeout(() => {
+    // إعادة مسح الشاشة السوداء لتختفي كلمة Processing ويبدأ الرسم النظيف
+   ctx.globalCompositeOperation = 'source-over'; // نمط الرسم العادي لمسح الكلمة القديمة تماماً
+ctx.fillStyle = '#020206';
+ctx.fillRect(0, 0, w, h);
+ctx.globalCompositeOperation = 'lighter';     // إعادة تشغيل النمط النيوني المتوهج للشجرة
 
-        for (let i = 0; i < trunkHeight; i++) {
-            let nextY = currentY - baseWidth;
-            drawNeonSquare(startX1, currentY, startX2, currentY, startX2, nextY, startX1, nextY, maxDepth);
-            currentY = nextY;
-        }
-        branchPythagoras(startX1, currentY, startX2, currentY, maxDepth);
+    let baseWidth = 36; 
+    let startX1 = w / 2 - baseWidth / 2; let startX2 = w / 2 + baseWidth / 2; let startY = h - 25; 
+    let currentY = startY; let trunkHeight = 5; 
+
+    for (let i = 0; i < trunkHeight; i++) {
+        let nextY = currentY - baseWidth;
+        drawNeonSquare(startX1, currentY, startX2, currentY, startX2, nextY, startX1, nextY, maxDepth);
+        currentY = nextY;
+    }
+    branchPythagoras(startX1, currentY, startX2, currentY, maxDepth);
+}, 150); // تأخير بسيط جداً بالملي ثانية ليضمن ظهور نص المعالجة أولاً
 
 
         // =================================================================
