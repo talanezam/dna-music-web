@@ -380,15 +380,78 @@ function initMasterGeneticCanvas() {
         const imageData = ctx.createImageData(w, h);
         const pixels = imageData.data;
 
-        // حدود الرياضيات لسنترة ماندلبورت بالخلفية بشكل متناسق
-        const minRe = -2.0, maxRe = 0.6;
-        const minIm = -1.3, maxIm = 1.3;
-        const maxIter = 35; // عمق متوازن لسرعة خارقة وعدم حدوث أي لاغ
+        // حدود الرياضيات لسنترة ماندلبورت الحالية (التصغير والإزاحة المعتمدة)
+        const minRe = -4.0, maxRe = 1.0; 
+        const minIm = -3.0, maxIm = 1.4; 
+        const maxIter = 32; 
 
-        // تشغيل النمط المتناثر بناءً على جينات المستخدم الحالية
+        // تشغيل النمط المتناثر بناءً على جينات المستخدم
         let isScattered = (dominantBase === 'G' || dominantBase === 'A');
 
-        // الحلقة الكبرى لصبغ الفضاء الكوزمي بكسل بكسل
+        // =====================================================================
+        // 🎨 لوحة الألوان المرئية لـ "جينوفا" (عدلي بالماوس فوراً من المربع الملون!)
+        // =====================================================================
+        
+        // 🔴 [النمط T - ثايمين]
+        const T_heart = '#350656'; 
+        const T_glow  = '#9b6dd4'; 
+
+        // 🟡 [النمط A - أدنين]
+        const A_heart = '#00073c'; 
+        const A_glow  = '#ffee00'; 
+
+        // 🟣 [النمط C - سايتوسين]
+        const C_heart = '#2d0f37'; 
+        const C_glow  = '#8bbcfd'; 
+
+        // 🔵 [النمط G - جوانين الافتراضي]
+        const G_heart = '#230046'; 
+        const G_glow  = '#008cff'; 
+
+
+        // ⚙️ دالة ذكية ومضادة للصدمات لتفكيك الألوان مهما تغيرت صيغتها (Hex, RGB, RGBA)
+        function parseColorToRGB(colorStr) {
+            let defaultRGB = { r: 0, g: 140, b: 255 };
+            if (!colorStr) return defaultRGB;
+            
+            let str = colorStr.trim().toLowerCase();
+            
+            // دعم صيغ rgb و rgba بالكامل إذا حولها الـ VS Code تلقائياً عند السحب
+            if (str.startsWith('rgb')) {
+                let match = str.match(/rgba?\((\d+)\s*,\s*(\d+)\s*,\s*(\d+)/);
+                if (match) {
+                    return { r: parseInt(match[1]), g: parseInt(match[2]), b: parseInt(match[3]) };
+                }
+            }
+            
+            // دعم صيغ الـ Hex بجميع أشكالها (3 أو 4 أو 6 أو 8 خانات) مع حماية ضد الـ NaN
+            if (str.startsWith('#')) {
+                let c = str.replace('#', '');
+                if (c.length === 3 || c.length === 4) {
+                    return {
+                        r: parseInt(c.charAt(0) + c.charAt(0), 16) || 0,
+                        g: parseInt(c.charAt(1) + c.charAt(1), 16) || 0,
+                        b: parseInt(c.charAt(2) + c.charAt(2), 16) || 0
+                    };
+                }
+                if (c.length >= 6) {
+                    return {
+                        r: parseInt(c.substring(0, 2), 16) || 0,
+                        g: parseInt(c.substring(2, 4), 16) || 0,
+                        b: parseInt(c.substring(4, 6), 16) || 0
+                    };
+                }
+            }
+            return defaultRGB;
+        }
+
+        // تفكيك اللوحة بأمان تام قبل الدخول في الحلقات التكرارية العملاقة لضمان السرعة الخارقة
+        const rgbHeartT = parseColorToRGB(T_heart); const rgbGlowT = parseColorToRGB(T_glow);
+        const rgbHeartA = parseColorToRGB(A_heart); const rgbGlowA = parseColorToRGB(A_glow);
+        const rgbHeartC = parseColorToRGB(C_heart); const rgbGlowC = parseColorToRGB(C_glow);
+        const rgbHeartG = parseColorToRGB(G_heart); const rgbGlowG = parseColorToRGB(G_glow);
+
+        // 🌌 الحلقة الكبرى لصبغ الفضاء الكوزمي بكسل بكسل
         for (let y = 0; y < h; y++) {
             let ci = minIm + (y / h) * (maxIm - minIm);
             for (let x = 0; x < w; x++) {
@@ -405,15 +468,21 @@ function initMasterGeneticCanvas() {
                 }
 
                 let pixelIdx = (y * w + x) * 4;
+                let r = 0, g = 0, b = 0;
 
                 if (iter === maxIter) {
-                    // 🟣 تلوين قلب ماندلبورت بنفسجي غامق ملكي
-                    pixels[pixelIdx]     = 35;  // R
-                    pixels[pixelIdx + 1] = 0;   // G
-                    pixels[pixelIdx + 2] = 70;  // B
-                    pixels[pixelIdx + 3] = 255;
+                    // تلوين قلب ماندلبورت الداخلي (جوا)
+                    if (dominantBase === 'T') {
+                        r = rgbHeartT.r; g = rgbHeartT.g; b = rgbHeartT.b;
+                    } else if (dominantBase === 'A') {
+                        r = rgbHeartA.r; g = rgbHeartA.g; b = rgbHeartA.b;
+                    } else if (dominantBase === 'C') {
+                        r = rgbHeartC.r; g = rgbHeartC.g; b = rgbHeartC.b;
+                    } else {
+                        r = rgbHeartG.r; g = rgbHeartG.g; b = rgbHeartG.b;
+                    }
                 } else {
-                    // 🔵 تلوين التوهج أزرق نيوني مشع مع الحافة البيضاء الحارقة
+                    // حسابات الوميض والسطوع للحواف والحارق الخارجي
                     let ratio = iter / maxIter;
                     let glow = Math.pow(ratio, 1.2);
                     let coreIntensity = Math.pow(ratio, 6.0);
@@ -423,25 +492,41 @@ function initMasterGeneticCanvas() {
                         glow = Math.pow(ratio, 1.5) * sparkle;
                     }
 
-                    // دمج ألوان النيون الأزرق مع أرضية الخلفية الكحلية العميقة (5, 3, 18)
-                    pixels[pixelIdx]     = Math.min(255, Math.floor(5 + 0 * glow + 255 * coreIntensity));
-                    pixels[pixelIdx + 1] = Math.min(255, Math.floor(3 + 140 * glow + 255 * coreIntensity));
-                    pixels[pixelIdx + 2] = Math.min(255, Math.floor(18 + 255 * glow + 255 * coreIntensity));
-                    pixels[pixelIdx + 3] = 255;
+                    // استدعاء ألوان التوهج (برّا) المحددة من اللوحة المرئية
+                    let glowR = 0, glowG = 0, glowB = 0;
+                    if (dominantBase === 'T') {
+                        glowR = rgbGlowT.r; glowG = rgbGlowT.g; glowB = rgbGlowT.b;
+                    } else if (dominantBase === 'A') {
+                        glowR = rgbGlowA.r; glowG = rgbGlowA.g; glowB = rgbGlowA.b;
+                    } else if (dominantBase === 'C') {
+                        glowR = rgbGlowC.r; glowG = rgbGlowC.g; glowB = rgbGlowC.b;
+                    } else {
+                        glowR = rgbGlowG.r; glowG = rgbGlowG.g; glowB = rgbGlowG.b;
+                    }
+
+                    // دمج التوهج ضمن معادلة المحرك
+                    r = Math.min(255, Math.floor(5 + glowR * glow + 255 * coreIntensity));
+                    g = Math.min(255, Math.floor(3 + glowG * glow + 255 * coreIntensity));
+                    b = Math.min(255, Math.floor(18 + glowB * glow + 255 * coreIntensity));
                 }
+
+                // حقن البكسلات النهائي
+                pixels[pixelIdx] = r;
+                pixels[pixelIdx + 1] = g;
+                pixels[pixelIdx + 2] = b;
+                pixels[pixelIdx + 3] = 255;
             }
         }
-
+        
         // سكّب بكسلات فضاء ماندلبورت فوراً على الشاشة الكبيرة
        // ctx.putImageData(imageData, 0, 0);
         
-
-
 
         // تصفير كامل وإجبار الخلفية المظلمة المعتمة وتفعيل المزج النيوني
        ctx.fillStyle = '#020206';
        ctx.fillRect(0, 0, w, h);
         ctx.globalCompositeOperation = 'lighter';
+        
         ctx.fillStyle = '#ffffff'; // لون سيان نيوني متناسق مع الثيم
 ctx.font = '20px monospace';
 ctx.textAlign = 'center';
@@ -462,12 +547,45 @@ ctx.fillText("GENOVA SYSTEM: PROCESSING GENETIC DATA...", w / 2, h / 2);
         }
         
 
+       // =====================================================================
+        // 🎨 لوحة ألوان جسد وأغصان الشجرة التوليدية (عدلي بالنظر من المربع الملون!)
+        // هنا تقدري تتحكمي بتوهج الأغصان، لون الخطوط الرئيسية، ولون التعبئة الشفاف
+        // =====================================================================
+
+        // 🟡 [النمط A - أدنين]
+        const A_branchGlow    = '#4a00e0'; // 👈 كبسي هون لتغيير توهج الأغصان
+        const A_branchStrokeA = '#f556a5'; // 👈 لون الخطوط الأولية للغصن
+        const A_branchStrokeB = '#8800ff'; // 👈 لون الخطوط الثانوية للغصن
+        const A_branchFill    = '#b25fff72'; // 👈 لون التعبئة الداخلي (تقدري تحركي شريط الشفافية بالماوس!)
+        
+        // 🔴 [النمط T - ثايمين]
+        const T_branchGlow    = '#00f2ff'; 
+        const T_branchStrokeA = '#3bd8ff'; 
+        const T_branchStrokeB = '#06c1ff'; 
+        const T_branchFill    = '#b25fff57';
+       
+        // 🟣 [النمط C - سايتوسين]
+        const C_branchGlow    = '#3bcc02'; 
+        const C_branchStrokeA = '#038bdf'; 
+        const C_branchStrokeB = '#8fff79'; 
+        const C_branchFill    = '#b25fff57';
+       
+        // 🔵 [النمط G - جوانين الافتراضي]
+        const G_branchGlow    = '#a200ff'; 
+        const G_branchStrokeA = '#79ebff'; 
+        const G_branchStrokeB = '#ff7af2'; 
+        const G_branchFill    = '#a855f740'; 
+       
+        // 🔄 إعادة بناء كائن الـ palette ديناميكياً لتشغيله آلياً بدون تخريب بقية دالات الشجرة
         let palette = {};
-        switch(dominantBase) {
-            case 'A': palette = { glow: '#4a00e0', strokeA: '#ff007f', strokeB: '#00f0ff', fill: 'rgba(178, 95, 255, 0.34)' }; break;
-            case 'T': palette = { glow: '#00f2ff', strokeA: '#7000c6', strokeB: '#06c1ff', fill: 'rgba(178, 95, 255, 0.34)' }; break;
-            case 'C': palette = { glow: '#3bcc02', strokeA: '#038bdf', strokeB: '#8fff79', fill: 'rgba(178, 95, 255, 0.34)' }; break;
-            case 'G': palette = { glow: '#a200ff', strokeA: '#79ebff', strokeB: '#ff7af2', fill: 'rgba(168, 85, 247, 0.25)' }; break;
+        if (dominantBase === 'A') {
+            palette = { glow: A_branchGlow, strokeA: A_branchStrokeA, strokeB: A_branchStrokeB, fill: A_branchFill };
+        } else if (dominantBase === 'T') {
+            palette = { glow: T_branchGlow, strokeA: T_branchStrokeA, strokeB: T_branchStrokeB, fill: T_branchFill };
+        } else if (dominantBase === 'C') {
+            palette = { glow: C_branchGlow, strokeA: C_branchStrokeA, strokeB: C_branchStrokeB, fill: C_branchFill };
+        } else {
+            palette = { glow: G_branchGlow, strokeA: G_branchStrokeA, strokeB: G_branchStrokeB, fill: G_branchFill };
         }
 
         function drawNeonSquare(x1, y1, x2, y2, x3, y3, x4, y4, currentDepth) {
@@ -549,21 +667,27 @@ ctx.globalCompositeOperation = 'lighter';     // إعادة تشغيل النم�
         // =====================================================================
         // 📐 هندسة الجذور: الحل الوسط الفخم (جذع ممتد، عريض، وبدون خطوط أفقية) 📐
         // =====================================================================
-        let triangleHeight = 200; // ارتفاع المثلث الحاضن بالأسفل
-        let baseWidth = 45;       // 🎯 جعلنا الجذع أعرض ليعطي هيبة وفخامة كشجرة حقيقية تطابق الهدف
-
+let triangleHeight = 200; 
+        let baseWidth = 45;       
         let topX = w / 2;
-        let topY = h - 15 - triangleHeight; // رأس قمة المثلث بالظبط
+        let topY = h - 15 - triangleHeight; 
 
-        // 🌳 إعداد أبعاد الجذع: ينطلق من داخل المثلث ويصعد ليمتد فوق القمة براحة
-        let startY = topY + 35;             // ينزل 35 بكسل داخل المثلث ليتلاحم معه عضويّاً كالجذور
-        let trunkLength = 170;               // 🚀 طول الجذع المناسب (يمتد 55 بكسل فوق رأس المثلث قبل أن تتفرع الشجرة)
+        // 🔥 التوسيع الفخم: جعلنا قاعدة المثلث أعرض (175 بكسل يمين ويسار) لتناسب الارتفاع المرتفع
+        let leftX = topX - 165; 
+        let leftY = h - 15;
+        let rightX = topX + 165; 
+        let rightY = h - 15;
+
+        // 🔥 زيادة التفاصيل: عمق 5 يعطيكِ تفاصيل بلورية مذهلة داخل المثلث 💎
+        let fractalDepth = 6; 
+
+        let startY = topY + 35;             
+        let trunkLength = 170;               
         let endY = startY - trunkLength;
-
         let startX1 = topX - baseWidth / 2;
         let startX2 = topX + baseWidth / 2;
 
-        // 🧬 1. دالة رسم مثلث سيربينسكي الفركتلي (يظل واضحاً ومشرقاً مية بالمية)
+        // 🧬 دالة بناء مثلث سيربينسكي الفركتلي التكراري
         function drawSierpinski(x1, y1, x2, y2, x3, y3, depth) {
             if (depth === 0) {
                 ctx.beginPath();
@@ -583,39 +707,114 @@ ctx.globalCompositeOperation = 'lighter';     // إعادة تشغيل النم�
             drawSierpinski(x31, y31, x23, y23, x3, y3, depth - 1);
         }
 
-        let leftX = topX - 130, leftY = h - 15;
-        let rightX = topX + 130, rightY = h - 15;
+        // =====================================================================
+        // 🎨 لوحة ألوان مثلث سيربنسكي المرئية (عدلي بالنظر من المربع الملون!)
+        // =====================================================================
+        
+        // 🔴 [النمط T - ثايمين]
+        const T_triLine = '#9dc9ff'; // 👈 كبسي هون لتغيير لون خطوط المثلث (جوا)
+        const T_triGlow = '#00b7ff'; // 👈 كبسي هون لتغيير لون توهج المثلث (برّا)
 
-        // 🔺 تفعيل لون وتوهج السيان النيوني مية بالمية مثل رؤوس الأغصان العلوية
-   // ❄️ توليفة الأزرق الثلجي المشع الاحترافية (Ice Blue-White) ❄️
-    ctx.strokeStyle = '#acd1ff'; // لون الخط: أبيض ثلجي نقي وناصع مية بالمية
-    ctx.lineWidth = 1.4;         // سماكة الخط لتظهر التفاصيل البلورية
+        // 🟡 [النمط A - أدنين]
+        const A_triLine = '#ffee80'; // 👈 كبسي هون لتغيير لون خطوط المثلث (جوا)
+        const A_triGlow = '#ffcc00'; // 👈 كبسي هون لتغيير لون توهج المثلث (برّا)
 
-    ctx.shadowColor = '#0015f8'; // لون التوهج: أزرق جليدي مشع (Neon Ice Blue)
-    ctx.shadowBlur = 15;         // قوة انتشار الوميض الثلجي حوالين المثلث
+        // 🟣 [النمط C - سايتوسين]
+        const C_triLine = '#faffb3'; // 👈 كبسي هون لتغيير لون خطوط المثلث (جوا)
+        const C_triGlow = '#deb4ff'; // 👈 كبسي هون لتغيير لون توهج المثلث (برّا)
 
-    // (اتركي سطر رسم المثلث وسطر تصفير التوهج اللي بعده متل ما هني تماماً)
-    drawSierpinski(topX, topY, leftX, leftY, rightX, rightY, 4);
+        // 🔵 [النمط G - جوانين الافتراضي]
+        const G_triLine = '#e6f7ff'; // 👈 كبسي هون لتغيير لون خطوط المثلث (جوا)
+        const G_triGlow = '#00f0ff'; // 👈 كبسي هون لتغيير لون توهج المثلث (برّا)
+
+        // 🔄 تطبيق الألوان تلقائياً حسب القاعدة النتروجينية المسيطرة للعينة
+        let currentTriLine = '#ffffff';
+        let currentTriGlow = '#00f0ff';
+
+        if (dominantBase === 'T') {
+            currentTriLine = T_triLine; currentTriGlow = T_triGlow;
+        } else if (dominantBase === 'A') {
+            currentTriLine = A_triLine; currentTriGlow = A_triGlow;
+        } else if (dominantBase === 'C') {
+            currentTriLine = C_triLine; currentTriGlow = C_triGlow;
+        } else {
+            currentTriLine = G_triLine; currentTriGlow = G_triGlow;
+        }
+
+        // 🔺 تشغيل الوميض والنيون للمثلث بالعمق الهندسي الجديد
+        ctx.strokeStyle = currentTriLine; 
+        ctx.lineWidth = 1.1;               // خط أنحف لتظهر التفاصيل البلورية بوضوح عالي
+        ctx.shadowColor = currentTriGlow; 
+        ctx.shadowBlur = 15;               // قوة الوميض النيوني المحيط بالمثلث
+
+        // استدعاء الرسم بالتوسيع والتفاصيل الجديدة
+        drawSierpinski(topX, topY, leftX, leftY, rightX, rightY, fractalDepth);
+
+        // 🛑 تصفير التوهج فوراً لحماية الجذع والأغصان القادمة من التغبيش
+        ctx.shadowBlur = 0;
+        // 🌳 2. رسم الجذع النقي: خطين عموديين متوازيين فقط يمران فوق القمة (بدون أي خط أفقي مزعج)
+       // =====================================================================
+    // 🎨 لوحة ألوان الجذع (الخطين المتوازيين) المرئية - عدلي بالنظر فوراً!
+    // =====================================================================
+    
+    // 🔴 [النمط T - ثايمين]
+    const T_trunkColor = '#3ed2ff'; // 👈 لون خطوط الجذع (جوا)
+    const T_trunkGlow  = '#75e1ff'; // 👈 لون توهج الجذع (برّا)
+
+    // 🟡 [النمط A - أدنين]
+    const A_trunkColor = '#ffffff'; // 👈 لون خطوط الجذع (أبيض ناصع متناسق مع الأصفر)
+    const A_trunkGlow  = '#ffcc00'; // 👈 لون توهج الجذع (أصفر ذهبي دافئ ليناسب ثيم A)
+
+    // 🟣 [النمط C - سايتوسين]
+    const C_trunkColor = '#fdf8ff'; // 👈 لون خطوط الجذع (جوا)
+    const C_trunkGlow  = '#6137a0'; // 👈 لون توهج الجذع نهدي فاتح (برّا)
+
+    // 🔵 [النمط G - جوانين الافتراضي]
+    const G_trunkColor = '#9c37be'; // 👈 لون خطوط الجذع (جوا)
+    const G_trunkGlow  = '#e991f8'; // 👈 لون توهج الجذع (سيان مشع متطابق مع المثلث)
+
+
+    // 🔄 تطبيق ألوان الجذع وتوهجه تلقائياً حسب النمط الجيني المسيطر للعينة
+    let currentTrunkColor = '#ffffff';
+    let currentTrunkGlow = '#00f0ff';
+
+    if (dominantBase === 'T') {
+        currentTrunkColor = T_trunkColor; currentTrunkGlow = T_trunkGlow;
+    } else if (dominantBase === 'A') {
+        currentTrunkColor = A_trunkColor; currentTrunkGlow = A_trunkGlow;
+    } else if (dominantBase === 'C') {
+        currentTrunkColor = C_trunkColor; currentTrunkGlow = C_trunkGlow;
+    } else {
+        currentTrunkColor = G_trunkColor; currentTrunkGlow = G_trunkGlow;
+    }
+
+    // رسم الخطوط العمودية النقية بناءً على الألوان الديناميكية الجديدة
+    ctx.strokeStyle = currentTrunkColor; 
+    ctx.lineWidth = 2;
+
+    // تفعيل هالة نيون الجذع المتناسقة جينياً
+    ctx.shadowColor = currentTrunkGlow;
+    ctx.shadowBlur = 20; 
+
+    ctx.beginPath();
+    
+    // الخط العمودي الأيسر (ينطلق من داخل المثلث ويصعد فوقه)
+    ctx.moveTo(startX1, startY);
+    ctx.lineTo(startX1, endY);
+    
+    // الخط العمودي الأيمن (ينطلق من داخل المثلث ويصعد فوقه)
+    ctx.moveTo(startX2, startY);
+    ctx.lineTo(startX2, endY);
+    
+    ctx.stroke();
+
+    // 🛑 [هام جداً] تصفير التوهج فوراً لحماية الأغصان القادمة من التغبيش
     ctx.shadowBlur = 0;
 
-        // 🌳 2. رسم الجذع النقي: خطين عموديين متوازيين فقط يمران فوق القمة (بدون أي خط أفقي مزعج)
-        ctx.strokeStyle = '#e335f3'; // خطوط نيون بيضاء مشعة للجذع
-        ctx.lineWidth = 2;
-        ctx.beginPath();
-        
-        // الخط العمودي الأيسر (ينطلق من داخل المثلث ويصعد فوقه)
-        ctx.moveTo(startX1, startY);
-        ctx.lineTo(startX1, endY);
-        
-        // الخط العمودي الأيمن (ينطلق من داخل المثلث ويصعد فوقه)
-        ctx.moveTo(startX2, startY);
-        ctx.lineTo(startX2, endY);
-        
-        ctx.stroke();
-
         // 🚀 3. انطلاق تفرعات الشجرة التوليدية فوراً من نهاية الخطين المرتفعين بالمنتصف
-        branchPythagoras(startX1, endY, startX2, endY, maxDepth);}
-    )
+       
+    branchPythagoras(startX1, endY, startX2, endY, maxDepth);
+});
         // =================================================================
         // [2] إعداد ورسم الشكل الثاني: المثلث البلوري الموحد (نفس المنطق الداخلي تماماً)
         // =================================================================
