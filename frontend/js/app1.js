@@ -257,18 +257,43 @@ if (vertexShader && fragmentShader) {
                 ctx.lineCap = 'round';
                 ctx.lineJoin = 'round';
                 
-                // 1️⃣ [السداسية الرئيسية الضخمة]: زحزحناها نتفة لليسار والأسفل لتترك مساحة للتابع
-                let mainX = hexX - 25;
-                let mainY = hexY + 20;
-                let mainRadius = hexRadius * 0.72; // تصغير الحجم لتظل داخل الأمان
-                drawAdvancedHexaflake(ctx, mainX, mainY, mainRadius, maxHexDepth, maxHexDepth, targetDNA);
-                
-                // 2️⃣ [السداسية التابعة الصغيرة]: وضعناها في الزاوية العلوية اليمنى داخل حدود الكانفاس بالظبط
-                let satelliteX = hexX + 105;
-                let satelliteY = hexY - 105;
-                let satelliteRadius = hexRadius * 0.28; // حجم مجهري فخم متناسق
-                drawAdvancedHexaflake(ctx, satelliteX, satelliteY, satelliteRadius, maxHexDepth, maxHexDepth, targetDNA);
-                
+           // 🧱 [محرّك التوزيع القطبي السداسي العملاق - نسخة الاندماج Macro-Shape]
+        
+   // 🧱 [محرك التوزيع الفركتلي الذاتي - سداسية كبرى مفرغة ومطرزة بالكامل]
+        let macroRadius = Math.min(mCanvas.width, mCanvas.height) * 0.44; // القطر الكلي للوحة
+        let mainX = mCanvas.width / 2;
+        let mainY = mCanvas.height / 2;
+        let mosaicDepth = 2; // أمان الأداء الخارق مية بالمية 🚀
+
+        // الحسابات الهندسية للنسب الفركتلية (تطابق الفركتل الصغير بالملّي)
+        let dist1 = (2 / 3) * macroRadius;
+        let radius1 = macroRadius / 3;
+
+        // 1️⃣ رسم البلورة المركزية الأساسية بالنواة مباااشرة
+        drawAdvancedHexaflake(ctx, mainX, mainY, radius1 * 0.9, mosaicDepth, mosaicDepth, targetDNA);
+
+        // 2️⃣ حلقة توزيع الأذرع الستة المحيطة بالنواة لإنشاء النجمة المفرغة الكبرى
+        for (let i = 0; i < 6; i++) {
+            let angle1 = (i * Math.PI) / 3;
+            let x1 = mainX + Math.cos(angle1) * dist1;
+            let y1 = mainY + Math.sin(angle1) * dist1;
+
+            // رسم السداسيات المتوسطة المحيطة
+            drawAdvancedHexaflake(ctx, x1, y1, radius1 * 1.05, mosaicDepth, mosaicDepth, targetDNA);
+
+            // 3️⃣ تفرير الطبقة الخارجية الأصغر حول كل ذراع لتعطي الهيكل الفركتلي الكامل والتداخل الفخم
+            let dist2 = (2 / 3) * radius1;
+            let radius2 = radius1 / 3;
+
+            for (let j = 0; j < 6; j++) {
+                let angle2 = (j * Math.PI) / 3;
+                let x2 = x1 + Math.cos(angle2) * dist2;
+                let y2 = y1 + Math.sin(angle2) * dist2;
+
+                // رسم السداسيات الطرفية المكملة للشكل الكلي
+                drawAdvancedHexaflake(ctx, x2, y2, radius2 * 1.15, mosaicDepth, mosaicDepth, targetDNA);
+            }
+        }
                 ctx.restore();
                 // 🛡️ درع حماية وعزل كامل (Scope Isolation) لمنع تداخل الأسماء نهائياً
         
