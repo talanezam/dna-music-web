@@ -8,21 +8,35 @@
     flex-wrap: wrap; /* مشان إذا الشاشة صغيرة ينزلوا تحت بعض */
 }
 
-/* ستايل الكرت الزجاجي (GENOVA Glass Card) */
+/* 🎯 ستايل الكارد الزجاجي الموحد والفخم */
 .genova-glass-card {
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(15, 15, 30, 0.6) !important;
     backdrop-filter: blur(15px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(157, 78, 221, 0.3) !important; /* 🟣 تحويل الخط الخارجي الرفيع لبنفسجي */
     border-radius: 20px;
     padding: 20px;
-    width: 450px;  /* عرض الكرت */
-    height: 550px; /* طول الكرت */
-    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.8);
+    width: 450px;
+    height: 550px;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.6), 0 0 15px rgba(157, 78, 221, 0.15) !important; /* 🟣 توهج بنفسجي ثابت خفيف */
     display: flex;
     flex-direction: column;
     align-items: center;
+    transition: all 0.3s ease-in-out;
 }
 
+/* تأثير التوهج المشع الموحد للكاردات الثلاثة عند تمرير الماوس */
+.genova-glass-card:hover {
+    border-color: #9d4edd !important; /* 🟣 الإطار يشع بنفسجي ليزري */
+    box-shadow: 0 0 25px rgba(157, 78, 221, 0.6) !important; /* 🟣 توهج بنفسجي قوي وفخم */
+    transform: translateY(-5px);
+}
+
+/* تأثير التوهج المشع الموحد للكاردات الثلاثة عند تمرير الماوس */
+.genova-glass-card:hover {
+    border-color: #ab57ff !important;
+    box-shadow: 0 0 25px rgba(174, 0, 255, 0.4) !important;
+    transform: translateY(-5px); /* رفعة حيوية خفيفة */
+}
 /* حاوية الرسم (الفراكتال) داخل الكرت */
 .fractal-container {
     width: 100%;
@@ -31,8 +45,9 @@
     border-radius: 15px;
     overflow: hidden;
     position: relative;
+    box-shadow: 0 0 50px rgba(174, 0, 255, 0.4);
     /* النيون اللي طلبتيه دايما ظاهر */
-    border: 1px solid rgba(0, 255, 255, 0.3); 
+   
 }
 .visual-page{
     display: flex !important;
@@ -66,8 +81,8 @@
     height: 250px; /* ارتفاع المستطيل (يمكنكِ تعديله حسب الرغبة) */
     margin-bottom: 25px; /* مسافة تفصله عن الكرتين اللذين بالأسفل */
     background: radial-gradient(circle at center, #0a0a24 0%, #03030a 100%);
-    border: 2px solid #00f0ff; /* حدود سيان حادة متناسقة مع كرت البلورة */
-    box-shadow: 0 0 15px rgba(0, 240, 255, 0.2);
+    border: 2px solid #b300ff; /* حدود سيان حادة متناسقة مع كرت البلورة */
+    box-shadow: 0 0 15px rgba(153, 0, 255, 0.2);
     border-radius: 8px; /* تدوير خفيف متناسق مع كروتك الحالية */
     position: relative;
     overflow: hidden;
@@ -82,7 +97,7 @@
 #mandelbrot-container, #cg-container {
     background-color: rgba(10, 0, 30, 0.75); /* مية بالمية لون كحلي/بنفسجي غامق مية بالمية مع شفافية 75% مية بالمية */
     border-radius: 12px; /* مية بالمية مية بالمية زوايا ناعمة مثل الصورة مية بالمية مية بالمية */
-    box-shadow: 0 0 25px rgba(0, 240, 255, 0.4); /* مية بالمية مية بالمية تباين الترددات: هالة ضوئية مشعة مية بالمية لتبرز اللوحة من الخلفية مية بالمية مية بالمية */
+    box-shadow: 0 0 50px rgba(174, 0, 255, 0.4); /* مية بالمية مية بالمية تباين الترددات: هالة ضوئية مشعة مية بالمية لتبرز اللوحة من الخلفية مية بالمية مية بالمية */
     overflow: hidden; /* مية بالمية مية بالمية مية بالمية تأمين إن الرسمة تضل جوا الحاوية مية بالمية مية بالمية */
 }
 /* ✨ إضافة جوليا لتاخذ نفس التعتيم الزجاجي الفخم */
@@ -90,6 +105,29 @@
 #julia-container {
     background-color: rgba(6, 2, 18, 0.88) !important; /* كحلي بنفسجي غامق جداً مصمت بنسبة 88% */
     border-radius: 12px;
-    box-shadow: 0 0 25px rgba(152, 0, 255, 0.25); /* هالة أرجوانية ناعمة تحيط بالكارد */
+    box-shadow: 0 0 50px rgba(174, 0, 255, 0.463); /* هالة أرجوانية ناعمة تحيط بالكارد */
     overflow: hidden;
+}
+/* 📜 ستايل العبارة التعريفية الكبرى - نسخة اليسار والمساحات الإضافية */
+.macro-panel-title {
+    color: #f6d3ff; 
+    font-family: 'Cairo', 'Tajawal', sans-serif;
+    font-size: 22px;
+    font-weight: 600;
+    text-align: left; /* 👈 1. تحويل المحاذاة لجهة اليسار بالكامل */
+    width: 100%; /* 👈 2. إجبار العنوان يأخذ سطر مستقل كرمال ما يزاحم اللوحات */
+    padding-left: 40px; /* 👈 3. إزاحة أمان ناعمة من اليسار عشان ما يلزق بحافة الشاشة */
+    margin-top: 75px; /* 👈 4. تكبير الفراغ العلوي بين العبارة وبين اللوحات التلاتة */
+    margin-bottom: 25px; /* 👈 5. فراغ مريح بين العبارة واللوحة الكبيرة تحتها */
+    letter-spacing: 1px;
+    text-shadow: 0 0 12px rgba(255, 236, 175, 0.35);
+}
+
+/* 🎯 تنسيق خاص لزر اللوحة الكبرى كرمال التوسيط والأناقة */
+.macro-download-btn {
+    display: block !important;
+    margin: 10px auto 50px auto !important; /* توسيط الزر بالمنتصف تماماً مع مسافة أمان تحت */
+    width: 320px !important; /* عرض ثابت وأنيق ومريح للعين */
+    padding: 12px 24px !important; /* تكبير حجم الكبسة شعرة صغيرة لتليق باللوحة الكبرى */
+    font-size: 15px !important;
 }

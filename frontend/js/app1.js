@@ -257,41 +257,54 @@ if (vertexShader && fragmentShader) {
                 ctx.lineCap = 'round';
                 ctx.lineJoin = 'round';
                 
-           // 🧱 [محرّك التوزيع القطبي السداسي العملاق - نسخة الاندماج Macro-Shape]
-        
-   // 🧱 [محرك التوزيع الفركتلي الذاتي - سداسية كبرى مفرغة ومطرزة بالكامل]
-        let macroRadius = Math.min(mCanvas.width, mCanvas.height) * 0.44; // القطر الكلي للوحة
+           
+                // 🧱 [محرك التوزيع الفركتلي الجيني الديناميكي - متأثر بنسبة الـ CG]
+        let macroRadius = Math.min(mCanvas.width, mCanvas.height) * 0.44; 
         let mainX = mCanvas.width / 2;
         let mainY = mCanvas.height / 2;
-        let mosaicDepth = 2; // أمان الأداء الخارق مية بالمية 🚀
+        let mosaicDepth = 2; // أمان الأداء الخارق 🚀
 
-        // الحسابات الهندسية للنسب الفركتلية (تطابق الفركتل الصغير بالملّي)
         let dist1 = (2 / 3) * macroRadius;
         let radius1 = macroRadius / 3;
 
-        // 1️⃣ رسم البلورة المركزية الأساسية بالنواة مباااشرة
+        // 1️⃣ النواة المركزية (ترسم دائماً في كل الحالات)
         drawAdvancedHexaflake(ctx, mainX, mainY, radius1 * 0.9, mosaicDepth, mosaicDepth, targetDNA);
 
-        // 2️⃣ حلقة توزيع الأذرع الستة المحيطة بالنواة لإنشاء النجمة المفرغة الكبرى
+        // 2️⃣ الطبقة الأولى (الأذرع الستة المحيطة) - ترسم دائماً
         for (let i = 0; i < 6; i++) {
             let angle1 = (i * Math.PI) / 3;
             let x1 = mainX + Math.cos(angle1) * dist1;
             let y1 = mainY + Math.sin(angle1) * dist1;
 
-            // رسم السداسيات المتوسطة المحيطة
             drawAdvancedHexaflake(ctx, x1, y1, radius1 * 1.05, mosaicDepth, mosaicDepth, targetDNA);
 
-            // 3️⃣ تفرير الطبقة الخارجية الأصغر حول كل ذراع لتعطي الهيكل الفركتلي الكامل والتداخل الفخم
-            let dist2 = (2 / 3) * radius1;
-            let radius2 = radius1 / 3;
+            // 🌟 [التحكم الجيني بالكثافة]: إذا كانت النسبة متوسطة أو مرتفعة (أكبر من 40%) بنرسم الطبقة الثانية
+            if (cgPercent >= 40) {
+                let dist2 = (2 / 3) * radius1;
+                let radius2 = radius1 / 3;
 
-            for (let j = 0; j < 6; j++) {
-                let angle2 = (j * Math.PI) / 3;
-                let x2 = x1 + Math.cos(angle2) * dist2;
-                let y2 = y1 + Math.sin(angle2) * dist2;
+                for (let j = 0; j < 6; j++) {
+                    let angle2 = (j * Math.PI) / 3;
+                    let x2 = x1 + Math.cos(angle2) * dist2;
+                    let y2 = y1 + Math.sin(angle2) * dist2;
 
-                // رسم السداسيات الطرفية المكملة للشكل الكلي
-                drawAdvancedHexaflake(ctx, x2, y2, radius2 * 1.15, mosaicDepth, mosaicDepth, targetDNA);
+                    drawAdvancedHexaflake(ctx, x2, y2, radius2 * 1.15, mosaicDepth, mosaicDepth, targetDNA);
+
+                    // 🚀 [ذروة الكثافة]: إذا كانت النسبة مرتفعة جداً (أكبر من 65%)، بنفرّع طبقة ثالثة مجهرية فائقة ليزداد العدد ويكبر!
+                    if (cgPercent > 65) {
+                        let dist3 = (2 / 3) * radius2;
+                        let radius3 = radius2 / 3;
+
+                        for (let k = 0; k < 6; k++) {
+                            let angle3 = (k * Math.PI) / 3;
+                            let x3 = x2 + Math.cos(angle3) * dist3;
+                            let y3 = y2 + Math.sin(angle3) * dist3;
+
+                            // عمق ناعم (1) للحبات الخارجية جداً كرمال سلاسة الحركة وخفة اللابتوب مية بالمية
+                            drawAdvancedHexaflake(ctx, x3, y3, radius3 * 1.25, 1, 1, targetDNA);
+                        }
+                    }
+                }
             }
         }
                 ctx.restore();
@@ -945,8 +958,14 @@ function drawAdvancedHexaflake(ctx, x, y, radius, depth, maxDepth, dnaStr) {
     let dna = (typeof dnaStr === 'string' && dnaStr) ? dnaStr : 'ATCG';
 
     // 🎨 [باليت الألوان بنظام الـ HEX] - غيري الرموز هنا مبااااشرة بالنسخ واللصق على كيفك
-    const colorOuter = '#00f0ff'; // ⬢ اللون الخارجي: سيان نيون ليزري مشع
-    const colorInner = '#9d4edd'; // ⬢ اللون الداخلي: أرجواني كوزمي عميق
+    const baseColors = {
+        'A': '#ffecaf', // ⬢ سيان نيون مشع
+        'T': '#00f0ff', // ⬢ ذهبي ملكي ناعم#00f0ff
+        'C': '#c886ff', // ⬢ أرجواني كوزمي عميق
+        'G': '#8952ffeb'  // ⬢ أزرق ليزري نقي
+    };
+    let layerBaseIndex = (maxDepth - depth) % dna.length;
+    let currentLayerBase = dna[layerBaseIndex] || 'A';
 
     // 📐 حساب نسبة العمق الحالي (من 1.0 في أقصى الخارج لـ 0.0 في المركز لجوا)
     let depthRatio = depth / maxDepth;
@@ -954,7 +973,7 @@ function drawAdvancedHexaflake(ctx, x, y, radius, depth, maxDepth, dnaStr) {
     ctx.save(); // حفظ حالة الكانفاس قبل تطبيق الألوان والخطوط الجديدة
 
     // ✨ [التناوب اللوني الذكي]: الطبقات الزوجية بتاخذ لون السيان، والفردية بتاخذ الأرجواني لخلق نسيج متداخل غني
-    ctx.strokeStyle = (depth % 2 === 0) ? colorOuter : colorInner;
+    ctx.strokeStyle = baseColors[currentLayerBase];
     ctx.shadowColor = ctx.strokeStyle;
 
     // 🔒 [حماية الأداء]: التوهج النيوني الثقيل بيشتغل برة بس (15 بكسل)، وجوا (0) عشان اللابتوب ما يعلق
@@ -985,7 +1004,7 @@ function drawAdvancedHexaflake(ctx, x, y, radius, depth, maxDepth, dnaStr) {
 
         // 🔮 [النقاط المجهرية الفخمة]: لو الحرف C أو T بنرسم نقطة مضيئة ناعمة جداً كأنها جزيء مشع
         if (depth <= 2 && (base === 'C' || base === 'T')) {
-            ctx.fillStyle = colorOuter;
+          ctx.fillStyle = ctx.strokeStyle;
             ctx.fillRect(hX - 1, hY - 1, 2, 2); // رسم مربع مجهري ناعم مية بالمية على الرأس
         }
     }

@@ -20,21 +20,23 @@
 
 <div class="main-wrapper">
     <div class="genova-glass-card">
-        <h3 style="color: #9000ff; text-align: center; margin-bottom: 10px;">Genomic Identity Star</h3>
         <div class="fractal-container" id="fractal-container"></div>
+        <button class="genova-download-btn" onclick="downloadGenovaCanvas('fractal-container', 'Genomic_Star')">Download📥</button>
     </div>
 
     <div class="genova-glass-card">
-        <h3 style="color: #9000ff; text-align: center; margin-bottom: 10px;">Genomic Spiral</h3>
         <div class="fractal-container" id="mandelbrot-container"></div>
+        <button class="genova-download-btn" onclick="downloadGenovaCanvas('mandelbrot-container', 'Genomic_Hexagon')"> Download📥</button>
     </div>
 
-     <div class="genova-glass-card">
-        <h3 style="color: #9000ff; text-align: center; margin-bottom: 10px;">Genomic julia</h3>
-       <div class="fractal-container" id="julia-container"></div>
+    <div class="genova-glass-card">
+        <div class="fractal-container" id="julia-container"></div>
+        <button class="genova-download-btn" onclick="downloadGenovaCanvas('julia-container', 'Genomic_Julia')"> Download📥</button>
     </div>
-</div>
 
+
+<h2 class="macro-panel-title">The Genomic Tree of Life:
+     A Macro-Scale Synthesis of DNA Expression</h2>
 
 
 
@@ -52,10 +54,39 @@
 </div>
 
 
+<button class="genova-download-btn macro-download-btn" onclick="downloadGenovaCanvas('master-panel-container', 'Genomic_Tree_of_Life')">Download 📥</button>
+
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
-    <script src="js/app1.js"></script>
+    <script src="js/app1.js"> </script>
+
+    
+<script >function downloadGenovaCanvas(containerId, fileName) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+
+    // البحث عن عنصر الكانفاس الحقيقي بداخل الديف
+    const canvas = container.tagName.toLowerCase() === 'canvas' ? container : container.querySelector('canvas');
+
+    if (!canvas) {
+        alert("اللوحة جاري معالجتها بالوقت الفعلي، يرجى الانتظار ثانية ثم المحاولة!");
+        return;
+    }
+
+    // التقاط محتوى اللوحة وتحويله لصورة PNG
+    const imageURL = canvas.toDataURL("image/png");
+
+    // إطلاق عملية التنزيل التلقائي بجهازكِ
+    const vLink = document.createElement("a");
+    vLink.href = imageURL;
+    vLink.download =` ${fileName}_GENOVA.png`; 
+
+    document.body.appendChild(vLink);
+    vLink.click(); 
+    document.body.removeChild(vLink); 
+}
+</script>
 
     </body>
 </html>
