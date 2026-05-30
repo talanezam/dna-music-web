@@ -220,6 +220,8 @@ if (vertexShader && fragmentShader) {
             // =====================================================================
            
 
+
+
             // =====================================================================
             // ⬢ تثبيت سيربنسكي السداسي الجيني المطور (الحل النهائي الجاهز مية بالمية)
             // =====================================================================
@@ -269,30 +271,29 @@ if (vertexShader && fragmentShader) {
                 
                 ctx.restore();
                 // 🛡️ درع حماية وعزل كامل (Scope Isolation) لمنع تداخل الأسماء نهائياً
-        {
-            let safeCanvas = ctx.canvas;
-            let safeX = safeCanvas.width / 2;
-            let safeY = safeCanvas.height / 2;
-            let safeRadius = Math.min(safeCanvas.width, safeCanvas.height) * 0.48;
-            let safeDepth = (typeof maxHexDepth !== 'undefined' && !isNaN(maxHexDepth)) ? maxHexDepth : 4;
-            let safeDNA = (typeof targetDNA !== 'undefined' && targetDNA) ? targetDNA : 'ATCGGTTAACCGGGTTTAAA';
-
-            // استخدام أسماء محلية فريدة مستحيل تضرب مع أي سطر بالملف
-            let localMainX = safeX - 25;
-            let localMainY = safeY + 20;
-            let localMainRadius = safeRadius * 0.72;
-            drawAdvancedHexaflake(ctx, localMainX, localMainY, localMainRadius, safeDepth, safeDepth, safeDNA);
-
-            let localSatelliteX = safeX + 105;
-            let localSatelliteY = safeY - 105;
-            let localSatelliteRadius = safeRadius * 0.28;
-            drawAdvancedHexaflake(ctx, localSatelliteX, localSatelliteY, localSatelliteRadius, safeDepth, safeDepth, safeDNA);
+        
+                // =====================================================================
+        // 🔮 بلوك تشغيل مسار جوليا الجيني الآمن (Concentric Julia Setup)
+        // =====================================================================
+        const juliaContainer = document.getElementById('julia-container') || document.getElementById('julia-canvas');
+        if (juliaContainer) {
+            let juliaCanvas;
+            if (juliaContainer.tagName.toLowerCase() === 'canvas') {
+                juliaCanvas = juliaContainer;
+            } else {
+                juliaContainer.innerHTML = '';
+                juliaCanvas = document.createElement('canvas');
+                juliaCanvas.width = juliaContainer.offsetWidth || 400;
+                juliaCanvas.height = juliaContainer.offsetHeight || 400;
+                juliaContainer.appendChild(juliaCanvas);
+            }
+            
+            const juliaCtx = juliaCanvas.getContext('2d');
+            let juliaDNA = (typeof userDNA !== 'undefined' && userDNA) ? userDNA : ((typeof targetDNA !== 'undefined') ? targetDNA : 'ATCGGTTAACCGGGTTTAAA');
+            
+            // استدعاء دالة جوليا الصافية
+            drawJuliaSet(juliaCtx, juliaCanvas.width, juliaCanvas.height, juliaDNA);
         }
-
-
-
-
-
             }
 
 //=============================================================================
@@ -994,8 +995,89 @@ function drawAdvancedHexaflake(ctx, x, y, radius, depth, maxDepth, dnaStr) {
 }
 //--------------------&&&&&&&&&&&&&&&&&&&&&&&&&&بدأ دالة جوليا&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
 //&&&&&&&&&&&&&&****************************************&&&&&&&&&&&&&&&&&&&&&&&&&&&**************************
+//--------------------&&&&&&&&&&&&&&&&&&&&&&&&&&بدأ دالة جوليا&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+//&&&&&&&&&&&&&&****************************************&&&&&&&&&&&&&&&&&&&&&&&&&&&**************************
+//--------------------&&&&&&&&&&&&&&&&&&&&&&&&&&بدأ دالة جوليا&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+//&&&&&&&&&&&&&&****************************************&&&&&&&&&&&&&&&&&&&&&&&&&&&**************************
 // 🧬 دالة رسم فركتل جوليا الجيني الجديد (توضع بأسفل الملف تماماً)
+// 🧬 دالة رسم فركتل جوليا الجيني المطور (توضع بأسفل ملف app1.js تماماً)
+// 🧬 دالة رسم فركتل جوليا الجيني بنظام التعتيم الكوزمي (توضع بأسفل الملف تماماً)
+// 🧬 دالة رسم فركتل جوليا الجيني بنظام الوهج النيوني والكوزمي (توضع بأسفل الملف)
+// 🧬 دالة رسم فركتل جوليا الجيني المطور بنظام التنعيم اللوغاريتمي المزدوج (Smooth Shading)
 function drawJuliaSet(ctx, width, height, dnaStr) {
-    // هون بكون كود جوليا المعتمد على ألوان الـ HEX والـ DNA اللي جهزتيه
-    // ...
+    ctx.clearRect(0, 0, width, height);
+    
+    // 1️⃣ قراءة وتحليل جينات الـ DNA لتعديل الانحناء بدقة مجهرية آمنة
+    let targetDNA = dnaStr || 'ATCGGTTAACCGGGTTTAAA';
+    let countA = (targetDNA.match(/A/g) || []).length;
+    let countT = (targetDNA.match(/T/g) || []).length;
+    let countC = (targetDNA.match(/C/g) || []).length;
+    let countG = (targetDNA.match(/G/g) || []).length;
+    let total = targetDNA.length || 1;
+
+    // 🚀 الثابت السحري للمجرات اللولبية المتشابكة (Dendrite Spirals) لمنع الكتل المصمتة كلياً
+    let cX = -0.4 + ((countA - countT) / total) * 0.002;
+    let cY = 0.6 + ((countC - countG) / total) * 0.002;
+
+    let imgData = ctx.createImageData(width, height);
+    let data = imgData.data;
+    let minDim = Math.min(width, height);
+    
+    let maxIterations = 250; // قيمة مثالية تضمن دقة خارقة وسرعة متصفح فائقة
+    let zoom = 1.3; // موازنة الحجم لترك مساحات تنفس كونية واسعة حول الأطراف
+
+    // 2️⃣ حلقة الحسابات الرياضية المصلحة الأبعاد (Aspect Ratio)
+    for (let x = 0; x < width; x++) {
+        for (let y = 0; y < height; y++) {
+            
+            let zx = (x - width / 2) / (minDim / 2) * zoom;
+            let zy = (y - height / 2) / (minDim / 2) * zoom;
+
+            let i = maxIterations;
+            // رفع حد الهروب لـ 16 لتأمين حسابات التنعيم اللوغاريتمي اللانهائي
+            while (zx * zx + zy * zy < 16.0 && i > 0) {
+                let tmp = zx * zx - zy * zy + cX;
+                zy = 2.0 * zx * zy + cY;
+                zx = tmp;
+                i--;
+            }
+
+            let pix = (x + y * width) * 4;
+
+            if (i === 0) {
+                // النواة الداخلية المجهرية: أسود كوزمي عميق مصمت
+                data[pix + 0] = 5;   
+                data[pix + 1] = 2;   
+                data[pix + 2] = 15;  
+                data[pix + 3] = 255; 
+            } else {
+                // 🔮 سحر الصور المرجعية: التنعيم اللوغاريتمي المزدوج لمنع البلوكات الفاقعة
+                let n = maxIterations - i;
+                let log_zn = Math.log(zx * zx + zy * zy) / 2.0;
+                let nu = Math.log(log_zn / Math.log(2.0)) / Math.log(2.0);
+                let smoothN = n + 1.0 - nu; // عدد التكرارات العشري الحقيقي الفائق النعومة
+                
+                // تحويل القيمة لمعامل انسيابي يدور ببطء داخل اللوحة
+                let mu = smoothN / maxIterations;
+
+                // 🎨 لوحة ألوان الصور المرجعية (Deep Navy -> Cosmic Cyan -> Neon Yellow -> Golden White)
+                // الاعتماد على دالة الجيب (Sine Waves) للتنقل الانسيابي بين البكسلات
+                let r = Math.floor(Math.sin(mu * 3.0 + 0.5) * 120 + 135); 
+                let g = Math.floor(Math.sin(mu * 5.0 + 1.2) * 140 + 115); 
+                let b = Math.floor(Math.sin(mu * 2.0 + 3.0) * 55 + 200);  
+
+                // عزل الحواف الابتدائية تماماً لتبخر "العجقة" وتذوب بسلاسة بالخلفية الكحلية
+                let opacity = 255;
+                if (smoothN < 8.0) {
+                    opacity = Math.floor((smoothN / 8.0) * 255);
+                }
+
+                data[pix + 0] = Math.max(0, Math.min(255, r));
+                data[pix + 1] = Math.max(0, Math.min(255, g));
+                data[pix + 2] = Math.max(0, Math.min(255, b));
+                data[pix + 3] = opacity; 
+            }
+        }
+    }
+    ctx.putImageData(imgData, 0, 0);
 }
