@@ -1003,11 +1003,13 @@ function drawAdvancedHexaflake(ctx, x, y, radius, depth, maxDepth, dnaStr) {
 // 🧬 دالة رسم فركتل جوليا الجيني المطور (توضع بأسفل ملف app1.js تماماً)
 // 🧬 دالة رسم فركتل جوليا الجيني بنظام التعتيم الكوزمي (توضع بأسفل الملف تماماً)
 // 🧬 دالة رسم فركتل جوليا الجيني بنظام الوهج النيوني والكوزمي (توضع بأسفل الملف)
-// 🧬 دالة رسم فركتل جوليا الجيني المطور بنظام التنعيم اللوغاريتمي المزدوج (Smooth Shading)
+// 🧬 دالة رسم فركتل جوليا الجيني المطور بنظام التنعيم اللوغاريتمي المزدوج وفلترة الحواف الذكية
+// (توضع بأسفل الملف لضمان النظافة البرمجية مية بالمية)
+// 🧬 دالة رسم فركتل جوليا الجيني المطور - نسخة الخلفية البيج الناعمة والمركز المجهري الصافي
 function drawJuliaSet(ctx, width, height, dnaStr) {
     ctx.clearRect(0, 0, width, height);
     
-    // 1️⃣ قراءة وتحليل جينات الـ DNA لتعديل الانحناء بدقة مجهرية آمنة
+    // 1️⃣ قراءة وتحليل قواعد الـ DNA
     let targetDNA = dnaStr || 'ATCGGTTAACCGGGTTTAAA';
     let countA = (targetDNA.match(/A/g) || []).length;
     let countT = (targetDNA.match(/T/g) || []).length;
@@ -1015,18 +1017,49 @@ function drawJuliaSet(ctx, width, height, dnaStr) {
     let countG = (targetDNA.match(/G/g) || []).length;
     let total = targetDNA.length || 1;
 
-    // 🚀 الثابت السحري للمجرات اللولبية المتشابكة (Dendrite Spirals) لمنع الكتل المصمتة كلياً
-    let cX = -0.4 + ((countA - countT) / total) * 0.002;
-    let cY = 0.6 + ((countC - countG) / total) * 0.002;
+    // ثوابت المجرات اللولبية المتشابكة الموزونة جينياً بدقة
+    // 1️⃣ إيجاد القاعدة النيتروجينية المسيطرة (صاحبة أكبر تكرار بالملف)
+    let maxCount = Math.max(countA, countT, countC, countG);
+    let dominantBase = 'G'; // القيمة الافتراضية
+    
+    if (maxCount === countA) dominantBase = 'A';
+    else if (maxCount === countT) dominantBase = 'T';
+    else if (maxCount === countC) dominantBase = 'C';
+    else if (maxCount === countG) dominantBase = 'G';
+
+    // 2️⃣ تعيين قيم الثوابت السحرية والمحرضات بناءً على القاعدة المسيطرة
+    let cX, cY;
+
+    if (dominantBase === 'G') {
+        // 🟢 إذا كانت G هي المسيطرة: المجرات اللولبية المتشابكة (القيم الحالية الفخمة تبعكِ)
+        cX = -0.4 + ((countA - countT) / total) * 0.007;
+        cY = 0.6 + ((countC - countG) / total) * 0.005;
+    } 
+    else if (dominantBase === 'A') {
+        // 🔵 إذا كانت A هي المسيطرة: حلزونات وادي فرس البحر الكثيفة
+        cX = -0.74543 + ((countA - countT) / total) * 0.001;
+        cY = 0.11301 + ((countC - countG) / total) * 0.001;
+    } 
+    else if (dominantBase === 'C') {
+        // 🔴 إذا كانت C هي المسيطرة: تلافيف أرنب دواندي الدائرية المتناسقة
+        cX = -0.8 + ((countA - countT) / total) * 0.009;
+        cY = 0.156 + ((countC - countG) / total) * 0.009;
+    } 
+    else if (dominantBase === 'T') {
+        // 🟡 إذا كانت T هي المسيطرة: التلافيف الناعمة الممتدة والطويلة
+        cX = -0.8 + ((countA - countT) / total) * 0.002;
+        cY = 0.156 + ((countC - countG) / total) * 0.003;
+    }
+
 
     let imgData = ctx.createImageData(width, height);
     let data = imgData.data;
     let minDim = Math.min(width, height);
     
-    let maxIterations = 250; // قيمة مثالية تضمن دقة خارقة وسرعة متصفح فائقة
-    let zoom = 1.3; // موازنة الحجم لترك مساحات تنفس كونية واسعة حول الأطراف
+    let maxIterations = 250; // قيمة مثالية تضمن دقة التفاصيل وسرعة الأداء
+    let zoom = 1.3;          // حجم متناسق يضمن ظهور التلافيف كاملة بداخل الكارد
 
-    // 2️⃣ حلقة الحسابات الرياضية المصلحة الأبعاد (Aspect Ratio)
+    // 2️⃣ حلقة الحسابات الرياضية المصلحة الأبعاد لمنع التمطيط
     for (let x = 0; x < width; x++) {
         for (let y = 0; y < height; y++) {
             
@@ -1034,7 +1067,7 @@ function drawJuliaSet(ctx, width, height, dnaStr) {
             let zy = (y - height / 2) / (minDim / 2) * zoom;
 
             let i = maxIterations;
-            // رفع حد الهروب لـ 16 لتأمين حسابات التنعيم اللوغاريتمي اللانهائي
+            // حد هروب 16.0 يضمن استقرار معادلة التنعيم اللوغاريتمي
             while (zx * zx + zy * zy < 16.0 && i > 0) {
                 let tmp = zx * zx - zy * zy + cX;
                 zy = 2.0 * zx * zy + cY;
@@ -1044,39 +1077,55 @@ function drawJuliaSet(ctx, width, height, dnaStr) {
 
             let pix = (x + y * width) * 4;
 
+            // 🎨 لوحة القواعد الأربعة: (انقري على أي مربع بـ VS Code لتغيير لون القاعدة)
+            let colorA = '#ff9100'; // 🔵 لون شكل قاعدة A (فرس البحر)
+            let colorT = '#b310b9'; // 🟢 لون شكل قاعدة T (التلافيف الممتدة)
+            let colorC = '#002aff'; // 🔴 لون شكل قاعدة C (أرنب دواندي)
+            let colorG = '#d946ef'; // 🔮 لون شكل قاعدة G (المجرات اللولبية الفخمة)
+
+            // اختيار اللون تلقائياً بناءً على القاعدة المسيطرة بالـ DNA
+            let chosenHex = colorG; 
+            if (dominantBase === 'A') chosenHex = colorA;
+            else if (dominantBase === 'T') chosenHex = colorT;
+            else if (dominantBase === 'C') chosenHex = colorC;
+            else if (dominantBase === 'G') chosenHex = colorG;
+
+            // تفكيك اللون المختار لقنوات RGB البرمجية تلقائياً
+            let rTheme = parseInt(chosenHex.substring(1, 3), 16);
+            let gTheme = parseInt(chosenHex.substring(3, 5), 16);
+            let bTheme = parseInt(chosenHex.substring(5, 7), 16);
+
             if (i === 0) {
-                // النواة الداخلية المجهرية: أسود كوزمي عميق مصمت
-                data[pix + 0] = 5;   
-                data[pix + 1] = 2;   
-                data[pix + 2] = 15;  
-                data[pix + 3] = 255; 
+                // 🔮 تلوين داخل الفركتل بنفس اللون المختار بدل السواد الكتيم البشع
+                let v = Math.sqrt(zx * zx + zy * zy);
+                let innerWave = Math.sin(v * 20.0) * 0.15 + 0.85; // تموجات دقيقة تبرز تفاصيل الداخل بنعومة
+                
+                data[pix + 0] = Math.max(0, Math.min(255, Math.floor(rTheme * innerWave)));
+                data[pix + 1] = Math.max(0, Math.min(255, Math.floor(gTheme * innerWave)));
+                data[pix + 2] = Math.max(0, Math.min(255, Math.floor(bTheme * innerWave)));
+                data[pix + 3] = 255;
             } else {
-                // 🔮 سحر الصور المرجعية: التنعيم اللوغاريتمي المزدوج لمنع البلوكات الفاقعة
+                // معادلة التنعيم اللوغاريتمي المزدوج الفائق للخطوط الخارجية
                 let n = maxIterations - i;
                 let log_zn = Math.log(zx * zx + zy * zy) / 2.0;
                 let nu = Math.log(log_zn / Math.log(2.0)) / Math.log(2.0);
-                let smoothN = n + 1.0 - nu; // عدد التكرارات العشري الحقيقي الفائق النعومة
-                
-                // تحويل القيمة لمعامل انسيابي يدور ببطء داخل اللوحة
+                let smoothN = n + 1.0 - nu;
                 let mu = smoothN / maxIterations;
 
-                // 🎨 لوحة ألوان الصور المرجعية (Deep Navy -> Cosmic Cyan -> Neon Yellow -> Golden White)
-                // الاعتماد على دالة الجيب (Sine Waves) للتنقل الانسيابي بين البكسلات
-                let r = Math.floor(Math.sin(mu * 3.0 + 0.5) * 120 + 135); 
-                let g = Math.floor(Math.sin(mu * 5.0 + 1.2) * 140 + 115); 
-                let b = Math.floor(Math.sin(mu * 2.0 + 3.0) * 55 + 200);  
+                let blend = Math.pow(mu, 0.55); 
+                let wave = Math.sin(mu * 6.28 * 1.5) * 0.12 + 0.88; 
 
-                // عزل الحواف الابتدائية تماماً لتبخر "العجقة" وتذوب بسلاسة بالخلفية الكحلية
-                let opacity = 255;
-                if (smoothN < 8.0) {
-                    opacity = Math.floor((smoothN / 8.0) * 255);
-                }
+                // دمج لوغاريتمي انسيابي يحافظ على نظافة الخلفية بيج (253, 245, 230)
+                let r = Math.floor(253 * (1 - blend) + rTheme * blend * wave);
+                let g = Math.floor(245 * (1 - blend) + gTheme * blend * wave);
+                let b = Math.floor(230 * (1 - blend) + bTheme * blend * wave);
 
                 data[pix + 0] = Math.max(0, Math.min(255, r));
                 data[pix + 1] = Math.max(0, Math.min(255, g));
                 data[pix + 2] = Math.max(0, Math.min(255, b));
-                data[pix + 3] = opacity; 
-            }
+                data[pix + 3] = 255;
+            } 
+            
         }
     }
     ctx.putImageData(imgData, 0, 0);
